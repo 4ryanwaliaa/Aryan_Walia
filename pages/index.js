@@ -3,7 +3,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import Image from 'next/image';
-import { PracticalSecuritySection, AvailableForSection } from './SecuritySection';
+import { PracticalSecuritySection, AvailableForSection } from '../components/SecuritySection';
 
 
 
