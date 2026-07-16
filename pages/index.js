@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import Image from 'next/image';
+import wakeMeLogo from '../public/logo.png';
 import { PracticalSecuritySection, AvailableForSection } from '../components/SecuritySection';
 
 
@@ -54,6 +55,20 @@ export default function Home() {
 
   const projects = [
     {
+      title: 'MyRecon — OSINT Intelligence Platform',
+      description: 'Open-source OSINT reconnaissance platform that searches usernames across 100+ platforms, analyzes email breach exposure, and investigates domains, DNS records, and IP addresses — no API keys required for core features.',
+      features: [
+        'Username search across 100+ platforms with validators to cut false positives',
+        'Email breach detection and provider validation',
+        'Domain WHOIS via RDAP and encrypted DNS record lookups',
+        'IP geolocation, network ownership data, JSON/CSV export'
+      ],
+      tech: ['Python', 'Flask', 'JavaScript', 'OSINT', 'RDAP', 'REST APIs'],
+      github: 'https://github.com/4ryanwalia/Myrecon',
+      icon: '🔍',
+      gradient: 'from-emerald-500 via-teal-500 to-cyan-600'
+    },
+    {
       title: 'Phishing Detection System',
       description: 'Automated phishing URL classifier extracting 30+ features; trained Random Forest and Logistic Regression models on a self-built live dataset achieving high-accuracy detection.',
       features: [
@@ -63,10 +78,12 @@ export default function Home() {
         'Self-built live dataset for high-accuracy detection'
       ],
       tech: ['Python', 'Machine Learning', 'Scikit-learn', 'Pandas'],
-      github: '#'
+      github: 'https://github.com/4ryanwalia/Phishing-detection',
+      icon: '🎣',
+      gradient: 'from-cyan-500 via-blue-500 to-indigo-600'
     },
     {
-      title: 'Rakshak - AI Accident Detection',
+      title: 'Rakshak — AI Accident Detection',
       description: 'Real-time CV system analyzing roadside camera feeds to auto-detect vehicle accidents and trigger emergency alerts to police and ambulance services.',
       features: [
         'Real-time Computer Vision analysis',
@@ -75,20 +92,9 @@ export default function Home() {
         'Emergency alert triggering system'
       ],
       tech: ['Python', 'Computer Vision', 'OpenCV', 'Deep Learning'],
-    },
-    {
-      title: 'Wake Me - Smart Alarm App',
-      description: 'A smart alarm app with sleep detection, quick alarms, and advanced security features. Built with Firebase Realtime Database for seamless data sync.',
-      features: [
-        'Smart Sleep Detection via phone activity monitoring',
-        'Quick Alarm setting with one-tap functionality',
-        'Advanced Security measures to protect user data',
-        'Firebase Integration for real-time database sync across devices'
-      ],
-      tech: ['Android', 'Java/Kotlin', 'Firebase', 'Realtime DB'],
-      link: 'https://play.google.com/store/apps/details?id=makeme.aryan.makeme',
-      linkLabel: 'Live on Play Store',
-      image: '/logo.png'
+      github: 'https://github.com/4ryanwalia/Rakshak---Car',
+      icon: '🚨',
+      gradient: 'from-orange-500 via-red-500 to-rose-600'
     }
   ];
 
@@ -233,8 +239,8 @@ const typewriterText = useTypewriter([
   return (
     <>
       <Head>
-        <title>Aryan Walia - Full-Stack Developer</title>
-        <meta name="description" content="Full-Stack Developer specializing in Android, Web, and AI" />
+        <title>Aryan Walia - Cybersecurity Analyst | SOC | VAPT</title>
+        <meta name="description" content="CEH-certified Cybersecurity Analyst — SOC Operations, Threat Detection, VAPT. Founder of BugSnaps. Builder of security tools, OSINT platforms, and Android apps." />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -366,6 +372,10 @@ const typewriterText = useTypewriter([
                 Projects
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-cyan-400 to-blue-600 transition-all duration-300 group-hover:w-full"></span>
               </a>
+              <a href="#bugsnaps" className="text-sm font-medium hover:text-emerald-400 transition-colors relative group">
+                BugSnaps
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-emerald-400 to-teal-500 transition-all duration-300 group-hover:w-full"></span>
+              </a>
               <a href="#security-work" className="text-sm font-medium hover:text-cyan-400 transition-colors relative group">
                 Security
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-green-400 to-cyan-600 transition-all duration-300 group-hover:w-full"></span>
@@ -415,12 +425,19 @@ const typewriterText = useTypewriter([
               >
                 Skills
               </a>
-              <a 
-                href="#projects" 
+              <a
+                href="#projects"
                 className="text-sm font-medium hover:text-gray-300 transition-colors"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Projects
+              </a>
+              <a
+                href="#bugsnaps"
+                className="text-sm font-medium hover:text-gray-300 transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                BugSnaps
               </a>
               <a 
                 href="#security-work" 
@@ -451,11 +468,6 @@ const typewriterText = useTypewriter([
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            {/* Enhanced Matrix code rain animation */}
-            <div className="absolute inset-0 z-0 pointer-events-none">
-              <canvas id="matrix-canvas" className="w-full h-full" />
-            </div>
-            
             {/* AI Network Grid Overlay */}
             <div className="absolute inset-0 z-5 pointer-events-none opacity-20">
               <div className="absolute inset-0" style={{
@@ -498,9 +510,10 @@ const typewriterText = useTypewriter([
               </motion.div>
               
               <p className="text-[#adadad] text-xl md:text-2xl max-w-[700px] leading-relaxed mt-4 font-light animate-text-slide-up">
-                <span className="bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent font-semibold">Cybersecurity Analyst</span> & 
-                <span className="bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent font-semibold"> SOC Operations</span> 
-                — CEH-certified specialist building secure systems and intelligent threat detection solutions. 🛡️
+                <span className="bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent font-semibold">Cybersecurity Analyst</span> &
+                <span className="bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent font-semibold"> SOC Operations</span>
+                — CEH-certified specialist building secure systems and intelligent threat detection solutions.
+                Founder of <a href="https://bugsnaps.in" target="_blank" rel="noopener noreferrer" className="bg-gradient-to-r from-emerald-400 to-green-500 bg-clip-text text-transparent font-semibold hover:underline decoration-emerald-400">BugSnaps</a> — VAPT & security audits. 🛡️
               </p>
               
 
@@ -512,7 +525,10 @@ const typewriterText = useTypewriter([
                 <a href="#available" className="inline-block bg-transparent border-2 border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-black font-bold py-4 px-8 rounded-full transition-all duration-300 transform hover:scale-105">
                   🤝 Connect With Me
                 </a>
-
+                <a href="https://github.com/4ryanwalia" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-transparent border-2 border-gray-500 text-gray-300 hover:bg-white hover:text-black hover:border-white font-bold py-4 px-8 rounded-full transition-all duration-300 transform hover:scale-105">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                  GitHub
+                </a>
               </div>
             </div>
           </motion.section>
@@ -532,7 +548,7 @@ const typewriterText = useTypewriter([
               <div className="grid md:grid-cols-2 gap-8">
                 <div className="space-y-4">
                   <p className="text-lg leading-relaxed text-gray-300">
-                    I&apos;m <span className="bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent font-semibold">Aryan Walia</span> — a CEH-certified cybersecurity analyst and MCA candidate at NMIMS with hands-on SOC experience. I specialize in threat detection, incident response, and building secure intelligent applications.
+                    I&apos;m <span className="bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent font-semibold">Aryan Walia</span> — a CEH-certified cybersecurity analyst and MCA candidate at NMIMS with hands-on SOC experience. I specialize in threat detection, incident response, and building secure intelligent applications. I&apos;m also the founder of <a href="https://bugsnaps.in" target="_blank" rel="noopener noreferrer" className="text-emerald-400 font-semibold hover:underline">BugSnaps</a> — a VAPT service delivering penetration tests and security audits for growing businesses.
                   </p>
                   <p className="text-lg leading-relaxed text-gray-300">
                     My technical arsenal includes <span className="text-purple-400 font-semibold">FortiSIEM, Splunk, Python, and Cloud Platforms</span>. I am skilled in vulnerability assessment, NIST SP 800-30 risk scoring, and MITRE ATT&CK, actively targeting roles in SOC, Security Analysis, and Threat Intelligence.
@@ -640,6 +656,17 @@ const typewriterText = useTypewriter([
             </span>
           ))}
         </div>
+
+        {/* GitHub Link */}
+        <a
+          href="https://github.com/4ryanwalia/KINDA-EDR"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 bg-gradient-to-r from-[#7f5af0] to-[#2cb67d] hover:from-[#2cb67d] hover:to-[#7f5af0] text-white font-medium px-6 py-3 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
+        >
+          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+          <span>View Source on GitHub</span>
+        </a>
       </div>
 
       {/* App Preview Section (same) */}
@@ -664,11 +691,199 @@ const typewriterText = useTypewriter([
   </div>
 </section>
 
+          {/* BugSnaps - Founder Venture Section */}
+          <section id="bugsnaps" className="mb-16 scroll-reveal">
+            <h2 className="text-2xl font-bold mb-6 text-gradient-animated">🐞 My Venture</h2>
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.7 }}
+              className="relative rounded-2xl bg-gradient-to-br from-[#0d1512] via-[#101a14] to-[#0d1512] border border-emerald-500/25 shadow-2xl overflow-hidden p-6 md:p-10"
+            >
+              {/* Top accent line */}
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-emerald-500 via-green-400 to-teal-500"></div>
+              {/* Glow backdrop */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-40 bg-gradient-to-b from-emerald-500/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+
+              <div className="relative z-10">
+                <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
+                  <div className="flex items-center gap-4 flex-1">
+                    <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-xl text-3xl">
+                      🐞
+                    </div>
+                    <div>
+                      <span className="text-[10px] uppercase tracking-[0.25em] font-semibold text-emerald-400">Founder · VAPT & Security Audits</span>
+                      <h3 className="text-2xl md:text-3xl font-extrabold text-white mt-0.5">BugSnaps</h3>
+                    </div>
+                  </div>
+                  <div className="inline-flex items-center gap-2 bg-black/50 rounded-full px-4 py-2 border border-emerald-500/30 w-fit">
+                    <span className="relative flex h-2.5 w-2.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                    </span>
+                    <span className="text-emerald-400 text-xs font-mono tracking-wider">LIVE · bugsnaps.in</span>
+                  </div>
+                </div>
+
+                <p className="text-emerald-300 font-semibold text-lg mb-2">Find. Fix. Fortify.</p>
+                <p className="text-gray-300 text-base leading-relaxed mb-6 max-w-3xl">
+                  I founded BugSnaps to help growing businesses find vulnerabilities before attackers do — professional
+                  penetration testing and security audits following <span className="text-emerald-400 font-semibold">OWASP WSTG</span> and <span className="text-emerald-400 font-semibold">PTES</span> methodologies,
+                  with transparent fixed pricing, plain-language + technical reporting, and a free retest of fixes included in every engagement.
+                </p>
+
+                {/* Services Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
+                  {[
+                    { icon: '🌐', name: 'Web App Penetration Testing', desc: 'Manual, in-depth testing vs OWASP Top 10 & business logic' },
+                    { icon: '🔌', name: 'API Security Testing', desc: 'REST & GraphQL — authorization and data exposure' },
+                    { icon: '🖧', name: 'Network Security Assessment', desc: 'External & internal attack-surface mapping' },
+                    { icon: '☁️', name: 'Cloud Security Review', desc: 'Config & identity reviews across AWS, GCP, Azure' },
+                    { icon: '📜', name: 'Source Code Review', desc: 'Security-focused analysis of critical code paths' },
+                    { icon: '🔧', name: 'Fix & Remediation Support', desc: 'Hands-on patching help for identified issues' }
+                  ].map((svc, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 15 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.4, delay: i * 0.06 }}
+                      className="bg-black/40 p-4 rounded-xl border border-emerald-500/10 hover:border-emerald-500/40 transition-colors duration-300"
+                    >
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-lg">{svc.icon}</span>
+                        <h4 className="font-semibold text-white text-sm">{svc.name}</h4>
+                      </div>
+                      <p className="text-gray-400 text-xs leading-relaxed">{svc.desc}</p>
+                    </motion.div>
+                  ))}
+                </div>
+
+                <div className="flex flex-wrap items-center gap-4">
+                  <motion.a
+                    href="https://bugsnaps.in"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-teal-600 hover:to-emerald-600 text-white font-bold px-7 py-3.5 rounded-full shadow-lg transition-all duration-300"
+                  >
+                    <span>Visit bugsnaps.in</span>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </motion.a>
+                  <span className="text-gray-500 text-sm">Reports in 5 business days · Free scoping call · Free retest included</span>
+                </div>
+              </div>
+            </motion.div>
+          </section>
+
+          {/* Wake Me - Featured App Section */}
+          <section id="wakeme" className="mb-16 scroll-reveal">
+            <h2 className="text-2xl font-bold mb-6 text-gradient-animated">📱 Featured App — Live on Google Play</h2>
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-50px' }}
+              transition={{ duration: 0.7 }}
+              className="relative rounded-2xl bg-gradient-to-br from-[#0b1220] via-[#101a2c] to-[#0b1220] border border-cyan-500/25 shadow-2xl overflow-hidden p-6 md:p-10"
+            >
+              {/* Top accent line */}
+              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-cyan-400 via-teal-400 to-yellow-400"></div>
+
+              <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+                {/* App Logo Showcase */}
+                <div className="relative flex-shrink-0">
+                  <div className="absolute inset-0 bg-cyan-400/20 rounded-3xl blur-3xl scale-110"></div>
+                  <motion.div
+                    whileHover={{ scale: 1.05, rotate: 2 }}
+                    transition={{ duration: 0.3 }}
+                    className="relative w-56 h-56 md:w-64 md:h-64 rounded-3xl overflow-hidden border border-cyan-400/30 shadow-2xl"
+                    style={{ boxShadow: '0 0 60px rgba(34,211,238,0.25)' }}
+                  >
+                    <Image src={wakeMeLogo} alt="Wake Me — Smart Alarm Clock app logo" fill sizes="256px" className="object-cover" />
+                  </motion.div>
+                </div>
+
+                {/* App Details */}
+                <div className="flex-1 space-y-5">
+                  <div>
+                    <div className="inline-flex items-center gap-2 bg-black/50 rounded-full px-4 py-1.5 border border-green-500/30 mb-3">
+                      <span className="relative flex h-2.5 w-2.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                      </span>
+                      <span className="text-green-400 text-xs font-mono tracking-wider">PUBLISHED ON GOOGLE PLAY</span>
+                    </div>
+                    <h3 className="text-2xl md:text-3xl font-extrabold text-white">Wake Me — Smart Alarm Clock</h3>
+                    <p className="text-gray-300 text-base leading-relaxed mt-3">
+                      A smart alarm app I designed, built, and shipped to the Play Store — sleep detection, one-tap quick alarms,
+                      and hardened security, with Firebase Realtime Database keeping everything in sync across devices.
+                    </p>
+                  </div>
+
+                  {/* Feature Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {[
+                      { icon: '😴', name: 'Smart Sleep Detection', desc: 'Monitors phone activity to detect sleep patterns' },
+                      { icon: '⚡', name: 'One-Tap Quick Alarms', desc: 'Set an alarm instantly with a single tap' },
+                      { icon: '🔐', name: 'Security First', desc: 'Advanced measures protecting user data' },
+                      { icon: '🔄', name: 'Real-time Sync', desc: 'Firebase Realtime DB sync across devices' }
+                    ].map((f, i) => (
+                      <div key={i} className="bg-black/40 p-3.5 rounded-xl border border-cyan-500/10 hover:border-cyan-500/40 transition-colors duration-300">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-lg">{f.icon}</span>
+                          <h4 className="font-semibold text-white text-sm">{f.name}</h4>
+                        </div>
+                        <p className="text-gray-400 text-xs leading-relaxed">{f.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Tech chips */}
+                  <div className="flex flex-wrap gap-2">
+                    {['Android', 'Java/Kotlin', 'Firebase', 'Realtime Database', 'Play Store Release'].map((tech, i) => (
+                      <span key={i} className="bg-[#1a1a1a] text-xs px-3 py-1 rounded-full text-gray-300 border border-[#444]">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* CTA */}
+                  <motion.a
+                    href="https://play.google.com/store/apps/details?id=makeme.aryan.makeme"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="inline-flex items-center gap-3 bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-teal-600 hover:to-cyan-600 text-white font-bold px-7 py-3.5 rounded-full shadow-lg transition-all duration-300"
+                  >
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M3.609 1.814L13.792 12 3.61 22.186a2.014 2.014 0 01-.609-1.444V3.258c0-.564.234-1.073.609-1.444zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1.996 1.996 0 010 3.73l-2.808 1.626L15.31 12l2.388-2.491zM5.864 2.658L16.802 8.99l-2.303 2.303-8.635-8.635z"/></svg>
+                    <span>Get it on Google Play</span>
+                  </motion.a>
+                </div>
+              </div>
+            </motion.div>
+          </section>
+
           {/* Projects Section with Slide-Sync Skeleton Loader */}
           <section id="projects" className="mb-16 relative scroll-reveal">
             {/* Animated Gradient Bar */}
             <div className="hidden md:block absolute left-0 top-0 h-full w-2 rounded-full bg-gradient-to-b from-[#7f5af0] via-[#2cb67d] to-[#00c6fb] animate-gradientMove" style={{zIndex:1}} />
-            <h2 className="text-2xl font-bold mb-6 pl-0 md:pl-6 text-gradient-animated">Projects</h2>
+            <div className="pl-0 md:pl-6 mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <h2 className="text-2xl font-bold text-gradient-animated">Open-Source Projects</h2>
+              <a
+                href="https://github.com/4ryanwalia"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-cyan-400 transition-colors w-fit"
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                All code at github.com/4ryanwalia
+              </a>
+            </div>
             
             {/* Skeleton Loader */}
             <AnimatePresence>
@@ -833,12 +1048,13 @@ const typewriterText = useTypewriter([
                       </motion.div>
                     </div>
                     <motion.div
-                      className="w-full md:w-64 h-48 bg-cover bg-center rounded-xl flex-shrink-0 transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-2xl relative overflow-hidden"
-                      style={{ backgroundImage: `url(${project.image})` }}
+                      className={`w-full md:w-64 h-48 rounded-xl flex-shrink-0 relative overflow-hidden bg-gradient-to-br ${project.gradient} flex items-center justify-center shadow-xl`}
                       whileHover={{ scale: 1.05 }}
                       transition={{ duration: 0.3 }}
                     >
-                      {/* Image overlay on hover */}
+                      <div className="absolute inset-0 bg-black/45"></div>
+                      <span className="relative z-10 text-6xl drop-shadow-lg">{project.icon}</span>
+                      {/* Overlay on hover */}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </motion.div>
                   </motion.div>
@@ -858,6 +1074,13 @@ const typewriterText = useTypewriter([
               {/* Timeline items */}
               <div className="space-y-12">
                 {[
+                  {
+                    year: "Present",
+                    title: "Founder",
+                    company: "BugSnaps · bugsnaps.in",
+                    description: "Founded a VAPT and security-audit service helping growing businesses find vulnerabilities before attackers do. Web app, API, network, and cloud penetration testing following OWASP WSTG and PTES — with clear reporting and free retesting in every engagement.",
+                    icon: "🐞"
+                  },
                   {
                     year: "01/2026 - Present",
                     title: "SOC Intern",
@@ -970,11 +1193,18 @@ const typewriterText = useTypewriter([
                 </div>
                 <span className="text-sm font-medium">Aryan Walia</span>
               </div>
-              <div className="flex items-center gap-6">
-                <a href="mailto:aryanwalia7888@gmail.com" className="text-sm hover:text-gray-300 transition-colors">
-                  aryanwalia7888@gmail.com
+              <div className="flex flex-wrap items-center justify-center gap-6">
+                <a href="https://github.com/4ryanwalia" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-gray-300 transition-colors inline-flex items-center gap-1.5">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                  github.com/4ryanwalia
                 </a>
-                <span className="text-sm text-gray-400">© 2024 All rights reserved</span>
+                <a href="https://bugsnaps.in" target="_blank" rel="noopener noreferrer" className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors">
+                  🐞 bugsnaps.in
+                </a>
+                <a href="mailto:4ryanwalia@gmail.com" className="text-sm hover:text-gray-300 transition-colors">
+                  4ryanwalia@gmail.com
+                </a>
+                <span className="text-sm text-gray-400">© 2026 All rights reserved</span>
               </div>
             </div>
           </div>
