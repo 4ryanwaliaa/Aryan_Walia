@@ -1,1212 +1,378 @@
 import Head from 'next/head';
-import React, { useState, useRef, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
-import Image from 'next/image';
-import wakeMeLogo from '../public/logo.png';
-import { PracticalSecuritySection, AvailableForSection } from '../components/SecuritySection';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import ProjectExplorer from '../components/ProjectExplorer';
+import { AboutSkills, Experience, Certifications, Contact } from '../components/Sections';
+import { profile, stats } from '../components/portfolioData';
 
-
-
-// Typewriter effect hook
-function useTypewriter(strings, speed = 40, backSpeed = 20, loop = true) {
+/* Typewriter for the hero terminal */
+function useTypewriter(lines, speed = 45, backSpeed = 25, hold = 1600) {
   const [text, setText] = useState('');
   const [index, setIndex] = useState(0);
-  const [subIndex, setSubIndex] = useState(0);
+  const [sub, setSub] = useState(0);
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
-    if (index >= strings.length && !loop) return;
-    const current = strings[index % strings.length];
-    if (!deleting && subIndex < current.length) {
-      setTimeout(() => setSubIndex(subIndex + 1), speed);
-    } else if (deleting && subIndex > 0) {
-      setTimeout(() => setSubIndex(subIndex - 1), backSpeed);
-    } else if (!deleting && subIndex === current.length) {
-      setTimeout(() => setDeleting(true), 1200);
-    } else if (deleting && subIndex === 0) {
+    const current = lines[index % lines.length];
+    let t;
+    if (!deleting && sub < current.length) {
+      t = setTimeout(() => setSub(sub + 1), speed);
+    } else if (deleting && sub > 0) {
+      t = setTimeout(() => setSub(sub - 1), backSpeed);
+    } else if (!deleting && sub === current.length) {
+      t = setTimeout(() => setDeleting(true), hold);
+    } else {
       setDeleting(false);
       setIndex((i) => i + 1);
     }
-    setText(current.substring(0, subIndex));
-  }, [subIndex, deleting, index, strings, speed, backSpeed, loop]);
+    setText(current.substring(0, sub));
+    return () => clearTimeout(t);
+  }, [sub, deleting, index, lines, speed, backSpeed, hold]);
+
   return text;
 }
 
+const NAV = [
+  { href: '#about', label: 'About' },
+  { href: '#projects', label: 'Work' },
+  { href: '#experience', label: 'Experience' },
+  { href: '#contact', label: 'Contact' },
+];
+
+/* Live things anyone can open right now */
+const LIVE_LINKS = [
+  { label: 'myrecon.xyz', href: 'https://myrecon.xyz', icon: '🔍', color: '#10b981' },
+  { label: 'bugsnaps.in', href: 'https://bugsnaps.in', icon: '🐞', color: '#22c55e' },
+  { label: 'EndpointRadar', href: 'https://4ryanwalia.github.io/EndpointRadar/', icon: '📡', color: '#5DA9E9' },
+  { label: 'Wake Me', href: 'https://play.google.com/store/apps/details?id=makeme.aryan.makeme', icon: '⏰', color: '#22d3ee' },
+];
+
 export default function Home() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [contactForm, setContactForm] = useState({
-    email: '',
-    message: ''
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [contactStatus, setContactStatus] = useState(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isHovering, setIsHovering] = useState(false);
-  const [currentSection, setCurrentSection] = useState('hero');
-  const [scrollY, setScrollY] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isContentLoaded, setIsContentLoaded] = useState(false);
-  
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const canvasRef = useRef(null);
 
-  
-  // Scroll animations
-  const containerRef = useRef(null);
+  const typed = useTypewriter([
+    'triaging the alert queue...',
+    'mapping TTPs to MITRE ATT&CK...',
+    'scanning 123 platforms for one handle...',
+    'scoring endpoint risk against NIST CSF...',
+    'finding bugs before attackers do.',
+  ]);
 
-  const projects = [
-    {
-      title: 'MyRecon — OSINT Intelligence Platform',
-      description: 'Open-source OSINT reconnaissance platform that searches usernames across 100+ platforms, analyzes email breach exposure, and investigates domains, DNS records, and IP addresses — no API keys required for core features.',
-      features: [
-        'Username search across 100+ platforms with validators to cut false positives',
-        'Email breach detection and provider validation',
-        'Domain WHOIS via RDAP and encrypted DNS record lookups',
-        'IP geolocation, network ownership data, JSON/CSV export'
-      ],
-      tech: ['Python', 'Flask', 'JavaScript', 'OSINT', 'RDAP', 'REST APIs'],
-      github: 'https://github.com/4ryanwalia/Myrecon',
-      icon: '🔍',
-      gradient: 'from-emerald-500 via-teal-500 to-cyan-600'
-    },
-    {
-      title: 'Phishing Detection System',
-      description: 'Automated phishing URL classifier extracting 30+ features; trained Random Forest and Logistic Regression models on a self-built live dataset achieving high-accuracy detection.',
-      features: [
-        'Automated phishing URL classifier',
-        'Extracted 30+ URL and DOM features',
-        'Trained Random Forest and Logistic Regression models',
-        'Self-built live dataset for high-accuracy detection'
-      ],
-      tech: ['Python', 'Machine Learning', 'Scikit-learn', 'Pandas'],
-      github: 'https://github.com/4ryanwalia/Phishing-detection',
-      icon: '🎣',
-      gradient: 'from-cyan-500 via-blue-500 to-indigo-600'
-    },
-    {
-      title: 'Rakshak — AI Accident Detection',
-      description: 'Real-time CV system analyzing roadside camera feeds to auto-detect vehicle accidents and trigger emergency alerts to police and ambulance services.',
-      features: [
-        'Real-time Computer Vision analysis',
-        'Roadside camera feed processing',
-        'Automatic vehicle accident detection',
-        'Emergency alert triggering system'
-      ],
-      tech: ['Python', 'Computer Vision', 'OpenCV', 'Deep Learning'],
-      github: 'https://github.com/4ryanwalia/Rakshak---Car',
-      icon: '🚨',
-      gradient: 'from-orange-500 via-red-500 to-rose-600'
-    }
-  ];
-
-const typewriterText = useTypewriter([
-  '> Building the future...',
-  '> Code. Create. Innovate.',
-  '> Security First.',
-  '> AI-Powered Solutions.',
-  '> Next-Gen Development.'
-], 40, 20, true);
-
+  /* Matrix rain — light touch, respects reduced motion */
   useEffect(() => {
-    const canvas = document.getElementById('matrix-canvas');
+    const canvas = canvasRef.current;
     if (!canvas) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
     const ctx = canvas.getContext('2d');
-    let width = canvas.width = canvas.offsetWidth;
-    let height = canvas.height = canvas.offsetHeight;
-    let fontSize = 18;
-    let columns = Math.floor(width / fontSize);
-    let drops = Array(columns).fill(1);
-    const chars = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズヅブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    function draw() {
-      ctx.fillStyle = 'rgba(0,0,0,0.08)';
+    let width = (canvas.width = canvas.offsetWidth);
+    let height = (canvas.height = canvas.offsetHeight);
+    const fontSize = 16;
+    let drops = Array(Math.floor(width / fontSize)).fill(1);
+    const chars = 'アカサタナハマヤラワギジヂビピクスツヌフムユルグズヅブプABCDEF0123456789';
+
+    const draw = () => {
+      ctx.fillStyle = 'rgba(0,0,0,0.075)';
       ctx.fillRect(0, 0, width, height);
-      ctx.font = fontSize + 'px monospace';
-      ctx.fillStyle = '#2cb67d';
-      for (let i = 0; i < drops.length; i++) {
-        const text = chars[Math.floor(Math.random() * chars.length)];
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-        if (drops[i] * fontSize > height && Math.random() > 0.975) {
-          drops[i] = 0;
-        }
+      ctx.font = `${fontSize}px monospace`;
+      ctx.fillStyle = '#1f9d6b';
+      drops.forEach((d, i) => {
+        ctx.fillText(chars[Math.floor(Math.random() * chars.length)], i * fontSize, d * fontSize);
+        if (d * fontSize > height && Math.random() > 0.975) drops[i] = 0;
         drops[i]++;
-      }
-    }
-    let interval = setInterval(draw, 50);
-    window.addEventListener('resize', () => {
+      });
+    };
+
+    const id = setInterval(draw, 55);
+    const onResize = () => {
       width = canvas.width = canvas.offsetWidth;
       height = canvas.height = canvas.offsetHeight;
-      columns = Math.floor(width / fontSize);
-      drops = Array(columns).fill(1);
-    });
-    return () => clearInterval(interval);
-  }, []);
-
-  // Lightweight cursor glow
-  useEffect(() => {
-    const trail = document.getElementById('cursor-trail');
-    if (!trail) return;
-    const handleMouseMove = (e) => {
-      trail.style.left = e.clientX - 8 + 'px';
-      trail.style.top = e.clientY - 8 + 'px';
+      drops = Array(Math.floor(width / fontSize)).fill(1);
     };
-    document.addEventListener('mousemove', handleMouseMove);
-    return () => document.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
-  // Advanced scroll tracking
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      setScrollY(scrollPosition);
-      
-      // Parallax effect for background elements
-      const scrolled = scrollPosition / window.innerHeight;
-      let backgroundElements;
-      try {
-        backgroundElements = document.querySelectorAll('.animate-holographic-matrix');
-      } catch (e) {
-        backgroundElements = [];
-      }
-      backgroundElements.forEach((el, index) => {
-        try {
-          const speed = (index + 1) * 0.5;
-          const yPos = scrolled * speed * 100;
-          el.style.transform = `translateY(${yPos}px) rotate(${45 + index * 15 + scrolled * 10}deg)`;
-        } catch (e) {
-          // Ignore errors for elements that may not be visible
-        }
-      });
-      
-      // Determine current section
-      const sections = ['hero', 'about', 'skills', 'projects', 'security-work', 'available', 'contact'];
-      const currentSectionIndex = Math.floor(scrollPosition / window.innerHeight);
-      setCurrentSection(sections[currentSectionIndex] || 'hero');
+    window.addEventListener('resize', onResize);
+    return () => {
+      clearInterval(id);
+      window.removeEventListener('resize', onResize);
     };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-
-
-  // Advanced scroll animations
+  /* Sticky nav state + reading progress */
   useEffect(() => {
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
+    const onScroll = () => {
+      setScrolled(window.scrollY > 40);
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      setProgress(max > 0 ? (window.scrollY / max) * 100 : 0);
     };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('revealed');
-        }
-      });
-    }, observerOptions);
-
-    let elements;
-    try {
-      elements = document.querySelectorAll('.scroll-reveal');
-    } catch (e) {
-      elements = [];
-    }
-    elements.forEach(el => {
-      try {
-        observer.observe(el);
-      } catch (e) {
-        // Ignore errors for elements that may not be visible
-      }
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  // Loading screen effect
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Content loading effect
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsContentLoaded(true);
-    }, 500);
-    return () => clearTimeout(timer);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   return (
     <>
       <Head>
-        <title>Aryan Walia - Cybersecurity Analyst | SOC | VAPT</title>
-        <meta name="description" content="CEH-certified Cybersecurity Analyst — SOC Operations, Threat Detection, VAPT. Founder of BugSnaps. Builder of security tools, OSINT platforms, and Android apps." />
+        <title>Aryan Walia — Cybersecurity Analyst | SOC · VAPT · OSINT</title>
+        <meta
+          name="description"
+          content="CEH-certified cybersecurity analyst working across SOC operations, VAPT and OSINT. Creator of MyRecon, EndpointRadar and Wake Me; founder of BugSnaps."
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {/* Advanced Loading Screen */}
-      <AnimatePresence>
-        {isLoading && (
-          <motion.div
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1 }}
-            className="fixed inset-0 z-[9999] bg-black flex items-center justify-center"
-          >
-            <div className="text-center">
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                className="w-16 h-16 border-4 border-cyan-400 border-t-transparent rounded-full mx-auto mb-4"
-              />
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                className="text-2xl font-bold text-cyan-400 mb-2"
-              >
-                Initializing System
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1 }}
-                className="text-gray-400"
-              >
-                Loading quantum interface...
-              </motion.p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* reading progress */}
+      <div className="fixed top-0 left-0 right-0 h-0.5 z-[100] bg-transparent">
+        <div
+          className="h-full bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 transition-[width] duration-150"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
 
-              <div ref={containerRef} className="min-h-screen bg-gradient-to-br from-[#0a0a0a] via-[#1a1a1a] to-[#0f0f0f] text-white font-sans relative overflow-hidden">
-        {/* Ultra Advanced 4D Background System */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-          {/* Matrix Rain Canvas */}
-          <canvas id="matrix-canvas" className="absolute inset-0 w-full h-full opacity-30"></canvas>
-          
-          {/* Dynamic Neural Network Grid */}
-          <div className="absolute inset-0 opacity-10">
-            <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-              <defs>
-                <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-                  <path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(0,255,255,0.3)" strokeWidth="0.5"/>
-                </pattern>
-                <filter id="glow">
-                  <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                  <feMerge> 
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                  </feMerge>
-                </filter>
-              </defs>
-              <rect width="100" height="100" fill="url(#grid)" />
-            </svg>
-          </div>
-          
-          {/* 3D Cyber Grid */}
-          <div className="cyber-grid-container">
-            <div className="cyber-grid"></div>
-          </div>
-          
-          {/* Subtle ambient dots */}
-          <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-cyan-400 rounded-full animate-pulse opacity-40"></div>
-          <div className="absolute top-3/4 right-1/3 w-1.5 h-1.5 bg-purple-400 rounded-full animate-pulse opacity-30" style={{animationDelay: '1s'}}></div>
-          
-          {/* Single lightweight cursor glow */}
-          <div id="cursor-trail" className="fixed w-4 h-4 bg-gradient-to-r from-cyan-400 to-purple-400 rounded-full pointer-events-none opacity-40 blur-sm z-50 transition-all duration-150"></div>
-          
-          {/* Magnetic Field Lines */}
-          <div className="absolute inset-0 opacity-5">
-            <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-              <defs>
-                <linearGradient id="magnetic" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="rgba(0,255,255,0.3)"/>
-                  <stop offset="50%" stopColor="rgba(138,43,226,0.3)"/>
-                  <stop offset="100%" stopColor="rgba(0,255,255,0.3)"/>
-                </linearGradient>
-              </defs>
-              <path d="M 10 10 Q 50 20 90 10 M 10 30 Q 50 40 90 30 M 10 50 Q 50 60 90 50 M 10 70 Q 50 80 90 70 M 10 90 Q 50 100 90 90" 
-                    stroke="url(#magnetic)" strokeWidth="0.5" fill="none" className="animate-magnetic-field"/>
-            </svg>
-          </div>
-        </div>
-        {/* Header */}
-        <header className="flex items-center justify-between px-6 md:px-10 py-4 border-b border-[#363636] bg-black/20 backdrop-blur-md relative z-10">
-                      <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-white">
-                  <g clipPath="url(#clip0_6_535)">
-                    <path
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M47.2426 24L24 47.2426L0.757355 24L24 0.757355L47.2426 24ZM12.2426 21H35.7574L24 9.24264L12.2426 21Z"
-                      fill="currentColor"
-                    />
-                  </g>
-                  <defs>
-                    <clipPath id="clip0_6_535">
-                      <rect width="48" height="48" fill="white" />
-                    </clipPath>
-                  </defs>
-                </svg>
+      <div className="min-h-screen bg-[#08090c] text-white font-sans">
+        {/* ─── NAV ─── */}
+        <header
+          className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
+            scrolled ? 'bg-[#08090c]/85 backdrop-blur-xl border-b border-white/[0.07]' : 'bg-transparent'
+          }`}
+        >
+          <div className="max-w-6xl mx-auto px-5 md:px-8 flex items-center justify-between h-16">
+            <a href="#top" className="flex items-center gap-2.5 group">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center font-extrabold text-sm text-black">
+                AW
               </div>
-              <div>
-                <h2 className="text-lg font-bold tracking-tight bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent">Aryan Walia</h2>
-              </div>
-            </div>
-          
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
-            <nav className="flex items-center gap-8">
-              <a href="#about" className="text-sm font-medium hover:text-cyan-400 transition-colors relative group">
-                About
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-cyan-400 to-blue-600 transition-all duration-300 group-hover:w-full"></span>
-              </a>
-              <a href="#skills" className="text-sm font-medium hover:text-cyan-400 transition-colors relative group">
-                Skills
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-cyan-400 to-blue-600 transition-all duration-300 group-hover:w-full"></span>
-              </a>
-              <a href="#projects" className="text-sm font-medium hover:text-cyan-400 transition-colors relative group">
-                Projects
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-cyan-400 to-blue-600 transition-all duration-300 group-hover:w-full"></span>
-              </a>
-              <a href="#bugsnaps" className="text-sm font-medium hover:text-emerald-400 transition-colors relative group">
-                BugSnaps
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-emerald-400 to-teal-500 transition-all duration-300 group-hover:w-full"></span>
-              </a>
-              <a href="#security-work" className="text-sm font-medium hover:text-cyan-400 transition-colors relative group">
-                Security
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-green-400 to-cyan-600 transition-all duration-300 group-hover:w-full"></span>
-              </a>
-              <a href="#available" className="text-sm font-medium hover:text-cyan-400 transition-colors relative group">
-                Contact
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-cyan-400 to-blue-600 transition-all duration-300 group-hover:w-full"></span>
-              </a>
-            </nav>
-            <Link href="/resume" className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white text-sm font-bold px-6 py-2 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-              Resume
-            </Link>
-          </div>
+              <span className="font-bold tracking-tight hidden sm:block group-hover:text-cyan-400 transition-colors">
+                Aryan Walia
+              </span>
+            </a>
 
-
-
-          {/* Mobile Menu Button */}
-          <button 
-            className="md:hidden p-2"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-        </header>
-
-
-
-
-
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden bg-[#363636] border-b border-[#555]">
-            <nav className="flex flex-col px-6 py-4 space-y-4">
-              <a 
-                href="#about" 
-                className="text-sm font-medium hover:text-gray-300 transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
+            <nav className="hidden md:flex items-center gap-7">
+              {NAV.map((n) => (
+                <a key={n.href} href={n.href} className="text-sm text-gray-400 hover:text-white transition-colors relative group">
+                  {n.label}
+                  <span className="absolute -bottom-1 left-0 w-0 h-px bg-cyan-400 transition-all duration-300 group-hover:w-full" />
+                </a>
+              ))}
+              <Link
+                href="/resume"
+                className="text-sm font-semibold px-4 py-1.5 rounded-full bg-white text-black hover:bg-cyan-400 transition-colors"
               >
-                About
-              </a>
-              <a 
-                href="#skills" 
-                className="text-sm font-medium hover:text-gray-300 transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Skills
-              </a>
-              <a
-                href="#projects"
-                className="text-sm font-medium hover:text-gray-300 transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Projects
-              </a>
-              <a
-                href="#bugsnaps"
-                className="text-sm font-medium hover:text-gray-300 transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                BugSnaps
-              </a>
-              <a 
-                href="#security-work" 
-                className="text-sm font-medium hover:text-gray-300 transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Security
-              </a>
-              <a 
-                href="#available" 
-                className="text-sm font-medium hover:text-gray-300 transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Contact
-              </a>
-              <Link href="/resume" className="bg-black hover:bg-gray-800 text-white text-sm font-bold px-4 py-2 rounded-full transition-colors w-fit">
                 Resume
               </Link>
             </nav>
+
+            <button
+              className="md:hidden p-2 text-gray-300"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={menuOpen}
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d={menuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
+                />
+              </svg>
+            </button>
           </div>
-        )}
 
-        <main className="max-w-6xl mx-auto px-6 md:px-10 py-8">
-          {/* Hero Section with Slide Animations */}
-          <motion.section 
-            className="relative min-h-[600px] rounded-2xl overflow-hidden mb-16 flex items-center justify-center bg-gradient-to-br from-[#0a0a0a] via-[#1a1a1a] to-[#0f0f0f] border border-[#333] shadow-2xl"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-          >
-            {/* AI Network Grid Overlay */}
-            <div className="absolute inset-0 z-5 pointer-events-none opacity-20">
-              <div className="absolute inset-0" style={{
-                backgroundImage: `radial-gradient(circle at 25% 25%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
-                                radial-gradient(circle at 75% 75%, rgba(138, 43, 226, 0.1) 0%, transparent 50%)`
-              }}></div>
-            </div>
-            
-            {/* Glowing orbs */}
-            <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-cyan-400/20 rounded-full blur-3xl animate-pulse"></div>
-            <div className="absolute bottom-1/4 right-1/4 w-40 h-40 bg-purple-400/20 rounded-full blur-3xl animate-pulse" style={{animationDelay: '2s'}}></div>
-            
-            <div className="relative z-20 flex flex-col items-center text-center max-w-3xl mx-auto px-4 py-20">
-              <motion.div 
-                className="flex items-center justify-center gap-4 mb-6"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 1, delay: 0.5 }}
+          <AnimatePresence>
+            {menuOpen && (
+              <motion.nav
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.25 }}
+                className="md:hidden overflow-hidden bg-[#0b0d11] border-b border-white/[0.07]"
               >
-                {/* AI Brain Icon with advanced effects */}
-                <motion.div 
-                  className="w-16 h-16 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-2xl relative overflow-hidden group"
-                  whileHover={{ scale: 1.1, rotate: 5 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-blue-600/20 animate-pulse"></div>
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-white relative z-10">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="currentColor"/>
-                  </svg>
-                </motion.div>
-                <motion.h1 
-                  className="text-white text-5xl md:text-7xl font-extrabold leading-tight tracking-tight bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 bg-clip-text text-transparent animate-text-reveal glitch-text"
-                  data-text="Aryan Walia"
-                  initial={{ opacity: 0, x: -50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 1, delay: 0.8 }}
-                >
-                  Aryan Walia
-                </motion.h1>
-              </motion.div>
-              
-              <p className="text-[#adadad] text-xl md:text-2xl max-w-[700px] leading-relaxed mt-4 font-light animate-text-slide-up">
-                <span className="bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent font-semibold">Cybersecurity Analyst</span> &
-                <span className="bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent font-semibold"> SOC Operations</span>
-                — CEH-certified specialist building secure systems and intelligent threat detection solutions.
-                Founder of <a href="https://bugsnaps.in" target="_blank" rel="noopener noreferrer" className="bg-gradient-to-r from-emerald-400 to-green-500 bg-clip-text text-transparent font-semibold hover:underline decoration-emerald-400">BugSnaps</a> — VAPT & security audits. 🛡️
-              </p>
-              
+                <div className="px-5 py-4 flex flex-col gap-4">
+                  {NAV.map((n) => (
+                    <a
+                      key={n.href}
+                      href={n.href}
+                      onClick={() => setMenuOpen(false)}
+                      className="text-sm text-gray-300 hover:text-cyan-400 transition-colors"
+                    >
+                      {n.label}
+                    </a>
+                  ))}
+                  <Link
+                    href="/resume"
+                    onClick={() => setMenuOpen(false)}
+                    className="text-sm font-semibold px-4 py-2 rounded-full bg-white text-black w-fit"
+                  >
+                    Resume
+                  </Link>
+                </div>
+              </motion.nav>
+            )}
+          </AnimatePresence>
+        </header>
 
-              
-              <div className="mt-8 flex flex-col sm:flex-row gap-4">
-                <a href="#projects" className="inline-block bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-bold py-4 px-8 rounded-full shadow-2xl transition-all duration-300 ring-2 ring-cyan-400/40 hover:ring-cyan-400/80 transform hover:scale-105">
-                  🔐 Explore My Work
+        {/* ─── HERO ─── */}
+        <section id="top" className="relative min-h-[100svh] flex items-center pt-16 overflow-hidden">
+          <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-[0.18] pointer-events-none" aria-hidden="true" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(6,182,212,0.10),transparent_60%)] pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#08090c] pointer-events-none" />
+
+          <div className="relative max-w-6xl mx-auto px-5 md:px-8 w-full py-16">
+            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+              {/* status */}
+              <div className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 border border-emerald-500/30 bg-emerald-500/[0.07] mb-6">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                </span>
+                <span className="text-emerald-400 text-xs font-medium">Open to opportunities · Immediate joiner</span>
+              </div>
+
+              <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight leading-[1.05]">
+                Aryan{' '}
+                <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">
+                  Walia
+                </span>
+              </h1>
+
+              <p className="text-lg md:text-2xl text-gray-300 mt-4 font-light max-w-2xl">
+                Cybersecurity Analyst — <span className="text-white font-medium">SOC &amp; SIEM</span>,{' '}
+                <span className="text-white font-medium">VAPT</span>, <span className="text-white font-medium">OSINT</span> and the
+                automation that ties them together.
+              </p>
+
+              {/* terminal */}
+              <div className="mt-7 max-w-xl rounded-xl border border-gray-800 bg-black/70 backdrop-blur-sm overflow-hidden font-mono text-sm">
+                <div className="flex items-center gap-1.5 px-3.5 py-2 border-b border-gray-800 bg-white/[0.02]">
+                  <span className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
+                  <span className="text-[11px] text-gray-500 ml-2">aryan@soc — zsh</span>
+                </div>
+                <div className="px-3.5 py-3 text-emerald-400">
+                  <span className="text-gray-600">$</span> {typed}
+                  <span className="inline-block w-2 h-4 bg-emerald-400 ml-0.5 align-middle animate-pulse" />
+                </div>
+              </div>
+
+              {/* CTAs */}
+              <div className="flex flex-wrap gap-3 mt-8">
+                <a
+                  href="#projects"
+                  className="inline-flex items-center gap-2 bg-white text-black font-bold px-6 py-3 rounded-full hover:bg-cyan-400 transition-colors"
+                >
+                  Explore my work
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                  </svg>
                 </a>
-                <a href="#available" className="inline-block bg-transparent border-2 border-cyan-400 text-cyan-400 hover:bg-cyan-400 hover:text-black font-bold py-4 px-8 rounded-full transition-all duration-300 transform hover:scale-105">
-                  🤝 Connect With Me
-                </a>
-                <a href="https://github.com/4ryanwalia" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-transparent border-2 border-gray-500 text-gray-300 hover:bg-white hover:text-black hover:border-white font-bold py-4 px-8 rounded-full transition-all duration-300 transform hover:scale-105">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                <a
+                  href={profile.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 border border-gray-700 hover:border-white text-gray-200 hover:text-white font-semibold px-6 py-3 rounded-full transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
+                  </svg>
                   GitHub
                 </a>
               </div>
-            </div>
-          </motion.section>
 
-          {/* About Section */}
-          <section id="about" className="mb-16 scroll-reveal">
-            <div className="bg-gradient-to-br from-[#1a1a1a] to-[#0f0f0f] rounded-2xl p-8 border border-[#333] shadow-xl neural-dots">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-xl flex items-center justify-center">
-                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                  </svg>
-                </div>
-                <h2 className="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent">About Me</h2>
-              </div>
-              
-              <div className="grid md:grid-cols-2 gap-8">
-                <div className="space-y-4">
-                  <p className="text-lg leading-relaxed text-gray-300">
-                    I&apos;m <span className="bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent font-semibold">Aryan Walia</span> — a CEH-certified cybersecurity analyst and MCA candidate at NMIMS with hands-on SOC experience. I specialize in threat detection, incident response, and building secure intelligent applications. I&apos;m also the founder of <a href="https://bugsnaps.in" target="_blank" rel="noopener noreferrer" className="text-emerald-400 font-semibold hover:underline">BugSnaps</a> — a VAPT service delivering penetration tests and security audits for growing businesses.
-                  </p>
-                  <p className="text-lg leading-relaxed text-gray-300">
-                    My technical arsenal includes <span className="text-purple-400 font-semibold">FortiSIEM, Splunk, Python, and Cloud Platforms</span>. I am skilled in vulnerability assessment, NIST SP 800-30 risk scoring, and MITRE ATT&CK, actively targeting roles in SOC, Security Analysis, and Threat Intelligence.
-                  </p>
-                </div>
-                
-                <div className="space-y-4">
-                  <div className="bg-[#0a0a0a] p-4 rounded-xl border border-[#333]">
-                    <h3 className="text-cyan-400 font-semibold mb-2">🎯 Current Focus</h3>
-                    <p className="text-gray-300 text-sm">SOC Operations, Threat Intelligence, Security Automation</p>
-                  </div>
-                  <div className="bg-[#0a0a0a] p-4 rounded-xl border border-[#333]">
-                    <h3 className="text-purple-400 font-semibold mb-2">🚀 Beyond Tech</h3>
-                    <p className="text-gray-300 text-sm">Fitness enthusiast, Badminton player, Continuous Learner</p>
-                  </div>
-                  <div className="bg-[#0a0a0a] p-4 rounded-xl border border-[#333]">
-                    <h3 className="text-blue-400 font-semibold mb-2">🔐 Mission</h3>
-                    <p className="text-gray-300 text-sm">Defending digital assets and building resilient security infrastructure</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-          {/* Skills Section */}
-          <section id="skills" className="mb-16">
-            <h2 className="text-2xl font-bold mb-6">🛠️ Technical Skills</h2>
-            
-            {/* Security */}
-            <div className="mb-8">
-              <h3 className="text-lg font-semibold mb-4 text-gray-300">Security</h3>
-              <div className="flex flex-wrap gap-3">
-                {['FortiSIEM', 'Splunk', 'Wireshark', 'Nmap', 'SOC Operations', 'Incident Response', 'Threat Hunting', 'Phishing Detection', 'Vulnerability Assessment', 'MITRE ATT&CK', 'NIST SP 800-30', 'NIST CSF 2.0', 'ICS/SCADA', 'OT Security'].map((skill, index) => (
-                  <div 
-                    key={index}
-                    className="bg-[#363636] hover:bg-[#555] px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-default border border-cyan-400/20"
-                  >
-                    {skill}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Cloud & Networking */}
-            <div className="mb-8">
-              <h3 className="text-lg font-semibold mb-4 text-gray-300">Cloud and Networking</h3>
-              <div className="flex flex-wrap gap-3">
-                {['Microsoft Azure', 'AWS', 'TCP/IP', 'DNS', 'HTTP/HTTPS', 'REST APIs', 'WinRM', 'Firewall Configuration'].map((skill, index) => (
-                  <div 
-                    key={index}
-                    className="bg-[#363636] hover:bg-[#555] px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-default border border-purple-400/20"
-                  >
-                    {skill}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Development */}
-            <div className="mb-8">
-              <h3 className="text-lg font-semibold mb-4 text-gray-300">Development</h3>
-              <div className="flex flex-wrap gap-3">
-                {['Python', 'JavaScript', 'Java', 'Kotlin', 'HTML', 'CSS', 'React', 'Flask', 'Flutter', 'Firebase', 'MySQL', 'PostgreSQL', 'Git'].map((skill, index) => (
-                  <div 
-                    key={index}
-                    className="bg-[#363636] hover:bg-[#555] px-4 py-2 rounded-full text-sm font-medium transition-colors cursor-default border border-green-400/20"
-                  >
-                    {skill}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-
- {/* Main Project Section */}
-<section className="mb-16 scroll-reveal">
-  <h2 className="text-2xl font-bold mb-6 text-gradient-animated">🚀 Main Project</h2>
-  <div className="bg-gradient-to-br from-[#363636] to-[#2a2a2a] rounded-2xl p-6 md:p-8 border border-[#555] shadow-2xl hover:shadow-3xl transition-all duration-500 transform hover:scale-[1.02] backdrop-blur-sm group" style={{
-    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-  }} data-tilt data-tilt-max="10" data-tilt-speed="400" data-tilt-perspective="1000">
-    <div className="flex flex-col md:flex-row items-center gap-8">
-      <div className="flex-1 space-y-6">
-        <div className="space-y-3">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-              <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-              </svg>
-            </div>
-            <h3 className="text-2xl font-bold text-white">Endpoint Security Assessment Tool</h3>
-            <span className="bg-red-600 text-white text-xs px-2 py-1 rounded-full font-medium">NIST SP 800-30</span>
-          </div>
-          <p className="text-gray-300 text-lg leading-relaxed">
-            Built an agentless vulnerability scanner with authenticated and attacker-view modes using WinRM to assess firewall status, open ports, patch levels, and antivirus; implemented NIST SP 800-30 risk scoring mapped to NIST CSF 2.0 with structured remediation reports.
-            Delivered a dual-interface system: Python GUI for SOC ops and a Flask dashboard for risk analytics.
-          </p>
-        </div>
-
-     {/* Features Grid */} <div className="grid grid-cols-1 md:grid-cols-2 gap-4"> <div className="bg-[#232323] p-4 rounded-xl border border-[#444] hover:scale-105 transition-all duration-300 cursor-pointer" style={{ boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)', }}> <div className="flex items-center gap-3 mb-2"> <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center"> <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"> <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/> </svg> </div> <h4 className="font-semibold text-white">Agentless Scanning</h4> </div> <p className="text-gray-400 text-sm">Authenticated & attacker-view modes via WinRM</p> </div> <div className="bg-[#232323] p-4 rounded-lg border border-[#444]"> <div className="flex items-center gap-3 mb-2"> <div className="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center"> <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"> <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/> </svg> </div> <h4 className="font-semibold text-white">Risk Scoring</h4> </div> <p className="text-gray-400 text-sm">NIST SP 800-30 scoring mapped to NIST CSF 2.0</p> </div> <div className="bg-[#232323] p-4 rounded-lg border border-[#444]"> <div className="flex items-center gap-3 mb-2"> <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center"> <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"> <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/> </svg> </div> <h4 className="font-semibold text-white">Dual-Interface</h4> </div> <p className="text-gray-400 text-sm">Python GUI for SOC ops & Flask dashboard for analytics</p> </div> <div className="bg-[#232323] p-4 rounded-lg border border-[#444]"> <div className="flex items-center gap-3 mb-2"> <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center"> <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"> <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/> </svg> </div> <h4 className="font-semibold text-white">External Exposure</h4> </div> <p className="text-gray-400 text-sm">Port scanning and MAC/vendor detection</p> </div> </div>
-
-        {/* Tech Stack */}
-        <div className="flex flex-wrap gap-2">
-          {['Python', 'Flask', 'WinRM', 'NIST SP 800-30', 'NIST CSF 2.0', 'Vulnerability Assessment'].map((tech, index) => (
-            <span key={index} className="bg-[#1a1a1a] text-xs px-3 py-1 rounded-full text-gray-300 border border-[#444]">
-              {tech}
-            </span>
-          ))}
-        </div>
-
-        {/* GitHub Link */}
-        <a
-          href="https://github.com/4ryanwalia/KINDA-EDR"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 bg-gradient-to-r from-[#7f5af0] to-[#2cb67d] hover:from-[#2cb67d] hover:to-[#7f5af0] text-white font-medium px-6 py-3 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
-        >
-          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-          <span>View Source on GitHub</span>
-        </a>
-      </div>
-
-      {/* App Preview Section (same) */}
-      <div className="w-full md:w-80 h-64 bg-gradient-to-br from-red-500 via-gray-800 to-black rounded-2xl flex items-center justify-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/40"></div>
-        <div className="relative z-10 text-center">
-          <div className="w-24 h-24 mx-auto mb-4 flex items-center justify-center bg-gray-900 rounded-2xl shadow-lg border border-red-500">
-            <svg className="w-12 h-12 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-            </svg>
-          </div>
-          <p className="text-white font-bold text-lg">Security Scanner</p>
-          <p className="text-white/80 text-sm mt-1">NIST Compliant</p>
-          <div className="mt-3 flex items-center justify-center gap-2">
-            <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-            <div className="w-2 h-2 bg-white rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
-            <div className="w-2 h-2 bg-white rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-          {/* BugSnaps - Founder Venture Section */}
-          <section id="bugsnaps" className="mb-16 scroll-reveal">
-            <h2 className="text-2xl font-bold mb-6 text-gradient-animated">🐞 My Venture</h2>
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-50px' }}
-              transition={{ duration: 0.7 }}
-              className="relative rounded-2xl bg-gradient-to-br from-[#0d1512] via-[#101a14] to-[#0d1512] border border-emerald-500/25 shadow-2xl overflow-hidden p-6 md:p-10"
-            >
-              {/* Top accent line */}
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-emerald-500 via-green-400 to-teal-500"></div>
-              {/* Glow backdrop */}
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-40 bg-gradient-to-b from-emerald-500/10 to-transparent rounded-full blur-3xl pointer-events-none"></div>
-
-              <div className="relative z-10">
-                <div className="flex flex-col md:flex-row md:items-center gap-4 mb-6">
-                  <div className="flex items-center gap-4 flex-1">
-                    <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-xl text-3xl">
-                      🐞
-                    </div>
-                    <div>
-                      <span className="text-[10px] uppercase tracking-[0.25em] font-semibold text-emerald-400">Founder · VAPT & Security Audits</span>
-                      <h3 className="text-2xl md:text-3xl font-extrabold text-white mt-0.5">BugSnaps</h3>
-                    </div>
-                  </div>
-                  <div className="inline-flex items-center gap-2 bg-black/50 rounded-full px-4 py-2 border border-emerald-500/30 w-fit">
-                    <span className="relative flex h-2.5 w-2.5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-                    </span>
-                    <span className="text-emerald-400 text-xs font-mono tracking-wider">LIVE · bugsnaps.in</span>
-                  </div>
-                </div>
-
-                <p className="text-emerald-300 font-semibold text-lg mb-2">Find. Fix. Fortify.</p>
-                <p className="text-gray-300 text-base leading-relaxed mb-6 max-w-3xl">
-                  I founded BugSnaps to help growing businesses find vulnerabilities before attackers do — professional
-                  penetration testing and security audits following <span className="text-emerald-400 font-semibold">OWASP WSTG</span> and <span className="text-emerald-400 font-semibold">PTES</span> methodologies,
-                  with transparent fixed pricing, plain-language + technical reporting, and a free retest of fixes included in every engagement.
-                </p>
-
-                {/* Services Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
-                  {[
-                    { icon: '🌐', name: 'Web App Penetration Testing', desc: 'Manual, in-depth testing vs OWASP Top 10 & business logic' },
-                    { icon: '🔌', name: 'API Security Testing', desc: 'REST & GraphQL — authorization and data exposure' },
-                    { icon: '🖧', name: 'Network Security Assessment', desc: 'External & internal attack-surface mapping' },
-                    { icon: '☁️', name: 'Cloud Security Review', desc: 'Config & identity reviews across AWS, GCP, Azure' },
-                    { icon: '📜', name: 'Source Code Review', desc: 'Security-focused analysis of critical code paths' },
-                    { icon: '🔧', name: 'Fix & Remediation Support', desc: 'Hands-on patching help for identified issues' }
-                  ].map((svc, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, y: 15 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.4, delay: i * 0.06 }}
-                      className="bg-black/40 p-4 rounded-xl border border-emerald-500/10 hover:border-emerald-500/40 transition-colors duration-300"
+              {/* live chips — proof you can click */}
+              <div className="mt-9">
+                <p className="text-[11px] uppercase tracking-[0.25em] text-gray-600 mb-3">Live right now</p>
+                <div className="flex flex-wrap gap-2.5">
+                  {LIVE_LINKS.map((l) => (
+                    <a
+                      key={l.label}
+                      href={l.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group inline-flex items-center gap-2 rounded-full pl-3 pr-3.5 py-2 border bg-white/[0.02] hover:bg-white/[0.06] transition-colors"
+                      style={{ borderColor: `${l.color}33` }}
                     >
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-lg">{svc.icon}</span>
-                        <h4 className="font-semibold text-white text-sm">{svc.name}</h4>
-                      </div>
-                      <p className="text-gray-400 text-xs leading-relaxed">{svc.desc}</p>
-                    </motion.div>
+                      <span className="text-base">{l.icon}</span>
+                      <span className="text-sm text-gray-300 group-hover:text-white transition-colors">{l.label}</span>
+                      <svg
+                        className="w-3 h-3 text-gray-600 group-hover:translate-x-0.5 transition-transform"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7-7 7M21 12H3" />
+                      </svg>
+                    </a>
                   ))}
                 </div>
-
-                <div className="flex flex-wrap items-center gap-4">
-                  <motion.a
-                    href="https://bugsnaps.in"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.97 }}
-                    className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-teal-600 hover:to-emerald-600 text-white font-bold px-7 py-3.5 rounded-full shadow-lg transition-all duration-300"
-                  >
-                    <span>Visit bugsnaps.in</span>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                  </motion.a>
-                  <span className="text-gray-500 text-sm">Reports in 5 business days · Free scoping call · Free retest included</span>
-                </div>
               </div>
             </motion.div>
-          </section>
+          </div>
+        </section>
 
-          {/* Wake Me - Featured App Section */}
-          <section id="wakeme" className="mb-16 scroll-reveal">
-            <h2 className="text-2xl font-bold mb-6 text-gradient-animated">📱 Featured App — Live on Google Play</h2>
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-50px' }}
-              transition={{ duration: 0.7 }}
-              className="relative rounded-2xl bg-gradient-to-br from-[#0b1220] via-[#101a2c] to-[#0b1220] border border-cyan-500/25 shadow-2xl overflow-hidden p-6 md:p-10"
-            >
-              {/* Top accent line */}
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-cyan-400 via-teal-400 to-yellow-400"></div>
-
-              <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
-                {/* App Logo Showcase */}
-                <div className="relative flex-shrink-0">
-                  <div className="absolute inset-0 bg-cyan-400/20 rounded-3xl blur-3xl scale-110"></div>
-                  <motion.div
-                    whileHover={{ scale: 1.05, rotate: 2 }}
-                    transition={{ duration: 0.3 }}
-                    className="relative w-56 h-56 md:w-64 md:h-64 rounded-3xl overflow-hidden border border-cyan-400/30 shadow-2xl"
-                    style={{ boxShadow: '0 0 60px rgba(34,211,238,0.25)' }}
-                  >
-                    <Image src={wakeMeLogo} alt="Wake Me — Smart Alarm Clock app logo" fill sizes="256px" className="object-cover" />
-                  </motion.div>
-                </div>
-
-                {/* App Details */}
-                <div className="flex-1 space-y-5">
-                  <div>
-                    <div className="inline-flex items-center gap-2 bg-black/50 rounded-full px-4 py-1.5 border border-green-500/30 mb-3">
-                      <span className="relative flex h-2.5 w-2.5">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
-                      </span>
-                      <span className="text-green-400 text-xs font-mono tracking-wider">PUBLISHED ON GOOGLE PLAY</span>
-                    </div>
-                    <h3 className="text-2xl md:text-3xl font-extrabold text-white">Wake Me — Smart Alarm Clock</h3>
-                    <p className="text-gray-300 text-base leading-relaxed mt-3">
-                      A smart alarm app I designed, built, and shipped to the Play Store — sleep detection, one-tap quick alarms,
-                      and hardened security, with Firebase Realtime Database keeping everything in sync across devices.
-                    </p>
-                  </div>
-
-                  {/* Feature Grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {[
-                      { icon: '😴', name: 'Smart Sleep Detection', desc: 'Monitors phone activity to detect sleep patterns' },
-                      { icon: '⚡', name: 'One-Tap Quick Alarms', desc: 'Set an alarm instantly with a single tap' },
-                      { icon: '🔐', name: 'Security First', desc: 'Advanced measures protecting user data' },
-                      { icon: '🔄', name: 'Real-time Sync', desc: 'Firebase Realtime DB sync across devices' }
-                    ].map((f, i) => (
-                      <div key={i} className="bg-black/40 p-3.5 rounded-xl border border-cyan-500/10 hover:border-cyan-500/40 transition-colors duration-300">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-lg">{f.icon}</span>
-                          <h4 className="font-semibold text-white text-sm">{f.name}</h4>
-                        </div>
-                        <p className="text-gray-400 text-xs leading-relaxed">{f.desc}</p>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Tech chips */}
-                  <div className="flex flex-wrap gap-2">
-                    {['Android', 'Java/Kotlin', 'Firebase', 'Realtime Database', 'Play Store Release'].map((tech, i) => (
-                      <span key={i} className="bg-[#1a1a1a] text-xs px-3 py-1 rounded-full text-gray-300 border border-[#444]">
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* CTA */}
-                  <motion.a
-                    href="https://play.google.com/store/apps/details?id=makeme.aryan.makeme"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.05, y: -2 }}
-                    whileTap={{ scale: 0.97 }}
-                    className="inline-flex items-center gap-3 bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-teal-600 hover:to-cyan-600 text-white font-bold px-7 py-3.5 rounded-full shadow-lg transition-all duration-300"
-                  >
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M3.609 1.814L13.792 12 3.61 22.186a2.014 2.014 0 01-.609-1.444V3.258c0-.564.234-1.073.609-1.444zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1.996 1.996 0 010 3.73l-2.808 1.626L15.31 12l2.388-2.491zM5.864 2.658L16.802 8.99l-2.303 2.303-8.635-8.635z"/></svg>
-                    <span>Get it on Google Play</span>
-                  </motion.a>
-                </div>
-              </div>
-            </motion.div>
-          </section>
-
-          {/* Projects Section with Slide-Sync Skeleton Loader */}
-          <section id="projects" className="mb-16 relative scroll-reveal">
-            {/* Animated Gradient Bar */}
-            <div className="hidden md:block absolute left-0 top-0 h-full w-2 rounded-full bg-gradient-to-b from-[#7f5af0] via-[#2cb67d] to-[#00c6fb] animate-gradientMove" style={{zIndex:1}} />
-            <div className="pl-0 md:pl-6 mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-              <h2 className="text-2xl font-bold text-gradient-animated">Open-Source Projects</h2>
-              <a
-                href="https://github.com/4ryanwalia"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-cyan-400 transition-colors w-fit"
+        {/* ─── STATS ─── */}
+        <section className="relative border-y border-white/[0.07] bg-white/[0.015]">
+          <div className="max-w-6xl mx-auto px-5 md:px-8 grid grid-cols-2 md:grid-cols-4 divide-x divide-white/[0.07]">
+            {stats.map((s, i) => (
+              <motion.div
+                key={s.label}
+                initial={{ opacity: 0, y: 14 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.08 }}
+                className="py-7 px-4 text-center"
               >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                All code at github.com/4ryanwalia
+                <div className="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                  {s.value}
+                </div>
+                <div className="text-sm text-gray-300 mt-1 font-medium">{s.label}</div>
+                <div className="text-[11px] text-gray-600 mt-0.5">{s.sub}</div>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        {/* ─── BODY ─── */}
+        <main className="max-w-6xl mx-auto px-5 md:px-8 pt-20">
+          <AboutSkills />
+          <ProjectExplorer />
+          <Experience />
+          <Certifications />
+          <Contact />
+        </main>
+
+        {/* ─── FOOTER ─── */}
+        <footer className="border-t border-white/[0.07] py-8">
+          <div className="max-w-6xl mx-auto px-5 md:px-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
+            <div className="flex items-center gap-2.5">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center font-bold text-[11px] text-black">
+                AW
+              </div>
+              <span className="text-gray-400">Aryan Walia · Delhi NCR, India</span>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-5">
+              <a href={profile.github} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                GitHub
+              </a>
+              <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                LinkedIn
+              </a>
+              <a href={profile.myrecon} target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:text-emerald-300 transition-colors">
+                myrecon.xyz
+              </a>
+              <a href={profile.bugsnaps} target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:text-emerald-300 transition-colors">
+                bugsnaps.in
+              </a>
+              <a href={`mailto:${profile.email}`} className="text-gray-400 hover:text-white transition-colors">
+                {profile.email}
               </a>
             </div>
-            
-            {/* Skeleton Loader */}
-            <AnimatePresence>
-              {!isContentLoaded && (
-                <motion.div
-                  initial={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="space-y-12 md:space-y-10"
-                >
-                  {[1, 2, 3].map((index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: index * 0.2 }}
-                      className="flex flex-col md:flex-row gap-6 items-start bg-[#232323] border border-[#363636] rounded-2xl p-6 md:p-8"
-                      style={{ minHeight: '220px' }}
-                    >
-                      <div className="flex-1 space-y-4">
-                        <div className="h-6 bg-[#363636] rounded animate-pulse w-3/4"></div>
-                        <div className="h-4 bg-[#363636] rounded animate-pulse w-full"></div>
-                        <div className="h-4 bg-[#363636] rounded animate-pulse w-5/6"></div>
-                        <div className="flex flex-wrap gap-2">
-                          {[1, 2, 3, 4].map((i) => (
-                            <div key={i} className="h-6 bg-[#363636] rounded-full animate-pulse w-16"></div>
-                          ))}
-                        </div>
-                        <div className="h-10 bg-[#363636] rounded-full animate-pulse w-32"></div>
-                      </div>
-                      <div className="w-full md:w-64 h-48 bg-[#363636] rounded-xl animate-pulse"></div>
-                    </motion.div>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-            {/* Actual Projects Content */}
-            <AnimatePresence>
-              {isContentLoaded && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.6 }}
-                  className="space-y-12 md:space-y-10 relative z-10"
-                >
-                  {projects.map((project, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 30 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true, margin: "-50px" }}
-                      transition={{ 
-                        duration: 0.6, 
-                        delay: index * 0.1
-                      }}
-                      whileHover={{ 
-                        y: -5, 
-                        transition: { duration: 0.2 }
-                      }}
-                      className="flex flex-col md:flex-row gap-6 items-start bg-gradient-to-br from-[#232323] to-[#1a1a1a] border border-[#363636] rounded-2xl shadow-xl hover:shadow-2xl p-6 md:p-8 backdrop-blur-sm relative overflow-hidden group"
-                      style={{ 
-                        minHeight: '220px'
-                      }}
-                    >
-                    {/* Hover overlay effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/5 via-transparent to-purple-400/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <div className="flex-1 space-y-4 relative z-10">
-                      <motion.div
-                        initial={{ opacity: 0, x: -10 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true, margin: "-50px" }}
-                        transition={{ duration: 0.4, delay: index * 0.1 + 0.1 }}
-                      >
-                        <h3 className="text-xl font-bold mb-3 bg-gradient-to-r from-cyan-400 to-blue-600 bg-clip-text text-transparent group-hover:from-purple-400 group-hover:to-pink-600 transition-all duration-500">
-                          {project.title}
-                        </h3>
-                        <p className="text-gray-300 text-sm leading-relaxed mb-4">{project.description}</p>
-                        
-                        {/* Tech stack badges with enhanced styling */}
-                        {project.tech && (
-                          <motion.div 
-                            className="flex flex-wrap gap-2 mb-4"
-                            initial={{ opacity: 0, y: 10 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, margin: "-50px" }}
-                            transition={{ duration: 0.4, delay: index * 0.1 + 0.2 }}
-                          >
-                            {project.tech.map((tech, i) => (
-                              <motion.span 
-                                key={i} 
-                                className="bg-gradient-to-r from-[#1a1a1a] to-[#2a2a2a] text-xs px-3 py-1.5 rounded-full text-gray-200 border border-[#363636] hover:border-cyan-400/50 hover:text-cyan-400 transition-all duration-300 cursor-default"
-                                whileHover={{ scale: 1.02 }}
-                                initial={{ opacity: 0 }}
-                                whileInView={{ opacity: 1 }}
-                                viewport={{ once: true, margin: "-50px" }}
-                                transition={{ duration: 0.3, delay: index * 0.1 + 0.2 + i * 0.05 }}
-                              >
-                                {tech}
-                              </motion.span>
-                            ))}
-                          </motion.div>
-                        )}
-                        
-                        {/* Features with enhanced styling */}
-                        {project.features && (
-                          <motion.ul 
-                            className="list-none text-xs text-gray-400 space-y-2"
-                            initial={{ opacity: 0, x: -10 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true, margin: "-50px" }}
-                            transition={{ duration: 0.4, delay: index * 0.1 + 0.3 }}
-                          >
-                            {project.features.map((f, i) => (
-                              <motion.li 
-                                key={i}
-                                className="flex items-start gap-2 before:content-['▸'] before:text-cyan-400 before:font-bold before:flex-shrink-0 before:mt-0.5"
-                                initial={{ opacity: 0, x: -5 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true, margin: "-50px" }}
-                                transition={{ duration: 0.3, delay: index * 0.1 + 0.3 + i * 0.05 }}
-                              >
-                                {f}
-                              </motion.li>
-                            ))}
-                          </motion.ul>
-                        )}
-                      </motion.div>
-                      {/* View Project / Custom Link button with enhanced animations */}
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: "-50px" }}
-                        transition={{ duration: 0.6, delay: index * 0.2 + 0.8 }}
-                      >
-                        {((project.github && project.github !== '#') || project.link) && (
-                          <motion.a
-                            href={project.link || project.github}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="bg-gradient-to-r from-[#7f5af0] to-[#2cb67d] hover:from-[#2cb67d] hover:to-[#7f5af0] text-white font-medium px-6 py-3 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl inline-flex items-center gap-2 group/btn"
-                            whileHover={{ 
-                              scale: 1.05, 
-                              y: -2,
-                              boxShadow: "0 20px 40px rgba(127, 90, 240, 0.3)"
-                            }}
-                            whileTap={{ scale: 0.95 }}
-                          >
-                            <span>{project.linkLabel || 'View on GitHub'}</span>
-                            <motion.svg 
-                              className="w-4 h-4" 
-                              fill="none" 
-                              stroke="currentColor" 
-                              viewBox="0 0 24 24"
-                              initial={{ x: 0 }}
-                              whileHover={{ x: 3 }}
-                              transition={{ duration: 0.2 }}
-                            >
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </motion.svg>
-                          </motion.a>
-                        )}
-                      </motion.div>
-                    </div>
-                    <motion.div
-                      className={`w-full md:w-64 h-48 rounded-xl flex-shrink-0 relative overflow-hidden bg-gradient-to-br ${project.gradient} flex items-center justify-center shadow-xl`}
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <div className="absolute inset-0 bg-black/45"></div>
-                      <span className="relative z-10 text-6xl drop-shadow-lg">{project.icon}</span>
-                      {/* Overlay on hover */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    </motion.div>
-                  </motion.div>
-                ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </section>
 
-          {/* Experience Timeline with Slide Animations */}
-          <section id="experience" className="mb-16">
-            <h2 className="text-2xl font-bold mb-6 text-gradient-animated">🚀 Experience Timeline</h2>
-            <div className="relative">
-              {/* Timeline line */}
-              <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-cyan-400 via-blue-500 to-purple-600"></div>
-              
-              {/* Timeline items */}
-              <div className="space-y-12">
-                {[
-                  {
-                    year: "Present",
-                    title: "Founder",
-                    company: "BugSnaps · bugsnaps.in",
-                    description: "Founded a VAPT and security-audit service helping growing businesses find vulnerabilities before attackers do. Web app, API, network, and cloud penetration testing following OWASP WSTG and PTES — with clear reporting and free retesting in every engagement.",
-                    icon: "🐞"
-                  },
-                  {
-                    year: "01/2026 - Present",
-                    title: "SOC Intern",
-                    company: "Niveshan Technologies India Pvt. Ltd.",
-                    description: "Monitored security events and performed real-time incident analysis using FortiSIEM, improving triage efficiency through structured alert workflows. Applied MITRE ATT&CK to map attacker TTPs across 10+ scenarios; supported threat hunting, log correlation, and phishing detection.",
-                    icon: "🛡️"
-                  },
-                  {
-                    year: "07/2024 - 06/2026",
-                    title: "MCA - Cybersecurity",
-                    company: "NMIMS University, Mumbai",
-                    description: "GPA: 7.57/10",
-                    icon: "🎓"
-                  },
-                  {
-                    year: "07/2022 - 08/2022",
-                    title: "Web Development Intern",
-                    company: "Headway",
-                    description: "Built responsive UI components for 3 brand websites using HTML and CSS with secure development standards; delivered 2 client projects on time within a 2-month engagement.",
-                    icon: "💻"
-                  },
-                  {
-                    year: "06/2021 - 06/2024",
-                    title: "BCA - Web Development",
-                    company: "The NorthCap University, Gurugram",
-                    description: "GPA: 7.31/10",
-                    icon: "🎓"
-                  }
-                ].map((item, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, x: -50 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.8, delay: index * 0.2 }}
-                    viewport={{ once: true }}
-                    className="relative flex items-start gap-6"
-                  >
-                    {/* Timeline dot */}
-                    <div className="absolute left-6 w-4 h-4 bg-gradient-to-r from-cyan-400 to-blue-600 rounded-full border-4 border-[#1a1a1a] z-10"></div>
-                    
-                    {/* Content */}
-                    <div className="ml-16 bg-gradient-to-br from-[#1a1a1a] to-[#0f0f0f] p-6 rounded-2xl border border-[#333] shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105">
-                      <div className="flex items-center gap-3 mb-3">
-                        <span className="text-2xl">{item.icon}</span>
-                        <div>
-                          <h3 className="text-lg font-bold text-white">{item.title}</h3>
-                          <p className="text-cyan-400 font-medium">{item.company}</p>
-                        </div>
-                      </div>
-                      <p className="text-gray-300 text-sm leading-relaxed">{item.description}</p>
-                      <div className="mt-3">
-                        <span className="text-xs text-gray-500 bg-[#0a0a0a] px-2 py-1 rounded-full">{item.year}</span>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          </section>
-          {/* Certifications Section */}
-          <section id="certifications" className="mb-16 scroll-reveal">
-            <h2 className="text-2xl font-bold mb-6 text-gradient-animated">🏆 Certifications</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {[
-                { title: "Certified Ethical Hacker (CEH)", issuer: "EC-Council", icon: "🛡️" },
-                { title: "Fundamentals of OT Cybersecurity (ICS/SCADA)", issuer: "Udemy", icon: "🏭" },
-                { title: "Cybersecurity 101", issuer: "TryHackMe", icon: "🔐" },
-                { title: "Supervised Machine Learning", issuer: "Coursera", icon: "🤖" }
-              ].map((cert, index) => (
-                <div key={index} className="bg-gradient-to-br from-[#1a1a1a] to-[#0f0f0f] border border-[#333] p-5 rounded-xl flex items-center gap-4 hover:shadow-xl hover:scale-[1.02] transition-all duration-300">
-                  <div className="text-3xl">{cert.icon}</div>
-                  <div>
-                    <h3 className="text-white font-bold text-lg leading-tight">{cert.title}</h3>
-                    <p className="text-cyan-400 text-sm mt-1">{cert.issuer}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Practical Cybersecurity Work Section */}
-          <PracticalSecuritySection />
-
-          {/* Available For Section */}
-          <AvailableForSection />
-
-    </main>
-
-        {/* Footer */}
-        <footer className="bg-[#363636] mt-16 py-8">
-          <div className="max-w-6xl mx-auto px-6 md:px-10">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="w-6 h-6">
-                  <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g clipPath="url(#clip0_6_535)">
-                      <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M47.2426 24L24 47.2426L0.757355 24L24 0.757355L47.2426 24ZM12.2426 21H35.7574L24 9.24264L12.2426 21Z"
-                        fill="currentColor"
-                      />
-                    </g>
-                    <defs>
-                      <clipPath id="clip0_6_535">
-                        <rect width="48" height="48" fill="white" />
-                      </clipPath>
-                    </defs>
-                  </svg>
-                </div>
-                <span className="text-sm font-medium">Aryan Walia</span>
-              </div>
-              <div className="flex flex-wrap items-center justify-center gap-6">
-                <a href="https://github.com/4ryanwalia" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-gray-300 transition-colors inline-flex items-center gap-1.5">
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-                  github.com/4ryanwalia
-                </a>
-                <a href="https://bugsnaps.in" target="_blank" rel="noopener noreferrer" className="text-sm text-emerald-400 hover:text-emerald-300 transition-colors">
-                  🐞 bugsnaps.in
-                </a>
-                <a href="mailto:4ryanwalia@gmail.com" className="text-sm hover:text-gray-300 transition-colors">
-                  4ryanwalia@gmail.com
-                </a>
-                <span className="text-sm text-gray-400">© 2026 All rights reserved</span>
-              </div>
-            </div>
+            <span className="text-gray-600 text-xs">© {new Date().getFullYear()}</span>
           </div>
         </footer>
       </div>
