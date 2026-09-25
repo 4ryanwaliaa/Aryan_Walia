@@ -1,22 +1,27 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
 :root {
   /* surfaces */
-  --bg: #07080a;
-  --surface: #0d0f13;
-  --surface-2: #121519;
+  --bg: #08090a;
+  --surface: #0f1012;
+  --surface-2: #151619;
   --line: rgba(255, 255, 255, 0.07);
-  --line-strong: rgba(255, 255, 255, 0.13);
+  --line-strong: rgba(255, 255, 255, 0.14);
 
   /* text */
-  --text: #f2f4f7;
-  --text-dim: #9aa3b0;
-  --text-faint: #666e7b;
+  --text: #f4f4f1;
+  --text-dim: #a0a3a8;
+  --text-faint: #686c73;
 
-  /* signature accent */
-  --accent: #10b981;
-  --accent-soft: rgba(16, 185, 129, 0.12);
+  /* signature accent: electric lime */
+  --accent: #c8f560;
+  --accent-ink: #0d1400;
+  --accent-soft: rgba(200, 245, 96, 0.1);
+
+  /* cursor position for spotlight effects, set from JS */
+  --mx: 50%;
+  --my: 30%;
 }
 
 @theme inline {
@@ -44,26 +49,24 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: "cv02", "cv03", "cv04", "ss01";
 }
 
-/* Fine grain so large dark areas don't look flat — kept very low so text stays crisp */
+/* Fine grain so large dark areas don't look flat */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: 1;
   pointer-events: none;
-  opacity: 0.025;
+  opacity: 0.035;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 ::selection {
   background: var(--accent);
-  color: #04120c;
+  color: var(--accent-ink);
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -72,80 +75,178 @@ body::before {
   background: var(--bg);
 }
 ::-webkit-scrollbar-thumb {
-  background: #262b33;
+  background: #25272b;
   border-radius: 99px;
   border: 2px solid var(--bg);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #39404a;
+  background: #3a3d42;
 }
 
-/* Focus ring — visible, on-brand, keyboard only */
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 6px;
 }
 
-/* ─── Utilities ─── */
+/* Component classes live in a layer so Tailwind utilities (hidden, md:flex...) can override them. */
+@layer components {
+/* ─── Type ─── */
 
 .mono {
   font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-variant-ligatures: none;
 }
 
-/* Small uppercase label used above section titles */
+.display {
+  font-family: "Bricolage Grotesque", "Inter", sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+}
+
+.serif {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
 .eyebrow {
   font-family: "JetBrains Mono", ui-monospace, monospace;
   font-size: 11px;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--text-faint);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.eyebrow::before {
+  content: "";
+  width: 18px;
+  height: 1px;
+  background: var(--accent);
 }
 
-/* Display heading: tight, confident */
-.display {
-  font-weight: 800;
-  letter-spacing: -0.035em;
-  line-height: 1.02;
+/* Outlined giant wordmark in the footer */
+.outline-text {
+  color: transparent;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.04));
+  -webkit-background-clip: text;
+  background-clip: text;
 }
 
-/* Card surface */
+/* ─── Surfaces ─── */
+
 .card {
+  position: relative;
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: 20px;
   transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s ease;
 }
 .card:hover {
   border-color: var(--line-strong);
-  background: var(--surface-2);
 }
 
-/* Hairline divider that fades at both ends */
+/* A border that lights up under the cursor. Parent sets --cx/--cy via onMouseMove. */
+.spotlight::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(260px circle at var(--cx, 50%) var(--cy, 50%), var(--spot, rgba(200, 245, 96, 0.55)), transparent 70%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.spotlight:hover::after {
+  opacity: 1;
+}
+
+/* Dotted grid that brightens around the cursor */
+.grid-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px);
+  background-size: 28px 28px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 75%);
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 75%);
+}
+.grid-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(200, 245, 96, 0.55) 1px, transparent 1px);
+  background-size: 28px 28px;
+  -webkit-mask-image: radial-gradient(220px circle at var(--mx) var(--my), #000, transparent 80%);
+  mask-image: radial-gradient(220px circle at var(--mx) var(--my), #000, transparent 80%);
+}
+
+.glow {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(100px);
+  pointer-events: none;
+}
+
 .rule {
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--line-strong), transparent);
 }
 
-/* Ambient glow blob */
-.glow {
-  position: absolute;
-  border-radius: 9999px;
-  filter: blur(90px);
-  pointer-events: none;
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, filter 0.2s ease;
+  white-space: nowrap;
+}
+.btn:active {
+  transform: scale(0.97);
+}
+.btn-primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.btn-primary:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--line-strong);
+  color: var(--text);
+}
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.09);
 }
 
-/* Animated conic border for the hero's featured tile */
-@keyframes spin-slow {
-  to {
-    transform: rotate(1turn);
-  }
+.chip {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--line);
+  color: var(--text-dim);
+  white-space: nowrap;
 }
-.animate-spin-slow {
-  animation: spin-slow 8s linear infinite;
 }
 
-/* Marquee for the skills ticker */
+/* ─── Motion ─── */
+
 @keyframes marquee {
   from {
     transform: translateX(0);
@@ -155,14 +256,13 @@ body::before {
   }
 }
 .animate-marquee {
-  animation: marquee 40s linear infinite;
+  animation: marquee 45s linear infinite;
 }
 .marquee-mask {
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
 }
 
-/* Terminal caret */
 @keyframes blink {
   0%, 49% { opacity: 1; }
   50%, 100% { opacity: 0; }
@@ -171,19 +271,32 @@ body::before {
   animation: blink 1.05s steps(1) infinite;
 }
 
+/* Scan line sweeping over the hero console */
+@keyframes scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(400%); }
+}
+.animate-scan {
+  animation: scan 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
-  }
-  .animate-marquee,
-  .animate-spin-slow,
-  .animate-blink {
-    animation: none;
   }
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
 }

@@ -1,29 +1,64 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { projects, projectCategories } from './portfolioData';
+import { projects } from './portfolioData';
 
 /* Static imports so the GitHub Pages basePath is applied to every asset URL. */
 import wakeMeLogo from '../public/logo.png';
 import myreconLogo from '../public/myrecon-logo.svg';
 import bugsnapsLogo from '../public/bugsnaps-logo.svg';
 import endpointradarLogo from '../public/endpointradar-logo.svg';
+import mypentestLogo from '../public/mypentest-logo.svg';
+import personalLogo from '../public/personal-logo.svg';
+import rakshakLogo from '../public/rakshak-logo.svg';
+import phishingLogo from '../public/phishing-logo.svg';
+
+/* Screenshots of the live products, captured from the real sites. */
+import shotMypentest from '../public/shots/mypentest.jpg';
+import shotReport from '../public/shots/mypentest-report.jpg';
+import shotMyrecon from '../public/shots/myrecon.jpg';
+import shotMyreconHome from '../public/shots/myrecon-home.jpg';
+import shotBugsnaps from '../public/shots/bugsnaps.jpg';
+import shotPersonal from '../public/shots/personal.jpg';
+import shotEndpointradar from '../public/shots/endpointradar.jpg';
+import shotRakshak from '../public/shots/rakshak.jpg';
 
 const LOGOS = {
+  mypentest: mypentestLogo,
   myrecon: myreconLogo,
   bugsnaps: bugsnapsLogo,
+  personal: personalLogo,
   endpointradar: endpointradarLogo,
   wakeme: wakeMeLogo,
+  rakshak: rakshakLogo,
+  phishing: phishingLogo,
 };
 
+const SHOTS = {
+  mypentest: [
+    { src: shotMypentest, url: 'bugsnaps.in/mypentest' },
+    { src: shotReport, url: 'bugsnaps.in/mypentest/example-report' },
+  ],
+  myrecon: [
+    { src: shotMyrecon, url: 'myrecon.xyz' },
+    { src: shotMyreconHome, url: 'myrecon.xyz' },
+  ],
+  bugsnaps: [{ src: shotBugsnaps, url: 'bugsnaps.in' }],
+  personal: [{ src: shotPersonal, url: 'bugsnaps.in/personal' }],
+  endpointradar: [{ src: shotEndpointradar, url: '4ryanwalia.github.io/EndpointRadar' }],
+  rakshak: [{ src: shotRakshak, url: '4ryanwalia.github.io/Rakshak---Car' }],
+};
+
+const byId = (id) => projects.find((p) => p.id === id);
+
 /* ─── icons ─── */
-const GithubIcon = ({ className = 'w-4 h-4' }) => (
+export const GithubIcon = ({ className = 'w-4 h-4' }) => (
   <svg className={className} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
     <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
   </svg>
 );
 
-const ArrowIcon = ({ className = 'w-4 h-4' }) => (
+export const ArrowIcon = ({ className = 'w-4 h-4' }) => (
   <svg className={className} fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
     <path strokeLinecap="round" strokeLinejoin="round" d="M7 17L17 7M17 7H8m9 0v9" />
   </svg>
@@ -35,46 +70,71 @@ const PlayIcon = ({ className = 'w-4 h-4' }) => (
   </svg>
 );
 
-/* Project logo, falling back to the emoji mark when a project has no artwork. */
+/* Tracks the cursor inside a .spotlight element so its border glow follows it. */
+export function trackSpot(e) {
+  const r = e.currentTarget.getBoundingClientRect();
+  e.currentTarget.style.setProperty('--cx', `${e.clientX - r.left}px`);
+  e.currentTarget.style.setProperty('--cy', `${e.clientY - r.top}px`);
+}
+
+/* Project logo, falling back to a monogram tinted with the project's accent. */
 export function ProjectMark({ project, size = 48, rounded = 'rounded-xl' }) {
   const logo = LOGOS[project.id];
-  const pad = project.id === 'wakeme' ? 0 : Math.round(size * 0.16);
 
   if (logo) {
     return (
-      <div
-        className={`${rounded} overflow-hidden flex items-center justify-center flex-shrink-0 relative`}
-        style={{
-          width: size,
-          height: size,
-          background: project.id === 'wakeme' ? 'transparent' : `${project.accent}12`,
-          border: `1px solid ${project.accent}2e`,
-          padding: pad,
-        }}
-      >
-        <Image
-          src={logo}
-          alt={`${project.name} logo`}
-          width={size - pad * 2}
-          height={size - pad * 2}
-          className="object-contain w-full h-full"
-        />
+      <div className={`${rounded} overflow-hidden flex items-center justify-center flex-shrink-0`} style={{ width: size, height: size }}>
+        <Image src={logo} alt={`${project.name} logo`} width={size} height={size} className="object-contain w-full h-full" />
       </div>
     );
   }
 
+  const letters = project.name
+    .split(' ')
+    .map((w) => w[0])
+    .join('')
+    .slice(0, 2);
+
   return (
     <div
-      className={`${rounded} flex items-center justify-center flex-shrink-0`}
+      className={`${rounded} flex items-center justify-center flex-shrink-0 display`}
       style={{
         width: size,
         height: size,
-        fontSize: size * 0.46,
-        background: `${project.accent}12`,
-        border: `1px solid ${project.accent}2e`,
+        fontSize: size * 0.4,
+        color: project.accent,
+        background: `${project.accent}14`,
+        border: `1px solid ${project.accent}33`,
+        letterSpacing: '-0.02em',
       }}
     >
-      {project.icon}
+      {letters}
+    </div>
+  );
+}
+
+/* A screenshot dressed in minimal browser chrome. `height` crops it from the top. */
+export function BrowserFrame({ shot, height, className = '', sizes = '(min-width: 1024px) 600px, 100vw' }) {
+  return (
+    <div
+      className={`rounded-xl overflow-hidden border border-[var(--line-strong)] bg-[#0b0c0e] shadow-[0_30px_70px_-25px_rgba(0,0,0,0.9)] ${className}`}
+    >
+      <div className="flex items-center gap-2 px-3 py-2 border-b border-[var(--line)] bg-white/[0.03]">
+        <span className="flex gap-1 flex-shrink-0">
+          <span className="w-2 h-2 rounded-full bg-white/15" />
+          <span className="w-2 h-2 rounded-full bg-white/15" />
+          <span className="w-2 h-2 rounded-full bg-white/15" />
+        </span>
+        <span className="mono text-[10px] text-[var(--text-faint)] truncate flex-1 text-center rounded-md bg-black/30 px-2 py-0.5">{shot.url}</span>
+      </div>
+      <div className="relative" style={height ? { height } : undefined}>
+        <Image
+          src={shot.src}
+          alt={`Screenshot of ${shot.url}`}
+          sizes={sizes}
+          className={height ? 'w-full h-full object-cover object-top' : 'w-full h-auto block'}
+        />
+      </div>
     </div>
   );
 }
@@ -83,7 +143,7 @@ function StatusPill({ project }) {
   return (
     <span
       className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 mono text-[10px] tracking-wider whitespace-nowrap"
-      style={{ background: `${project.accent}12`, color: project.accent }}
+      style={{ background: `${project.accent}14`, color: project.accent }}
     >
       {project.live && (
         <span className="relative flex h-1.5 w-1.5">
@@ -96,80 +156,286 @@ function StatusPill({ project }) {
   );
 }
 
-/* ─── CARD ─── */
-function ProjectCard({ project, index, onOpen }) {
+/* A card that opens the detail modal, with an optional live link that stays clickable on top. */
+function Tile({ project, onOpen, className = '', children, delay = 0 }) {
   return (
     <motion.article
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.45, delay: Math.min(index * 0.06, 0.3), ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ y: -4 }}
-      onClick={() => onOpen(project)}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onOpen(project);
-        }
-      }}
-      aria-label={`${project.name} — ${project.tagline}. Open details.`}
-      className={`card group relative cursor-pointer overflow-hidden ${project.featured ? 'md:col-span-2' : ''}`}
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
+      onMouseMove={trackSpot}
+      style={{ '--spot': `${project.accent}99` }}
+      className={`card spotlight group overflow-hidden ${className}`}
     >
-      {/* accent wash on hover */}
       <div
         className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-        style={{ background: `radial-gradient(120% 80% at 50% 0%, ${project.accent}0f, transparent 70%)` }}
+        style={{ background: `radial-gradient(120% 90% at 100% 0%, ${project.accent}12, transparent 60%)` }}
       />
-
-      <div className="relative p-5 md:p-6 h-full flex flex-col">
-        <div className="flex items-start gap-4">
-          <div className="transition-transform duration-300 group-hover:scale-105">
-            <ProjectMark project={project} size={project.featured ? 56 : 46} />
-          </div>
-
-          <div className="min-w-0 flex-1">
-            <h3 className="text-[17px] md:text-lg font-bold tracking-tight text-[var(--text)] truncate">{project.name}</h3>
-            <p className="mono text-[11px] uppercase tracking-wider mt-1" style={{ color: project.accent }}>
-              {project.tagline}
-            </p>
-          </div>
-
-          <ArrowIcon className="w-4 h-4 text-[var(--text-faint)] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 flex-shrink-0 mt-1" />
-        </div>
-
-        <p className="text-[var(--text-dim)] text-sm leading-relaxed mt-4 flex-1">
-          {project.featured ? project.blurb : `${project.blurb.slice(0, 112)}…`}
-        </p>
-
-        <div className="flex flex-wrap gap-1.5 mt-4">
-          {project.tech.slice(0, project.featured ? 5 : 3).map((t) => (
-            <span key={t} className="mono text-[10px] px-2 py-1 rounded-md bg-white/[0.035] border border-[var(--line)] text-[var(--text-faint)]">
-              {t}
-            </span>
-          ))}
-          {project.tech.length > (project.featured ? 5 : 3) && (
-            <span className="mono text-[10px] px-1.5 py-1 text-[var(--text-faint)]">
-              +{project.tech.length - (project.featured ? 5 : 3)}
-            </span>
-          )}
-        </div>
-
-        <div className="flex items-center justify-between gap-3 mt-5 pt-4 border-t border-[var(--line)]">
-          <StatusPill project={project} />
-          {project.android && (
-            <span className="mono text-[10px] text-[var(--text-faint)] inline-flex items-center gap-1">
-              <PlayIcon className="w-3 h-3" /> Android beta
-            </span>
-          )}
-        </div>
-      </div>
+      <button
+        type="button"
+        onClick={() => onOpen(project)}
+        aria-label={`${project.name}: ${project.tagline}. Open details.`}
+        className="absolute inset-0 z-[1] cursor-pointer rounded-[inherit]"
+      />
+      <div className="relative h-full pointer-events-none">{children}</div>
     </motion.article>
   );
 }
 
+function LiveLink({ project, label }) {
+  if (!project.live) return null;
+  return (
+    <a
+      href={project.live}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="pointer-events-auto relative z-[2] inline-flex items-center gap-1.5 mono text-[11px] font-semibold px-3 py-1.5 rounded-full transition-all hover:brightness-110"
+      style={{ background: project.accent, color: '#0a0a0a' }}
+    >
+      {label || project.live.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+      <ArrowIcon className="w-3 h-3" />
+    </a>
+  );
+}
+
+/* ─── ECOSYSTEM BENTO ─── */
+const CHECK_GROUPS = ['Access control', 'Injection', 'Sessions', 'SSRF', 'TLS', 'Secrets'];
+
+export function Ecosystem({ onOpen }) {
+  const mypentest = byId('mypentest');
+  const myrecon = byId('myrecon');
+  const bugsnaps = byId('bugsnaps');
+  const personal = byId('personal');
+
+  return (
+    <section id="ecosystem" className="scroll-mt-24 py-24 md:py-32">
+      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+        <div>
+          <span className="eyebrow">Flagship work</span>
+          <h2 className="display text-5xl md:text-7xl mt-5 text-white">
+            One ecosystem,
+            <br />
+            <span className="serif text-[var(--accent)]">built end to end.</span>
+          </h2>
+        </div>
+        <p className="text-[var(--text-dim)] max-w-sm leading-relaxed">
+          BugSnaps is my security company. I designed and wrote every product in it, from the scan engine to the website it runs on.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-6 gap-4 md:auto-rows-[minmax(250px,auto)]">
+        {/* MyPentest */}
+        <Tile project={mypentest} onOpen={onOpen} className="md:col-span-4 p-6 md:p-8 lg:min-h-[440px]">
+          <div className="flex flex-col lg:h-full lg:max-w-[44%]">
+            <div className="flex items-center gap-3.5">
+              <ProjectMark project={mypentest} size={48} />
+              <div>
+                <p className="mono text-[10px] uppercase tracking-[0.18em] text-[var(--text-faint)]">{mypentest.kind}</p>
+                <h3 className="display text-3xl md:text-4xl text-white mt-1">{mypentest.name}</h3>
+              </div>
+            </div>
+            <div className="mt-4">
+              <StatusPill project={mypentest} />
+            </div>
+            <p className="text-[var(--text-dim)] text-sm leading-relaxed mt-4">{mypentest.blurb}</p>
+            <div className="flex flex-wrap gap-1.5 mt-4">
+              {CHECK_GROUPS.map((c) => (
+                <span key={c} className="chip">
+                  {c}
+                </span>
+              ))}
+            </div>
+            <div className="flex gap-6 mt-6">
+              {mypentest.metrics.slice(0, 3).map((m) => (
+                <div key={m.k}>
+                  <div className="display text-2xl text-white">{m.v}</div>
+                  <div className="mono text-[10px] uppercase tracking-wider text-[var(--text-faint)] mt-1">{m.k}</div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-auto pt-6">
+              <LiveLink project={mypentest} label="Scan free" />
+            </div>
+          </div>
+          {/* the live product, bleeding off the card edge */}
+          <div className="mt-8 -mb-14 lg:m-0 lg:absolute lg:top-4 lg:-right-20 lg:w-[60%] transition-transform duration-500 ease-out group-hover:-translate-x-2 group-hover:-translate-y-1">
+            <BrowserFrame shot={SHOTS.mypentest[0]} sizes="(min-width: 1024px) 560px, 100vw" />
+          </div>
+        </Tile>
+
+        {/* MyRecon */}
+        <Tile project={myrecon} onOpen={onOpen} delay={0.08} className="md:col-span-2 md:row-span-2 p-6 md:p-7">
+          <div className="flex flex-col h-full">
+            <div className="flex items-start justify-between gap-3">
+              <ProjectMark project={myrecon} size={44} />
+              <StatusPill project={myrecon} />
+            </div>
+            {/* homepage behind, a real search result in front */}
+            <div className="my-6">
+              <BrowserFrame
+                shot={SHOTS.myrecon[1]}
+                className="w-[86%] opacity-80 transition-transform duration-500 ease-out group-hover:-translate-x-1"
+                sizes="(min-width: 768px) 320px, 90vw"
+              />
+              <BrowserFrame
+                shot={SHOTS.myrecon[0]}
+                className="relative w-[86%] ml-auto -mt-14 transition-transform duration-500 ease-out group-hover:-translate-y-1"
+                sizes="(min-width: 768px) 320px, 90vw"
+              />
+            </div>
+            <p className="mono text-[10px] uppercase tracking-[0.18em] text-[var(--text-faint)]">{myrecon.kind}</p>
+            <h3 className="display text-3xl text-white mt-1">{myrecon.name}</h3>
+            <p className="text-[var(--text-dim)] text-sm leading-relaxed mt-3">{myrecon.blurb}</p>
+            <div className="grid grid-cols-2 gap-2 mt-5">
+              {myrecon.metrics.map((m) => (
+                <div key={m.k} className="rounded-xl border border-[var(--line)] bg-black/20 px-3 py-2.5">
+                  <div className="text-[13px] font-semibold text-white leading-snug">{m.v}</div>
+                  <div className="mono text-[9px] uppercase tracking-wider text-[var(--text-faint)] mt-0.5">{m.k}</div>
+                </div>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-2 mt-auto pt-6">
+              <LiveLink project={myrecon} />
+              <a
+                href={myrecon.android}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="pointer-events-auto relative z-[2] inline-flex items-center gap-1.5 mono text-[11px] font-semibold px-3 py-1.5 rounded-full border border-[var(--line-strong)] text-white hover:bg-white/[0.08] transition-colors"
+              >
+                <PlayIcon className="w-3 h-3" />
+                Android beta
+              </a>
+            </div>
+          </div>
+        </Tile>
+
+        {/* BugSnaps */}
+        <Tile project={bugsnaps} onOpen={onOpen} delay={0.12} className="md:col-span-2 p-6">
+          <div className="flex flex-col h-full">
+            <div className="flex items-start justify-between gap-3">
+              <ProjectMark project={bugsnaps} size={44} />
+              <StatusPill project={bugsnaps} />
+            </div>
+            <h3 className="display text-2xl text-white mt-5">{bugsnaps.name}</h3>
+            <p className="serif text-xl mt-0.5" style={{ color: bugsnaps.accent }}>
+              {bugsnaps.tagline}
+            </p>
+            <p className="text-[var(--text-dim)] text-sm leading-relaxed mt-3">
+              Pentesting services, products and a Next.js site I built from scratch.
+            </p>
+            <div className="pt-5">
+              <LiveLink project={bugsnaps} />
+            </div>
+            <div className="mt-auto pt-6 -mb-10 transition-transform duration-500 ease-out group-hover:-translate-y-2">
+              <BrowserFrame shot={SHOTS.bugsnaps[0]} height={150} sizes="(min-width: 768px) 360px, 100vw" />
+            </div>
+          </div>
+        </Tile>
+
+        {/* Personal */}
+        <Tile project={personal} onOpen={onOpen} delay={0.16} className="md:col-span-2 p-6">
+          <div className="flex flex-col h-full">
+            <div className="flex items-start justify-between gap-3">
+              <ProjectMark project={personal} size={44} />
+              <StatusPill project={personal} />
+            </div>
+            <h3 className="display text-2xl text-white mt-5">{personal.name}</h3>
+            <p className="serif text-xl mt-0.5" style={{ color: personal.accent }}>
+              {personal.tagline}
+            </p>
+            <p className="text-[var(--text-dim)] text-sm leading-relaxed mt-3">{personal.blurb}</p>
+            <div className="pt-5">
+              <LiveLink project={personal} label="bugsnaps.in/personal" />
+            </div>
+            <div className="mt-auto pt-6 -mb-10 transition-transform duration-500 ease-out group-hover:-translate-y-2">
+              <BrowserFrame shot={SHOTS.personal[0]} height={150} sizes="(min-width: 768px) 360px, 100vw" />
+            </div>
+          </div>
+        </Tile>
+      </div>
+    </section>
+  );
+}
+
+/* ─── MORE BUILDS ─── */
+export function Builds({ onOpen }) {
+  const builds = projects.filter((p) => !p.ecosystem);
+
+  return (
+    <section id="work" className="scroll-mt-24 pb-24 md:pb-32">
+      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
+        <div>
+          <span className="eyebrow">More builds</span>
+          <h2 className="display text-4xl md:text-6xl mt-5 text-white">
+            Across <span className="serif text-[var(--accent)]">every</span> layer.
+          </h2>
+        </div>
+        <a
+          href="https://github.com/4ryanwalia"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mono inline-flex items-center gap-2 text-xs text-[var(--text-faint)] hover:text-[var(--accent)] transition-colors w-fit"
+        >
+          <GithubIcon className="w-3.5 h-3.5" />
+          github.com/4ryanwalia
+        </a>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {builds.map((p, i) => (
+          <Tile key={p.id} project={p} onOpen={onOpen} delay={i * 0.06} className="p-6">
+            <div className="flex flex-col h-full">
+              {/* media: the live page where there is one, otherwise the logo on an accent field */}
+              <div className="-mx-6 -mt-6 mb-5 h-40 relative overflow-hidden border-b border-[var(--line)]">
+                {SHOTS[p.id] ? (
+                  <Image
+                    src={SHOTS[p.id][0].src}
+                    alt={`Screenshot of ${p.name}`}
+                    sizes="(min-width: 1024px) 300px, (min-width: 640px) 50vw, 100vw"
+                    className="w-full h-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
+                  />
+                ) : (
+                  <div
+                    className="w-full h-full flex items-center justify-center"
+                    style={{ background: `radial-gradient(80% 90% at 50% 100%, ${p.accent}2e, transparent 70%), var(--surface-2)` }}
+                  >
+                    <div className="grid-bg opacity-60" />
+                    <div className="relative transition-transform duration-500 group-hover:scale-110">
+                      <ProjectMark project={p} size={72} rounded="rounded-2xl" />
+                    </div>
+                  </div>
+                )}
+                <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-[var(--surface)] to-transparent" />
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <ProjectMark project={p} size={28} rounded="rounded-lg" />
+                  <span className="mono text-[10px] uppercase tracking-[0.18em]" style={{ color: p.accent }}>
+                    {p.category}
+                  </span>
+                </div>
+                <ArrowIcon className="w-4 h-4 text-[var(--text-faint)] group-hover:text-white group-hover:rotate-45 transition-all duration-300" />
+              </div>
+              <h3 className="display text-2xl text-white mt-4">{p.name}</h3>
+              <p className="text-[var(--text-dim)] text-sm mt-1">{p.tagline}</p>
+              <div className="flex flex-wrap gap-1.5 mt-auto pt-6">
+                {p.tech.slice(0, 3).map((t) => (
+                  <span key={t} className="chip">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </Tile>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 /* ─── MODAL ─── */
-function ProjectModal({ project, onClose }) {
+export function ProjectModal({ project, onClose }) {
   const handleKey = useCallback((e) => e.key === 'Escape' && onClose(), [onClose]);
 
   useEffect(() => {
@@ -181,8 +447,6 @@ function ProjectModal({ project, onClose }) {
       document.body.style.overflow = prev;
     };
   }, [handleKey]);
-
-  if (!project) return null;
 
   return (
     <motion.div
@@ -196,19 +460,18 @@ function ProjectModal({ project, onClose }) {
       aria-modal="true"
       aria-label={`${project.name} details`}
     >
-      <div className="absolute inset-0 bg-black/88 backdrop-blur-md" />
+      <div className="absolute inset-0 bg-black/85 backdrop-blur-md" />
 
       <motion.div
         initial={{ opacity: 0, scale: 0.97, y: 16 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.98 }}
-        transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-3xl my-auto rounded-2xl border border-[var(--line-strong)] bg-[var(--surface)] shadow-2xl overflow-hidden"
+        className="relative w-full max-w-3xl my-auto rounded-3xl border border-[var(--line-strong)] bg-[var(--surface)] shadow-2xl overflow-hidden"
       >
-        {/* header band tinted with the project's own colour */}
-        <div className="relative p-6 md:p-8 pb-6 overflow-hidden">
-          <div className="absolute inset-0 opacity-90" style={{ background: `radial-gradient(120% 140% at 0% 0%, ${project.accent}1f, transparent 60%)` }} />
+        <div className="relative p-6 md:p-9 pb-6 overflow-hidden">
+          <div className="absolute inset-0" style={{ background: `radial-gradient(120% 140% at 0% 0%, ${project.accent}22, transparent 60%)` }} />
 
           <button
             onClick={onClose}
@@ -224,93 +487,90 @@ function ProjectModal({ project, onClose }) {
             <ProjectMark project={project} size={64} rounded="rounded-2xl" />
             <div className="min-w-0">
               <StatusPill project={project} />
-              <h3 className="display text-2xl md:text-3xl mt-2.5 text-white">{project.name}</h3>
-              <p className="mono text-xs uppercase tracking-wider mt-1.5" style={{ color: project.accent }}>
+              <h3 className="display text-3xl md:text-4xl mt-3 text-white">{project.name}</h3>
+              <p className="serif text-xl mt-1" style={{ color: project.accent }}>
                 {project.tagline}
               </p>
             </div>
           </div>
 
-          {project.motto && (
-            <p className="relative mt-5 text-lg font-bold" style={{ color: project.accent }}>
-              {project.motto}
-            </p>
-          )}
-
-          <p className="relative text-[var(--text-dim)] text-sm md:text-[15px] leading-relaxed mt-4">{project.blurb}</p>
+          <p className="relative text-[var(--text-dim)] text-sm md:text-[15px] leading-relaxed mt-6">{project.blurb}</p>
         </div>
 
-        <div className="px-6 md:px-8 pb-7">
-          {/* metrics */}
+        <div className="px-6 md:px-9 pb-8">
+          {SHOTS[project.id] && (
+            <div className={`grid gap-3 mb-6 ${SHOTS[project.id].length > 1 ? 'md:grid-cols-2' : ''}`}>
+              {SHOTS[project.id].map((shot, i) => (
+                <a
+                  key={i}
+                  href={project.live || `https://${shot.url}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block transition-transform duration-300 hover:-translate-y-1"
+                >
+                  <BrowserFrame shot={shot} sizes="(min-width: 768px) 360px, 100vw" />
+                </a>
+              ))}
+            </div>
+          )}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
             {project.metrics.map((m) => (
-              <div key={m.k} className="rounded-xl border border-[var(--line)] bg-black/40 p-3 text-center">
-                <div className="mono text-[9px] uppercase tracking-[0.15em] text-[var(--text-faint)] mb-1">{m.k}</div>
-                <div className="text-[13px] font-semibold text-white break-words leading-snug">{m.v}</div>
+              <div key={m.k} className="rounded-2xl border border-[var(--line)] bg-black/30 p-3.5">
+                <div className="mono text-[9px] uppercase tracking-[0.15em] text-[var(--text-faint)] mb-1.5">{m.k}</div>
+                <div className="text-sm font-semibold text-white break-words leading-snug">{m.v}</div>
               </div>
             ))}
           </div>
 
-          {/* highlights */}
-          <h4 className="eyebrow mt-7 mb-3" style={{ color: project.accent }}>
-            What it does
+          <h4 className="mono text-[11px] uppercase tracking-[0.2em] mt-8 mb-4" style={{ color: project.accent }}>
+            How it works
           </h4>
-          <ul className="space-y-2.5">
+          <ul className="space-y-3">
             {project.highlights.map((h, i) => (
               <motion.li
                 key={i}
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.06 + i * 0.04, duration: 0.3 }}
-                className="text-[var(--text-dim)] text-sm flex items-start gap-2.5 leading-relaxed"
+                className="text-[var(--text-dim)] text-sm flex items-start gap-3 leading-relaxed"
               >
-                <span className="mt-[7px] w-1 h-1 rounded-full flex-shrink-0" style={{ background: project.accent }} />
+                <span className="mono text-[10px] mt-[3px] flex-shrink-0" style={{ color: project.accent }}>
+                  {String(i + 1).padStart(2, '0')}
+                </span>
                 {h}
               </motion.li>
             ))}
           </ul>
 
-          {/* tech */}
-          <div className="flex flex-wrap gap-1.5 mt-6">
+          <div className="flex flex-wrap gap-1.5 mt-7">
             {project.tech.map((t) => (
-              <span key={t} className="mono text-[11px] px-2.5 py-1.5 rounded-md bg-white/[0.035] border border-[var(--line)] text-[var(--text-dim)]">
+              <span key={t} className="chip">
                 {t}
               </span>
             ))}
           </div>
 
-          {/* actions */}
-          <div className="flex flex-wrap gap-2.5 mt-7 pt-6 border-t border-[var(--line)]">
+          <div className="flex flex-wrap gap-2.5 mt-8 pt-6 border-t border-[var(--line)]">
             {project.live && (
               <a
                 href={project.live}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 font-semibold text-sm px-5 py-2.5 rounded-full text-[#04120c] transition-transform duration-200 hover:scale-[1.03]"
-                style={{ background: project.accent }}
+                className="btn"
+                style={{ background: project.accent, color: '#0a0a0a' }}
               >
                 {project.liveLabel}
                 <ArrowIcon className="w-3.5 h-3.5" />
               </a>
             )}
             {project.android && (
-              <a
-                href={project.android}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 font-semibold text-sm px-5 py-2.5 rounded-full bg-white/[0.06] hover:bg-white/[0.12] border border-[var(--line-strong)] text-white transition-colors"
-              >
+              <a href={project.android} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
                 <PlayIcon className="w-4 h-4" />
                 {project.androidLabel}
               </a>
             )}
             {project.github && (
-              <a
-                href={project.github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 font-semibold text-sm px-5 py-2.5 rounded-full bg-white/[0.06] hover:bg-white/[0.12] border border-[var(--line-strong)] text-white transition-colors"
-              >
+              <a href={project.github} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
                 <GithubIcon />
                 Source
               </a>
@@ -319,7 +579,7 @@ function ProjectModal({ project, onClose }) {
 
           {project.android && (
             <p className="mono text-[11px] text-[var(--text-faint)] mt-3">
-              The Android build is in closed testing — the link opens the tester sign-up page.
+              The Android build is in closed testing, so the link opens the tester sign-up page.
             </p>
           )}
         </div>
@@ -328,76 +588,15 @@ function ProjectModal({ project, onClose }) {
   );
 }
 
-/* ─── MAIN ─── */
-export default function ProjectExplorer() {
-  const [filter, setFilter] = useState('all');
+/* ─── ALL WORK: ecosystem + builds sharing one modal ─── */
+export default function Work() {
   const [active, setActive] = useState(null);
 
-  const visible = filter === 'all' ? projects : projects.filter((p) => p.category === filter);
-  const liveCount = projects.filter((p) => p.live).length;
-
   return (
-    <section id="projects" className="mb-28 scroll-mt-24">
-      <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5 mb-8">
-        <div>
-          <span className="eyebrow">Selected work</span>
-          <h2 className="display text-4xl md:text-5xl mt-3 text-white">Things I&apos;ve shipped</h2>
-          <p className="text-[var(--text-dim)] text-sm mt-3 max-w-md">
-            {liveCount} are live right now — open any card for the detail.
-          </p>
-        </div>
-
-        <a
-          href="https://github.com/4ryanwalia"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mono inline-flex items-center gap-2 text-xs text-[var(--text-faint)] hover:text-[var(--accent)] transition-colors w-fit"
-        >
-          <GithubIcon className="w-3.5 h-3.5" />
-          github.com/4ryanwalia
-        </a>
-      </div>
-
-      {/* filters */}
-      <div className="flex flex-wrap gap-2 mb-6">
-        {projectCategories.map((cat) => {
-          const count = cat.id === 'all' ? projects.length : projects.filter((p) => p.category === cat.id).length;
-          const isActive = filter === cat.id;
-          return (
-            <button
-              key={cat.id}
-              onClick={() => setFilter(cat.id)}
-              aria-pressed={isActive}
-              className={`relative px-3.5 py-2 rounded-full text-[13px] font-medium transition-colors duration-300 border ${
-                isActive
-                  ? 'text-[#04120c] border-transparent'
-                  : 'text-[var(--text-dim)] border-[var(--line)] hover:text-white hover:border-[var(--line-strong)]'
-              }`}
-            >
-              {isActive && (
-                <motion.span
-                  layoutId="filter-pill"
-                  className="absolute inset-0 rounded-full bg-[var(--accent)]"
-                  transition={{ type: 'spring', stiffness: 400, damping: 32 }}
-                />
-              )}
-              <span className="relative z-10">
-                {cat.label}
-                <span className={`mono ml-1.5 text-[11px] ${isActive ? 'opacity-60' : 'text-[var(--text-faint)]'}`}>{count}</span>
-              </span>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* grid — keyed on filter so the set remounts cleanly */}
-      <div key={filter} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {visible.map((p, i) => (
-          <ProjectCard key={p.id} project={p} index={i} onOpen={setActive} />
-        ))}
-      </div>
-
+    <>
+      <Ecosystem onOpen={setActive} />
+      <Builds onOpen={setActive} />
       <AnimatePresence>{active && <ProjectModal project={active} onClose={() => setActive(null)} />}</AnimatePresence>
-    </section>
+    </>
   );
 }

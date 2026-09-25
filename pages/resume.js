@@ -9,8 +9,8 @@ export default function Resume() {
   return (
     <>
       <Head>
-        <title>Resume — Aryan Walia</title>
-        <meta name="description" content="Resume of Aryan Walia — Cybersecurity Analyst: SOC & SIEM, VAPT, OSINT and security automation." />
+        <title>Resume · Aryan Walia</title>
+        <meta name="description" content="Resume of Aryan Walia, security engineer and product builder: SOC & SIEM, VAPT, OSINT and security automation." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -28,7 +28,7 @@ export default function Resume() {
             <a
               href={pdf}
               download="Aryan_Walia_Resume.pdf"
-              className="inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full bg-[var(--accent)] text-[#04120c] hover:brightness-110 transition-colors flex-shrink-0"
+              className="inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full bg-[var(--accent)] text-[var(--accent-ink)] hover:brightness-110 transition-colors flex-shrink-0"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -41,13 +41,11 @@ export default function Resume() {
         <main className="max-w-5xl mx-auto px-5 md:px-8 py-8">
           {/* summary header */}
           <div className="mb-6">
-            <h1 className="text-3xl md:text-4xl font-extrabold">
-              <span className="bg-gradient-to-r from-[var(--accent)] via-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                Aryan Walia
-              </span>
+            <h1 className="display text-4xl md:text-5xl text-white">
+              Aryan <span className="serif text-[var(--accent)]">Walia</span>
             </h1>
-            <p className="text-[var(--text-dim)] mt-2">
-              Cybersecurity Analyst · SOC &amp; SIEM · VAPT &amp; Offensive Security · OSINT · Security Automation
+            <p className="text-[var(--text-dim)] mt-3">
+              Security engineer · Founder of BugSnaps · Pentesting, OSINT, web and mobile builds
             </p>
 
             <div className="flex flex-wrap gap-x-5 gap-y-2 mt-4 text-sm">
@@ -71,10 +69,9 @@ export default function Resume() {
               {certifications.map((c) => (
                 <span
                   key={c.name}
-                  className="text-xs px-3 py-1.5 rounded-full border"
-                  style={{ background: `${c.accent}0f`, borderColor: `${c.accent}2e`, color: '#d1d5db' }}
+                  className={`chip ${c.pending ? 'opacity-60' : ''}`}
                 >
-                  {c.icon} {c.name}
+                  {c.name}
                 </span>
               ))}
             </div>
@@ -88,7 +85,7 @@ export default function Resume() {
                 <a
                   href={pdf}
                   download="Aryan_Walia_Resume.pdf"
-                  className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-full bg-[var(--accent)] text-[#04120c] hover:brightness-110 transition-colors"
+                  className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-full bg-[var(--accent)] text-[var(--accent-ink)] hover:brightness-110 transition-colors"
                 >
                   Download the resume
                 </a>
