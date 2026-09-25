@@ -1,0 +1,13 @@
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="BugSnaps Personal">
+  <defs>
+    <linearGradient id="bpGrad" x1="4" y1="4" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#e879f9"/>
+      <stop offset="1" stop-color="#818cf8"/>
+    </linearGradient>
+  </defs>
+  <rect x="1.5" y="1.5" width="37" height="37" rx="10" fill="#120d1a" stroke="url(#bpGrad)" stroke-width="1.5"/>
+  <circle cx="17.5" cy="15" r="5" stroke="url(#bpGrad)" stroke-width="2.2"/>
+  <path d="M8.5 30c0-5 4-8.5 9-8.5 1.6 0 3 .3 4.3.9" stroke="url(#bpGrad)" stroke-width="2.2" stroke-linecap="round"/>
+  <circle cx="28" cy="27" r="5.5" fill="#120d1a" stroke="url(#bpGrad)" stroke-width="2"/>
+  <path d="M25.9 24.9l4.2 4.2M30.1 24.9l-4.2 4.2" stroke="url(#bpGrad)" stroke-width="1.8" stroke-linecap="round"/>
+</svg>
