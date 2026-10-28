@@ -19,10 +19,10 @@ export const profile = {
 export const heroWords = ['pentest engines', 'web platforms', 'OSINT tools', 'Android apps', 'AI models'];
 
 export const stats = [
-  { value: 3, suffix: '', label: 'Products live', sub: 'MyPentest · MyRecon · BugSnaps' },
-  { value: 56, suffix: '', label: 'Security checks', sub: 'in the MyPentest engine' },
-  { value: 100, suffix: '+', label: 'Platforms swept', sub: 'by one MyRecon search' },
-  { value: 1113, suffix: '', label: 'Tests passing', sub: 'on the scan engine' },
+  { value: 'Web + API', label: 'Security testing', sub: 'Explore MyPentest', href: 'https://bugsnaps.in/mypentest' },
+  { value: 'Web + CLI', label: 'OSINT tools', sub: 'Read MyRecon source', href: 'https://github.com/4ryanwalia/Myrecon' },
+  { value: 'Android', label: 'Mobile development', sub: 'Wake Me on Google Play', href: 'https://play.google.com/store/apps/details?id=makeme.aryan.makeme' },
+  { value: 'CVSS', label: 'Finding severity', sub: 'See MyPentest reports', href: 'https://bugsnaps.in/mypentest' },
 ];
 
 /* ─── PROJECTS ───
@@ -43,8 +43,8 @@ export const projects = [
     status: 'PUBLIC BETA',
     tech: ['Python', 'Flask', 'Next.js', 'TypeScript', 'Firebase', 'Razorpay', 'SARIF'],
     metrics: [
-      { k: 'Checks', v: '56' },
-      { k: 'Tests passing', v: '1,113' },
+      { k: 'Checks', v: 'Web · API · Auth' },
+      { k: 'Paid exports', v: 'PDF · HTML · SARIF' },
       { k: 'Scoring', v: 'CVSS 3.1' },
       { k: 'Plans', v: 'Free to Operator' },
     ],
@@ -65,7 +65,7 @@ export const projects = [
     name: 'MyRecon',
     tagline: 'OSINT intelligence platform',
     blurb:
-      'Turns a single username, email, domain or IP into a structured public footprint. Free, keyless, and privacy-respecting, with one engine behind the website, a terminal client and an Android app.',
+      'Turns a username, email, domain or IP into a structured public footprint, with a website, a terminal client and an Android app.',
     accent: '#22d3ee',
     logo: '/myrecon-logo.svg',
     live: 'https://myrecon.xyz',
@@ -76,13 +76,13 @@ export const projects = [
     status: 'LIVE',
     tech: ['Python', 'Flask', 'JavaScript', 'REST APIs', 'Vercel', 'Render', 'Kotlin'],
     metrics: [
-      { k: 'Platforms', v: '100+' },
-      { k: 'Front doors', v: 'Web · CLI · Android' },
-      { k: 'API keys needed', v: 'None' },
-      { k: 'Server storage', v: 'Zero' },
+      { k: 'Inputs', v: 'Username · Email · Domain · IP' },
+      { k: 'Interfaces', v: 'Web · CLI · Android' },
+      { k: 'CLI', v: 'Open source' },
+      { k: 'Password checks', v: 'k-anonymity' },
     ],
     highlights: [
-      'Username search across 100+ platforms in parallel, with per-platform validators that report what was checked, what was rejected and why',
+      'Username searches across multiple platforms, with per-platform validators that report what was checked, what was rejected and why',
       'Identity correlation that clusters accounts sharing a handle and gives each cluster a 0 to 100 confidence score with the reasons behind it',
       'Email intelligence: provider and deliverability analysis, disposable detection, linked accounts and named breach exposure',
       'Password-exposure checks with k-anonymity: hashed in the browser, only five hash characters ever leave the device',
@@ -127,14 +127,14 @@ export const projects = [
     name: 'BugSnaps Personal',
     tagline: 'Digital footprint cleanup',
     blurb:
-      'Finds the accounts and listings tied to your identity across 100+ platforms, then helps you delete them. Consent-first, official deletion flows only.',
+      'Helps find accounts and listings tied to your identity, then supports their removal through official deletion flows.',
     accent: '#c084fc',
     live: 'https://bugsnaps.in/personal',
     liveLabel: 'Open BugSnaps Personal',
     status: 'LIVE',
     tech: ['MyRecon engine', 'Next.js', 'Privacy'],
     metrics: [
-      { k: 'Coverage', v: '100+ platforms' },
+      { k: 'Coverage', v: 'Accounts · listings' },
       { k: 'First scan', v: 'Free' },
       { k: 'Approach', v: 'Consent-first' },
       { k: 'Method', v: 'Official flows' },

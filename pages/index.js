@@ -1,8 +1,8 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useInView } from 'framer-motion';
-import Work, { GithubIcon } from '../components/ProjectExplorer';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import Work from '../components/ProjectExplorer';
 import { Capabilities, Journey, Contact } from '../components/Sections';
 import { profile, stats, heroWords, capabilities } from '../components/portfolioData';
 
@@ -23,7 +23,7 @@ const CONSOLE = [
   { t: 'ok', s: 'network guard pinned to approved IP' },
   { t: 'run', s: 'mapping attack surface', r: '148 endpoints' },
   { t: 'run', s: 'signing in as 2 test identities', r: 'isolated' },
-  { t: 'run', s: 'running 56 checks', r: 'passive + safe-active' },
+  { t: 'run', s: 'running security checks', r: 'passive + safe-active' },
   { t: 'crit', s: 'IDOR  bob can read alice\'s /api/orders/{id}', r: 'CVSS 8.1' },
   { t: 'high', s: 'session survives logout', r: 'CVSS 6.5' },
   { t: 'med', s: 'CORS reflects arbitrary origin', r: 'CVSS 5.3' },
@@ -43,14 +43,17 @@ const MARK = { cmd: '$', ok: '✓', run: '›', crit: '●', high: '●', med: '
 function ScanConsole() {
   /* Starts part-way through the run so the first thing a visitor sees is a working scan, not an empty box. */
   const [shown, setShown] = useState(6);
+  const reduceMotion = useReducedMotion();
+  const visibleLines = reduceMotion ? CONSOLE.length : shown;
 
   useEffect(() => {
+    if (reduceMotion) return;
     const t = setTimeout(
       () => setShown((n) => (n >= CONSOLE.length + 3 ? 6 : n + 1)),
       shown >= CONSOLE.length ? 1400 : 650
     );
     return () => clearTimeout(t);
-  }, [shown]);
+  }, [shown, reduceMotion]);
 
   return (
     <div className="relative rounded-3xl border border-[var(--line-strong)] bg-[#0b0c0d]/90 backdrop-blur-xl shadow-[0_40px_120px_-40px_rgba(200,245,96,0.25)] overflow-hidden">
@@ -65,12 +68,12 @@ function ScanConsole() {
         <span className="mono text-[10px] text-[var(--text-faint)]">mypentest · demo run</span>
         <span className="mono text-[10px] text-[var(--accent)] flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
-          LIVE
+          REPLAY
         </span>
       </div>
 
       <div className="p-4 md:p-5 mono text-[11.5px] md:text-[12.5px] leading-[1.9] min-h-[300px]">
-        {CONSOLE.slice(0, Math.min(shown, CONSOLE.length)).map((l, i) => (
+        {CONSOLE.slice(0, Math.min(visibleLines, CONSOLE.length)).map((l, i) => (
           <motion.div
             key={i}
             initial={{ opacity: 0, x: -6 }}
@@ -83,7 +86,7 @@ function ScanConsole() {
             {l.r && <span className="text-[var(--text-faint)] flex-shrink-0 hidden sm:inline">{l.r}</span>}
           </motion.div>
         ))}
-        {shown < CONSOLE.length && (
+        {visibleLines < CONSOLE.length && (
           <div className="flex items-center gap-2.5">
             <span className="w-3" />
             <span className="inline-block w-[7px] h-[14px] bg-[var(--accent)] animate-blink" />
@@ -93,9 +96,9 @@ function ScanConsole() {
 
       <div className="grid grid-cols-3 border-t border-[var(--line)] mono text-[10px]">
         {[
-          ['critical', '#f87171', shown > 6 ? 1 : 0],
-          ['high', '#fb923c', shown > 7 ? 1 : 0],
-          ['medium', '#facc15', shown > 8 ? 1 : 0],
+          ['critical', '#f87171', visibleLines > 6 ? 1 : 0],
+          ['high', '#fb923c', visibleLines > 7 ? 1 : 0],
+          ['medium', '#facc15', visibleLines > 8 ? 1 : 0],
         ].map(([k, c, v]) => (
           <div key={k} className="px-4 py-3 border-l first:border-l-0 border-[var(--line)] flex items-center justify-between">
             <span className="text-[var(--text-faint)] uppercase tracking-wider">{k}</span>
@@ -111,10 +114,14 @@ function ScanConsole() {
 
 function RotatingWord() {
   const [i, setI] = useState(0);
+  const reduceMotion = useReducedMotion();
   useEffect(() => {
+    if (reduceMotion) return;
     const t = setInterval(() => setI((n) => (n + 1) % heroWords.length), 2200);
     return () => clearInterval(t);
-  }, []);
+  }, [reduceMotion]);
+
+  if (reduceMotion) return <span className="serif text-[var(--accent)]">{heroWords[0]}</span>;
 
   return (
     <span className="relative inline-flex h-[1.35em] overflow-hidden align-bottom -mb-[0.2em]">
@@ -130,33 +137,6 @@ function RotatingWord() {
           {heroWords[i]}
         </motion.span>
       </AnimatePresence>
-    </span>
-  );
-}
-
-function Counter({ value, suffix }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true });
-  const [n, setN] = useState(0);
-
-  useEffect(() => {
-    if (!inView) return;
-    const start = performance.now();
-    const dur = 1400;
-    let raf;
-    const step = (now) => {
-      const p = Math.max(0, Math.min((now - start) / dur, 1));
-      setN(Math.round(value * (1 - Math.pow(1 - p, 3))));
-      if (p < 1) raf = requestAnimationFrame(step);
-    };
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, [inView, value]);
-
-  return (
-    <span ref={ref}>
-      {n.toLocaleString('en-IN')}
-      {suffix}
     </span>
   );
 }
@@ -308,7 +288,7 @@ export default function Home() {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--accent)] opacity-75" />
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--accent)]" />
                   </span>
-                  <span className="text-[13px] text-[var(--text-dim)]">Available for new work</span>
+                  <span className="text-[13px] text-[var(--text-dim)]">Security engineer · Product builder</span>
                 </motion.div>
 
                 <motion.h1
@@ -350,18 +330,9 @@ export default function Home() {
                   transition={{ duration: 0.6, delay: 0.4, ease: EASE }}
                   className="flex flex-wrap gap-3 mt-10"
                 >
-                  <a href="#contact" className="btn btn-primary">
-                    Start a conversation
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14m-6-6l6 6-6 6" />
-                    </svg>
-                  </a>
-                  <a href="#ecosystem" className="btn btn-ghost">
-                    See the work
-                  </a>
-                  <a href={profile.github} target="_blank" rel="noopener noreferrer" className="btn btn-ghost px-3.5" aria-label="GitHub">
-                    <GithubIcon />
-                  </a>
+                  <a href="#ecosystem" className="btn btn-primary">View my work</a>
+                  <a href="./Aryan_Walia.pdf" download="Aryan_Walia_Resume.pdf" className="btn btn-ghost">Download resume</a>
+                  <a href="#contact" className="btn btn-ghost">Discuss a project</a>
                 </motion.div>
               </div>
 
@@ -392,11 +363,9 @@ export default function Home() {
                   i < 2 ? 'border-b md:border-b-0' : ''
                 } ${i % 2 === 1 ? 'pl-5' : ''}`}
               >
-                <div className="display text-4xl md:text-5xl text-white">
-                  <Counter value={s.value} suffix={s.suffix} />
-                </div>
+                <div className="display text-2xl md:text-3xl text-white">{s.value}</div>
                 <div className="text-sm text-white mt-2">{s.label}</div>
-                <div className="mono text-[10px] text-[var(--text-faint)] mt-1">{s.sub}</div>
+                <a href={s.href} target="_blank" rel="noopener noreferrer" className="inline-block mono text-[11px] text-[var(--text-dim)] hover:text-[var(--accent)] underline underline-offset-4 mt-2">{s.sub} <span aria-hidden="true">↗</span></a>
               </div>
             ))}
           </div>

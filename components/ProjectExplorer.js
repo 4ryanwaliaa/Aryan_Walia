@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { projects } from './portfolioData';
+import CaseStudies from './CaseStudies';
 
 /* Static imports so the GitHub Pages basePath is applied to every asset URL. */
 import wakeMeLogo from '../public/logo.png';
@@ -436,17 +437,49 @@ export function Builds({ onOpen }) {
 
 /* ─── MODAL ─── */
 export function ProjectModal({ project, onClose }) {
-  const handleKey = useCallback((e) => e.key === 'Escape' && onClose(), [onClose]);
+  const dialogRef = useRef(null);
+  const closeRef = useRef(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
 
   useEffect(() => {
+    const opener = document.activeElement;
+    const dialog = dialogRef.current;
+    closeRef.current?.focus();
+
+    const handleKey = (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        onCloseRef.current();
+      } else if (e.key === 'Tab' && dialog) {
+        const focusable = Array.from(dialog.querySelectorAll(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )).filter((element) => element.getClientRects().length > 0);
+        if (!focusable.length) {
+          e.preventDefault();
+          dialog.focus();
+          return;
+        }
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && (document.activeElement === first || !dialog.contains(document.activeElement))) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && (document.activeElement === last || !dialog.contains(document.activeElement))) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
     document.addEventListener('keydown', handleKey);
     const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     return () => {
       document.removeEventListener('keydown', handleKey);
       document.body.style.overflow = prev;
+      if (opener instanceof HTMLElement && opener.isConnected) opener.focus();
     };
-  }, [handleKey]);
+  }, []);
 
   return (
     <motion.div
@@ -459,6 +492,8 @@ export function ProjectModal({ project, onClose }) {
       role="dialog"
       aria-modal="true"
       aria-label={`${project.name} details`}
+      ref={dialogRef}
+      tabIndex={-1}
     >
       <div className="absolute inset-0 bg-black/85 backdrop-blur-md" />
 
@@ -474,6 +509,8 @@ export function ProjectModal({ project, onClose }) {
           <div className="absolute inset-0" style={{ background: `radial-gradient(120% 140% at 0% 0%, ${project.accent}22, transparent 60%)` }} />
 
           <button
+            ref={closeRef}
+            type="button"
             onClick={onClose}
             aria-label="Close details"
             className="absolute top-5 right-5 z-10 w-9 h-9 rounded-full bg-white/[0.06] hover:bg-white/[0.14] border border-[var(--line)] flex items-center justify-center text-[var(--text-dim)] hover:text-white transition-colors"
@@ -595,6 +632,7 @@ export default function Work() {
   return (
     <>
       <Ecosystem onOpen={setActive} />
+      <CaseStudies />
       <Builds onOpen={setActive} />
       <AnimatePresence>{active && <ProjectModal project={active} onClose={() => setActive(null)} />}</AnimatePresence>
     </>

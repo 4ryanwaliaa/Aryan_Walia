@@ -243,33 +243,38 @@ export function Contact() {
               <span className="serif text-[var(--accent)]">in mind?</span>
             </h2>
             <p className="text-[var(--text-dim)] leading-relaxed mt-6 max-w-md">
-              Tell me what you&apos;re working on. I usually reply within a day.
+              Tell me what you&apos;re working on, or get in touch about a role.
             </p>
           </div>
 
           <div className="lg:col-span-5">
-            <p className="mono text-[11px] uppercase tracking-[0.2em] text-[var(--text-faint)] mb-3">I&apos;m interested in</p>
-            <div className="flex flex-wrap gap-2" role="radiogroup" aria-label="What are you interested in?">
-              {contactTopics.map((t) => {
-                const on = t.id === topic;
-                return (
-                  <button
-                    key={t.id}
-                    type="button"
-                    role="radio"
-                    aria-checked={on}
-                    onClick={() => setTopic(t.id)}
-                    className={`text-sm px-4 py-2 rounded-full border transition-all duration-200 ${
-                      on
-                        ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-transparent font-semibold'
-                        : 'border-[var(--line-strong)] text-[var(--text-dim)] hover:text-white hover:border-white/30'
-                    }`}
-                  >
-                    {t.label}
-                  </button>
-                );
-              })}
-            </div>
+            <fieldset>
+              <legend className="mono text-[11px] uppercase tracking-[0.2em] text-[var(--text-faint)] mb-3">I&apos;m interested in</legend>
+              <div className="flex flex-wrap gap-2">
+                {contactTopics.map((t) => {
+                  const on = t.id === topic;
+                  return (
+                    <label key={t.id} className="cursor-pointer">
+                      <input
+                        type="radio"
+                        name="contact-topic"
+                        value={t.id}
+                        checked={on}
+                        onChange={() => setTopic(t.id)}
+                        className="peer sr-only"
+                      />
+                      <span className={`inline-block text-sm px-4 py-2 rounded-full border transition-all duration-200 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[var(--accent)] ${
+                        on
+                          ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-transparent font-semibold'
+                          : 'border-[var(--line-strong)] text-[var(--text-dim)] hover:text-white hover:border-white/30'
+                      }`}>
+                        {t.label}
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+            </fieldset>
 
             <a href={mailto} className="btn btn-primary w-full justify-center mt-6 py-4 text-[15px]">
               Start the conversation
