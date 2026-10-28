@@ -291,13 +291,19 @@ export const workflow = [
 /* ─── EXPERIENCE ─── */
 export const experience = [
   {
+    role: 'Analyst',
+    org: 'Deloitte',
+    period: '11/2026 to present',
+    current: true,
+    points: [],
+  },
+  {
     role: 'Network Engineer',
     org: 'Ogma Consulting, Gurugram',
-    period: '08/2026 to now',
-    current: true,
+    period: '08/2026 to 10/2026',
     points: [
-      'Configure and maintain enterprise network infrastructure: routing, switching and firewall policy.',
-      'Support access control, segmentation and network monitoring across client environments.',
+      'Configured and maintained enterprise network infrastructure: routing, switching and firewall policy.',
+      'Supported access control, segmentation and network monitoring across client environments.',
     ],
   },
   {

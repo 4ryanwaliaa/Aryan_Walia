@@ -308,7 +308,7 @@ export default function Home() {
                   transition={{ duration: 0.7, delay: 0.15, ease: EASE }}
                   className="text-[var(--text-dim)] text-lg md:text-xl mt-8 max-w-xl leading-relaxed"
                 >
-                  I&apos;m <span className="text-white font-medium">Aryan Walia</span>, a security engineer and the founder of{' '}
+                  I&apos;m <span className="text-white font-medium">Aryan Walia</span>, an analyst at Deloitte, security engineer and founder of{' '}
                   <a href={profile.bugsnaps} target="_blank" rel="noopener noreferrer" className="text-white underline decoration-[var(--accent)] underline-offset-4 hover:text-[var(--accent)] transition-colors">
                     BugSnaps
                   </a>
@@ -331,7 +331,7 @@ export default function Home() {
                   className="flex flex-wrap gap-3 mt-10"
                 >
                   <a href="#ecosystem" className="btn btn-primary">View my work</a>
-                  <a href="./Aryan_Walia.pdf" download="Aryan_Walia_Resume.pdf" className="btn btn-ghost">Download resume</a>
+                  <a href="./Aryan_Walia.pdf?v=20261028" download="Aryan_Walia_Resume.pdf" className="btn btn-ghost">Download resume</a>
                   <a href="#contact" className="btn btn-ghost">Discuss a project</a>
                 </motion.div>
               </div>

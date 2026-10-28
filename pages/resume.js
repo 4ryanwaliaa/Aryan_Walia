@@ -4,7 +4,7 @@ import { profile, certifications } from '../components/portfolioData';
 
 export default function Resume() {
   /* Relative paths so the GitHub Pages basePath resolves correctly from /resume/ */
-  const pdf = '../Aryan_Walia.pdf';
+  const pdf = '../Aryan_Walia.pdf?v=20261028';
 
   return (
     <>
@@ -45,7 +45,7 @@ export default function Resume() {
               Aryan <span className="serif text-[var(--accent)]">Walia</span>
             </h1>
             <p className="text-[var(--text-dim)] mt-3">
-              Security engineer · Founder of BugSnaps · Pentesting, OSINT, web and mobile builds
+              Analyst at Deloitte · Founder of BugSnaps · Security, OSINT, web and mobile builds
             </p>
 
             <div className="flex flex-wrap gap-x-5 gap-y-2 mt-4 text-sm">
