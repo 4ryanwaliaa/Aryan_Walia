@@ -1,150 +1,93 @@
 import Head from 'next/head';
 import Link from 'next/link';
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import Hero from '../components/Hero';
+import Proof from '../components/Proof';
 import Work from '../components/ProjectExplorer';
 import { Capabilities, Journey, Contact } from '../components/Sections';
-import { profile, stats, heroWords, capabilities } from '../components/portfolioData';
+import CommandPalette from '../components/CommandPalette';
+import ScanTheatre from '../components/ScanTheatre';
+import Intro from '../components/Intro';
+import { ScrollTrace, VelocityMarquee } from '../components/ScrollFx';
+import { CursorRing, EASE, ScrollProgress, useActiveSection } from '../components/fx';
+import { profile, projects, capabilities, now } from '../components/portfolioData';
 
 const NAV = [
   { href: '#ecosystem', label: 'Work' },
+  { href: '#apps', label: 'Apps' },
   { href: '#capabilities', label: 'Capabilities' },
   { href: '#journey', label: 'Journey' },
   { href: '#contact', label: 'Contact' },
 ];
 
-const EASE = [0.16, 1, 0.3, 1];
-const SITE_URL = 'https://4ryanwaliaa.github.io/Aryan_Walia/';
+/* Every section on the page, mapped to the nav item that should light up while it is on screen. */
+const SECTION_TO_NAV = {
+  scan: '#ecosystem',
+  ecosystem: '#ecosystem',
+  'case-studies': '#ecosystem',
+  work: '#ecosystem',
+  apps: '#apps',
+  capabilities: '#capabilities',
+  journey: '#journey',
+  contact: '#contact',
+};
+const WATCHED = ['top', 'proof', ...Object.keys(SECTION_TO_NAV)];
 
-/* A demo MyPentest run against a practice target, replayed line by line. */
-const CONSOLE = [
-  { t: 'cmd', s: 'mypentest scan practice-lab.test' },
-  { t: 'ok', s: 'scope verified · DNS proof of control' },
-  { t: 'ok', s: 'network guard pinned to approved IP' },
-  { t: 'run', s: 'mapping attack surface', r: '148 endpoints' },
-  { t: 'run', s: 'signing in as 2 test identities', r: 'isolated' },
-  { t: 'run', s: 'running security checks', r: 'passive + safe-active' },
-  { t: 'crit', s: 'IDOR  bob can read alice\'s /api/orders/{id}', r: 'CVSS 8.1' },
-  { t: 'high', s: 'session survives logout', r: 'CVSS 6.5' },
-  { t: 'med', s: 'CORS reflects arbitrary origin', r: 'CVSS 5.3' },
-  { t: 'ok', s: 'report ready · PDF · SARIF · HTML' },
+/* Checkpoints for the probe that follows you down the page, in page order. */
+const TRACE = [
+  { id: 'proof', label: 'proof' },
+  { id: 'scan', label: 'scan' },
+  { id: 'ecosystem', label: 'work' },
+  { id: 'apps', label: 'apps' },
+  { id: 'case-studies', label: 'case studies' },
+  { id: 'work', label: 'builds' },
+  { id: 'capabilities', label: 'skills' },
+  { id: 'journey', label: 'journey' },
+  { id: 'contact', label: 'contact' },
 ];
 
-const TONE = {
-  cmd: 'text-white',
-  ok: 'text-[var(--accent)]',
-  run: 'text-[var(--text-dim)]',
-  crit: 'text-[#f87171]',
-  high: 'text-[#fb923c]',
-  med: 'text-[#facc15]',
+/* The colour of the light behind the page shifts with the section you are in. */
+const AMBIENT = {
+  top: 'rgba(200, 245, 96, 0.10)',
+  proof: 'rgba(200, 245, 96, 0.09)',
+  scan: 'rgba(249, 115, 102, 0.10)',
+  ecosystem: 'rgba(96, 165, 250, 0.11)',
+  apps: 'rgba(134, 239, 172, 0.10)',
+  'case-studies': 'rgba(34, 211, 238, 0.09)',
+  work: 'rgba(251, 146, 60, 0.09)',
+  capabilities: 'rgba(167, 139, 250, 0.11)',
+  journey: 'rgba(200, 245, 96, 0.09)',
+  contact: 'rgba(200, 245, 96, 0.12)',
 };
-const MARK = { cmd: '$', ok: '✓', run: '›', crit: '●', high: '●', med: '●' };
 
-function ScanConsole() {
-  /* Starts part-way through the run so the first thing a visitor sees is a working scan, not an empty box. */
-  const [shown, setShown] = useState(6);
-  const reduceMotion = useReducedMotion();
-  const visibleLines = reduceMotion ? CONSOLE.length : shown;
+const SITE_URL = 'https://4ryanwaliaa.github.io/Aryan_Walia/';
+const DESCRIPTION =
+  'Aryan Walia is an Analyst at Deloitte and the founder of BugSnaps. He designs, builds and secures products end to end: the MyPentest pentesting platform, the MyRecon OSINT engine on web and Google Play, EndpointRadar, PhishLens and the Wake Me Android app.';
+/* What a shared link says before anyone clicks it. */
+const SHARE_TITLE = "hi, i'm aryan. i build and break software.";
+const SHORT = 'I break into things for a living (legally) and build the tools that do it. Analyst at Deloitte, founder of BugSnaps: MyPentest, MyRecon, EndpointRadar, PhishLens.';
 
-  useEffect(() => {
-    if (reduceMotion) return;
-    const t = setTimeout(
-      () => setShown((n) => (n >= CONSOLE.length + 3 ? 6 : n + 1)),
-      shown >= CONSOLE.length ? 1400 : 650
-    );
-    return () => clearTimeout(t);
-  }, [shown, reduceMotion]);
-
-  return (
-    <div className="relative rounded-3xl border border-[var(--line-strong)] bg-[#0b0c0d]/90 backdrop-blur-xl shadow-[0_40px_120px_-40px_rgba(200,245,96,0.25)] overflow-hidden">
-      <div className="absolute inset-x-0 h-24 bg-gradient-to-b from-transparent via-[var(--accent)]/[0.05] to-transparent animate-scan pointer-events-none" />
-
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--line)]">
-        <div className="flex items-center gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-white/10" />
-          <span className="w-2.5 h-2.5 rounded-full bg-white/10" />
-          <span className="w-2.5 h-2.5 rounded-full bg-white/10" />
-        </div>
-        <span className="mono text-[10px] text-[var(--text-faint)]">mypentest · demo run</span>
-        <span className="mono text-[10px] text-[var(--accent)] flex items-center gap-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
-          REPLAY
-        </span>
-      </div>
-
-      <div className="p-4 md:p-5 mono text-[11.5px] md:text-[12.5px] leading-[1.9] min-h-[300px]">
-        {CONSOLE.slice(0, Math.min(visibleLines, CONSOLE.length)).map((l, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, x: -6 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.25 }}
-            className={`flex items-baseline gap-2.5 ${TONE[l.t]}`}
-          >
-            <span className="w-3 flex-shrink-0 text-center opacity-80">{MARK[l.t]}</span>
-            <span className="truncate flex-1">{l.s}</span>
-            {l.r && <span className="text-[var(--text-faint)] flex-shrink-0 hidden sm:inline">{l.r}</span>}
-          </motion.div>
-        ))}
-        {visibleLines < CONSOLE.length && (
-          <div className="flex items-center gap-2.5">
-            <span className="w-3" />
-            <span className="inline-block w-[7px] h-[14px] bg-[var(--accent)] animate-blink" />
-          </div>
-        )}
-      </div>
-
-      <div className="grid grid-cols-3 border-t border-[var(--line)] mono text-[10px]">
-        {[
-          ['critical', '#f87171', visibleLines > 6 ? 1 : 0],
-          ['high', '#fb923c', visibleLines > 7 ? 1 : 0],
-          ['medium', '#facc15', visibleLines > 8 ? 1 : 0],
-        ].map(([k, c, v]) => (
-          <div key={k} className="px-4 py-3 border-l first:border-l-0 border-[var(--line)] flex items-center justify-between">
-            <span className="text-[var(--text-faint)] uppercase tracking-wider">{k}</span>
-            <span style={{ color: c }} className="text-sm font-semibold">
-              {v}
-            </span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function RotatingWord() {
-  const [i, setI] = useState(0);
-  const reduceMotion = useReducedMotion();
-  useEffect(() => {
-    if (reduceMotion) return;
-    const t = setInterval(() => setI((n) => (n + 1) % heroWords.length), 2200);
-    return () => clearInterval(t);
-  }, [reduceMotion]);
-
-  if (reduceMotion) return <span className="serif text-[var(--accent)]">{heroWords[0]}</span>;
-
-  return (
-    <span className="relative inline-flex h-[1.35em] overflow-hidden align-bottom -mb-[0.2em]">
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.span
-          key={heroWords[i]}
-          initial={{ y: '100%', opacity: 0 }}
-          animate={{ y: '0%', opacity: 1 }}
-          exit={{ y: '-100%', opacity: 0 }}
-          transition={{ duration: 0.45, ease: EASE }}
-          className="serif text-[var(--accent)] whitespace-nowrap"
-        >
-          {heroWords[i]}
-        </motion.span>
-      </AnimatePresence>
-    </span>
-  );
-}
+/* Tells search engines this page is about one real, verifiable person. */
+const PERSON_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  url: SITE_URL,
+  jobTitle: now.role,
+  worksFor: { '@type': 'Organization', name: now.org },
+  founder: { '@type': 'Organization', name: 'BugSnaps', url: profile.bugsnaps },
+  address: { '@type': 'PostalAddress', addressRegion: 'Delhi NCR', addressCountry: 'IN' },
+  sameAs: [profile.linkedin, profile.github, profile.playDeveloper, profile.bugsnaps],
+};
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const heroRef = useRef(null);
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [introDone, setIntroDone] = useState(false);
+  const activeSection = useActiveSection(WATCHED);
+  const activeNav = SECTION_TO_NAV[activeSection] || null;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30);
@@ -153,27 +96,18 @@ export default function Home() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  /* Cursor-lit grid behind the hero */
-  const onHeroMove = (e) => {
-    const r = heroRef.current.getBoundingClientRect();
-    heroRef.current.style.setProperty('--mx', `${e.clientX - r.left}px`);
-    heroRef.current.style.setProperty('--my', `${e.clientY - r.top}px`);
-  };
-
-  const marquee = [...new Set(capabilities.flatMap((c) => c.stack))];
+  const stack = [...new Set(capabilities.flatMap((c) => c.stack))];
+  const shipped = projects.filter((p) => p.live).map((p) => p.name);
 
   return (
     <>
       <Head>
         <title>Aryan Walia · Security Engineer & Product Builder</title>
-        <meta
-          name="description"
-          content="Aryan Walia designs, builds and secures products end to end: the MyPentest automated pentesting platform, the MyRecon OSINT engine, web platforms, Android apps and ML models. Founder of BugSnaps."
-        />
+        <meta name="description" content={DESCRIPTION} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#08090a" />
-        <meta property="og:title" content="Aryan Walia · Security Engineer & Product Builder" />
-        <meta property="og:description" content="I build and break software. Founder of BugSnaps, creator of MyPentest and MyRecon." />
+        <meta property="og:title" content={SHARE_TITLE} />
+        <meta property="og:description" content={SHORT} />
         {/* Link previews need absolute URLs, so these point at the deployed site. */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content={SITE_URL} />
@@ -181,16 +115,25 @@ export default function Home() {
         <meta property="og:image" content={`${SITE_URL}og.png`} />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
-        <meta property="og:image:alt" content="Aryan Walia: I build and break software. MyPentest, MyRecon, BugSnaps, Wake Me." />
+        <meta property="og:image:alt" content="hi, i'm aryan. I break into things for a living. Legally. Analyst at Deloitte, founder of BugSnaps." />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Aryan Walia · Security Engineer & Product Builder" />
-        <meta name="twitter:description" content="I build and break software. Founder of BugSnaps, creator of MyPentest and MyRecon." />
+        <meta name="twitter:title" content={SHARE_TITLE} />
+        <meta name="twitter:description" content={SHORT} />
         <meta name="twitter:image" content={`${SITE_URL}og.png`} />
         <link rel="canonical" href={SITE_URL} />
         <link rel="icon" href="/favicon.ico" />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(PERSON_SCHEMA) }} />
       </Head>
 
-      <div className="relative z-[2] min-h-screen">
+      <Intro onDone={() => setIntroDone(true)} />
+      <ScrollProgress />
+      <CursorRing />
+      <CommandPalette open={paletteOpen} setOpen={setPaletteOpen} />
+      <div className="ambient" style={{ '--amb': AMBIENT[activeSection] || AMBIENT.top }} aria-hidden="true" />
+
+      <div className="relative z-[2] min-h-screen overflow-x-clip">
+        <ScrollTrace sections={TRACE} />
+
         {/* ─── NAV ─── */}
         <header className="fixed top-0 inset-x-0 z-50 px-3 md:px-5 pt-3">
           <div
@@ -199,25 +142,52 @@ export default function Home() {
             }`}
           >
             <a href="#top" className="flex items-center gap-2.5 group">
-              <span className="w-8 h-8 rounded-full bg-[var(--accent)] text-[var(--accent-ink)] flex items-center justify-center display text-[13px] tracking-normal">
+              <span className="w-8 h-8 rounded-full bg-[var(--accent)] text-[var(--accent-ink)] flex items-center justify-center display text-[13px] tracking-normal transition-transform duration-500 group-hover:rotate-[360deg]">
                 AW
               </span>
               <span className="font-semibold tracking-tight hidden sm:block">Aryan Walia</span>
             </a>
 
-            <nav className="hidden md:flex items-center gap-1">
-              {NAV.map((n) => (
-                <a
-                  key={n.href}
-                  href={n.href}
-                  className="text-[13px] text-[var(--text-dim)] hover:text-white hover:bg-white/[0.06] px-3.5 py-2 rounded-full transition-colors"
-                >
-                  {n.label}
-                </a>
-              ))}
+            <nav className="hidden lg:flex items-center gap-1" aria-label="Sections">
+              {NAV.map((n) => {
+                const on = activeNav === n.href;
+                return (
+                  <a
+                    key={n.href}
+                    href={n.href}
+                    aria-current={on ? 'true' : undefined}
+                    className={`relative text-[13px] px-3.5 py-2 rounded-full transition-colors ${on ? 'text-white' : 'text-[var(--text-dim)] hover:text-white'}`}
+                  >
+                    {on && (
+                      <motion.span
+                        layoutId="nav-pill"
+                        className="absolute inset-0 rounded-full bg-white/[0.08] border border-[var(--line-strong)]"
+                        transition={{ duration: 0.45, ease: EASE }}
+                      />
+                    )}
+                    <span className="relative">{n.label}</span>
+                  </a>
+                );
+              })}
+              <span className="w-px h-4 bg-[var(--line-strong)] mx-1.5" aria-hidden="true" />
+              <Link href="/about" className="text-[13px] px-3.5 py-2 rounded-full text-[var(--text-dim)] hover:text-[var(--accent)] transition-colors">
+                About me
+              </Link>
             </nav>
 
             <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setPaletteOpen(true)}
+                aria-label="Open the command menu"
+                className="hidden md:inline-flex items-center gap-2 h-9 pl-3 pr-2 rounded-full border border-[var(--line-strong)] bg-white/[0.03] hover:bg-white/[0.08] text-[12px] text-[var(--text-faint)] hover:text-white transition-colors"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="11" cy="11" r="7" />
+                  <path strokeLinecap="round" d="M20 20l-3.5-3.5" />
+                </svg>
+                <kbd className="kbd">Ctrl K</kbd>
+              </button>
               <Link href="/resume" className="hidden md:inline-flex btn btn-ghost py-2 px-4 text-[13px]">
                 Resume
               </Link>
@@ -225,7 +195,8 @@ export default function Home() {
                 Let&apos;s talk
               </a>
               <button
-                className="md:hidden w-10 h-10 flex items-center justify-center text-[var(--text-dim)]"
+                type="button"
+                className="lg:hidden w-10 h-10 flex items-center justify-center text-[var(--text-dim)]"
                 onClick={() => setMenuOpen(!menuOpen)}
                 aria-label={menuOpen ? 'Close menu' : 'Open menu'}
                 aria-expanded={menuOpen}
@@ -244,18 +215,29 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.2 }}
-                className="md:hidden mt-2 rounded-3xl bg-[#0d0e10]/95 backdrop-blur-xl border border-[var(--line-strong)] p-3"
+                aria-label="Sections"
+                className="lg:hidden max-w-6xl mx-auto mt-2 rounded-3xl bg-[#0d0e10]/95 backdrop-blur-xl border border-[var(--line-strong)] p-3"
               >
-                {NAV.map((n) => (
-                  <a
+                {NAV.map((n, i) => (
+                  <motion.a
                     key={n.href}
                     href={n.href}
                     onClick={() => setMenuOpen(false)}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.03 * i, duration: 0.25 }}
                     className="block display text-2xl text-white px-3 py-2.5 rounded-2xl hover:bg-white/[0.05]"
                   >
                     {n.label}
-                  </a>
+                  </motion.a>
                 ))}
+                <Link
+                  href="/about"
+                  onClick={() => setMenuOpen(false)}
+                  className="block display text-2xl text-[var(--accent)] px-3 py-2.5 rounded-2xl hover:bg-white/[0.05]"
+                >
+                  About me
+                </Link>
                 <div className="grid grid-cols-2 gap-2 mt-2">
                   <Link href="/resume" onClick={() => setMenuOpen(false)} className="btn btn-ghost justify-center">
                     Resume
@@ -269,125 +251,48 @@ export default function Home() {
           </AnimatePresence>
         </header>
 
-        {/* ─── HERO ─── */}
-        <section id="top" ref={heroRef} onMouseMove={onHeroMove} className="relative pt-32 md:pt-40 pb-20 overflow-hidden">
-          <div className="grid-bg" />
-          <div className="grid-glow hidden md:block" />
-          <div className="glow w-[46rem] h-[26rem] -top-56 left-1/2 -translate-x-1/2" style={{ background: 'rgba(200,245,96,0.10)' }} />
+        <Hero key={introDone ? 'live' : 'behind-intro'} onOpenPalette={() => setPaletteOpen(true)} />
 
-          <div className="relative max-w-6xl mx-auto px-5 md:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
-              <div className="lg:col-span-7">
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, ease: EASE }}
-                  className="inline-flex items-center gap-2.5 rounded-full pl-2 pr-4 py-1.5 border border-[var(--line-strong)] bg-white/[0.03] mb-8"
-                >
-                  <span className="relative flex h-2 w-2 ml-1">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--accent)] opacity-75" />
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--accent)]" />
-                  </span>
-                  <span className="text-[13px] text-[var(--text-dim)]">Security engineer · Product builder</span>
-                </motion.div>
-
-                <motion.h1
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.05, ease: EASE }}
-                  className="display text-[3.4rem] leading-[0.92] sm:text-7xl lg:text-[6.2rem] text-white"
-                >
-                  I build and
-                  <br />
-                  break <span className="serif text-[var(--accent)]">software.</span>
-                </motion.h1>
-
-                <motion.p
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.7, delay: 0.15, ease: EASE }}
-                  className="text-[var(--text-dim)] text-lg md:text-xl mt-8 max-w-xl leading-relaxed"
-                >
-                  I&apos;m <span className="text-white font-medium">Aryan Walia</span>, an analyst at Deloitte, security engineer and founder of{' '}
-                  <a href={profile.bugsnaps} target="_blank" rel="noopener noreferrer" className="text-white underline decoration-[var(--accent)] underline-offset-4 hover:text-[var(--accent)] transition-colors">
-                    BugSnaps
-                  </a>
-                  . I design, ship and secure products end to end.
-                </motion.p>
-
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.7, delay: 0.3 }}
-                  className="display text-2xl md:text-3xl text-white mt-6 tracking-tight"
-                >
-                  Right now I build <RotatingWord />
-                </motion.p>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.4, ease: EASE }}
-                  className="flex flex-wrap gap-3 mt-10"
-                >
-                  <a href="#ecosystem" className="btn btn-primary">View my work</a>
-                  <a href="./Aryan_Walia.pdf?v=20261028" download="Aryan_Walia_Resume.pdf" className="btn btn-ghost">Download resume</a>
-                  <a href="#contact" className="btn btn-ghost">Discuss a project</a>
-                </motion.div>
-              </div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 30, rotate: 1.5 }}
-                animate={{ opacity: 1, y: 0, rotate: 0 }}
-                transition={{ duration: 0.9, delay: 0.2, ease: EASE }}
-                className="lg:col-span-5"
-              >
-                <div className="animate-float">
-                  <ScanConsole />
-                </div>
-                <p className="mono text-[10px] text-[var(--text-faint)] mt-3 text-center">
-                  A MyPentest run replayed against a practice target
-                </p>
-              </motion.div>
-            </div>
-          </div>
-        </section>
-
-        {/* ─── STATS ─── */}
-        <section className="relative border-y border-[var(--line)] bg-[var(--surface)]/40">
-          <div className="max-w-6xl mx-auto px-5 md:px-8 grid grid-cols-2 md:grid-cols-4">
-            {stats.map((s, i) => (
-              <div
-                key={s.label}
-                className={`py-8 md:py-10 px-2 md:px-6 ${i % 2 === 1 ? 'border-l' : ''} md:border-l md:first:border-l-0 border-[var(--line)] ${
-                  i < 2 ? 'border-b md:border-b-0' : ''
-                } ${i % 2 === 1 ? 'pl-5' : ''}`}
-              >
-                <div className="display text-2xl md:text-3xl text-white">{s.value}</div>
-                <div className="text-sm text-white mt-2">{s.label}</div>
-                <a href={s.href} target="_blank" rel="noopener noreferrer" className="inline-block mono text-[11px] text-[var(--text-dim)] hover:text-[var(--accent)] underline underline-offset-4 mt-2">{s.sub} <span aria-hidden="true">↗</span></a>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ─── STACK MARQUEE ─── */}
-        <div className="py-7 border-b border-[var(--line)] marquee-mask overflow-hidden" aria-hidden="true">
-          <div className="flex w-max animate-marquee">
-            {[...marquee, ...marquee].map((t, i) => (
-              <span key={i} className="display text-xl md:text-2xl text-[var(--text-faint)] px-6 flex items-center gap-6 whitespace-nowrap">
+        {/* ─── TWO MARQUEES: what I use, and what is live. Both speed up and flip with your scroll. ─── */}
+        <div className="border-y border-[var(--line)] bg-[var(--surface)]/40 marquee-mask">
+          <VelocityMarquee baseVelocity={2.2} className="py-5 border-b border-[var(--line)]">
+            {stack.map((t) => (
+              <span key={t} className="display text-xl md:text-2xl text-[var(--text-faint)] px-6 flex items-center gap-6 whitespace-nowrap">
                 {t}
                 <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]/60" />
               </span>
             ))}
-          </div>
+          </VelocityMarquee>
+          <VelocityMarquee baseVelocity={-1.8} className="py-5">
+            {shipped.map((t) => (
+              <span key={t} className="serif text-2xl md:text-3xl text-white/80 px-6 flex items-center gap-6 whitespace-nowrap">
+                {t}
+                <span className="mono not-italic text-[10px] tracking-[0.2em] text-[var(--accent)]">LIVE</span>
+              </span>
+            ))}
+          </VelocityMarquee>
         </div>
 
         {/* ─── BODY ─── */}
         <main className="max-w-6xl mx-auto px-5 md:px-8">
+          <Proof />
+          <ScanTheatre />
           <Work />
           <Capabilities />
           <Journey />
+
+          {/* a full-width band of outlined type that the scroll wheel drags along */}
+          <div className="relative left-1/2 -translate-x-1/2 w-screen pb-24 md:pb-32">
+            <VelocityMarquee baseVelocity={3}>
+              {['build it', 'break it', 'fix it', 'ship it'].map((t) => (
+                <span key={t} className="display outline-stroke text-[17vw] md:text-[11vw] leading-none px-[3vw] whitespace-nowrap">
+                  {t}
+                  <span className="text-[var(--accent)]">.</span>
+                </span>
+              ))}
+            </VelocityMarquee>
+          </div>
+
           <Contact />
         </main>
 
@@ -396,9 +301,13 @@ export default function Home() {
           <div className="relative z-10 max-w-6xl mx-auto px-5 md:px-8 pt-10 pb-6 flex flex-col md:flex-row items-center justify-between gap-5">
             <span className="text-[var(--text-faint)] text-[13px]">{profile.location}</span>
             <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mono text-[12px]">
+              <Link href="/about" className="text-[var(--text-dim)] hover:text-[var(--accent)] transition-colors">
+                About me
+              </Link>
               {[
                 ['GitHub', profile.github],
                 ['LinkedIn', profile.linkedin],
+                ['Google Play', profile.playDeveloper],
                 ['bugsnaps.in', profile.bugsnaps],
                 ['myrecon.xyz', profile.myrecon],
               ].map(([label, href]) => (
@@ -409,6 +318,9 @@ export default function Home() {
             </div>
             <span className="mono text-[11px] text-[var(--text-faint)]">© {new Date().getFullYear()} Aryan Walia</span>
           </div>
+          <p className="relative z-10 max-w-6xl mx-auto px-5 md:px-8 pb-4 text-center md:text-left text-[11px] leading-relaxed text-[var(--text-faint)]">
+            This is a personal site. The projects and views here are my own and are not affiliated with or endorsed by my employer.
+          </p>
           {/* Decorative wordmark: roomy line height so the "y" descender isn't clipped,
               and no pointer events so it can never sit on top of the links above. */}
           <div

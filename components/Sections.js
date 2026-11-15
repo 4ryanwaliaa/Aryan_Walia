@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { trackSpot, ArrowIcon } from './ProjectExplorer';
+import { motion, useScroll, useSpring } from 'framer-motion';
+import { MaskLine, reveal } from './fx';
+import { ArrowIcon, byId, trackSpot } from './shared';
 import {
   profile,
-  projects,
   capabilities,
   workflow,
   experience,
@@ -12,13 +12,6 @@ import {
   certifications,
   contactTopics,
 } from './portfolioData';
-
-const reveal = (delay = 0) => ({
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: '-60px' },
-  transition: { duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] },
-});
 
 /* Line icons for each capability */
 const CAP_ICONS = {
@@ -36,6 +29,13 @@ const CAP_ICONS = {
   ),
 };
 
+/* A proof entry is either a project id or an explicit { label, href }. */
+const proofLink = (entry) => {
+  if (typeof entry !== 'string') return entry;
+  const p = byId(entry);
+  return { label: p.name, href: p.live || p.github };
+};
+
 /* ─── WHAT I BUILD ─── */
 export function Capabilities() {
   return (
@@ -44,15 +44,16 @@ export function Capabilities() {
         <div className="lg:col-span-7">
           <span className="eyebrow">What I build</span>
           <h2 className="display text-5xl md:text-7xl mt-5 text-white">
-            Ideas in.
-            <br />
-            <span className="serif text-[var(--accent)]">Secure products</span> out.
+            <MaskLine>Ideas in.</MaskLine>
+            <MaskLine delay={0.08}>
+              <span className="serif text-[var(--accent)]">Secure products</span> out.
+            </MaskLine>
           </h2>
         </div>
-        <p className="lg:col-span-5 lg:self-end text-[var(--text-dim)] leading-relaxed">
+        <motion.p {...reveal(0.1)} className="lg:col-span-5 lg:self-end text-[var(--text-dim)] leading-relaxed">
           Most builders ship first and think about security later. I come from the attacking side, so every site, app and model I
           build is tested the way an attacker would test it, before anyone else gets the chance.
-        </p>
+        </motion.p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -62,7 +63,7 @@ export function Capabilities() {
             {...reveal(i * 0.06)}
             onMouseMove={trackSpot}
             style={{ '--spot': `${c.accent}99` }}
-            className="card spotlight group p-6 md:p-8 overflow-hidden"
+            className="card spotlight lift group p-6 md:p-8 overflow-hidden"
           >
             <div
               className="pointer-events-none absolute -top-24 -right-24 w-64 h-64 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"
@@ -70,7 +71,7 @@ export function Capabilities() {
             />
             <div className="relative flex items-start justify-between gap-4">
               <div
-                className="w-12 h-12 rounded-2xl flex items-center justify-center"
+                className="w-12 h-12 rounded-2xl flex items-center justify-center transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6"
                 style={{ background: `${c.accent}14`, border: `1px solid ${c.accent}30`, color: c.accent }}
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" strokeWidth={1.6} viewBox="0 0 24 24" aria-hidden="true">
@@ -93,22 +94,18 @@ export function Capabilities() {
 
             <div className="relative flex flex-wrap items-center gap-x-4 gap-y-2 mt-6 pt-5 border-t border-[var(--line)]">
               <span className="mono text-[10px] uppercase tracking-[0.18em] text-[var(--text-faint)]">Proof</span>
-              {c.proof.map((id) => {
-                const p = projects.find((x) => x.id === id);
-                const href = p.live || p.github;
-                return (
-                  <a
-                    key={id}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-sm text-white hover:text-[var(--accent)] transition-colors"
-                  >
-                    {p.name}
-                    <ArrowIcon className="w-3 h-3 opacity-60" />
-                  </a>
-                );
-              })}
+              {c.proof.map(proofLink).map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-sm text-white hover:text-[var(--accent)] transition-colors"
+                >
+                  {link.label}
+                  <ArrowIcon className="w-3 h-3 opacity-60" />
+                </a>
+              ))}
             </div>
           </motion.div>
         ))}
@@ -117,10 +114,10 @@ export function Capabilities() {
       {/* how a build runs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-px mt-4 rounded-[20px] overflow-hidden border border-[var(--line)] bg-[var(--line)]">
         {workflow.map((s, i) => (
-          <motion.div key={s.n} {...reveal(i * 0.06)} className="bg-[var(--surface)] p-5 md:p-6">
+          <motion.div key={s.n} {...reveal(i * 0.06)} className="group bg-[var(--surface)] hover:bg-[var(--surface-2)] transition-colors p-5 md:p-6">
             <span className="mono text-[11px] text-[var(--accent)]">{s.n}</span>
             <h4 className="display text-xl text-white mt-3">{s.t}</h4>
-            <p className="text-[var(--text-faint)] text-[13px] leading-relaxed mt-1.5">{s.d}</p>
+            <p className="text-[var(--text-faint)] group-hover:text-[var(--text-dim)] transition-colors text-[13px] leading-relaxed mt-1.5">{s.d}</p>
           </motion.div>
         ))}
       </div>
@@ -130,48 +127,73 @@ export function Capabilities() {
 
 /* ─── EXPERIENCE + EDUCATION + CERTS ─── */
 export function Journey() {
+  const railRef = useRef(null);
+  const { scrollYProgress } = useScroll({ target: railRef, offset: ['start 75%', 'end 55%'] });
+  const drawn = useSpring(scrollYProgress, { stiffness: 120, damping: 28, restDelta: 0.001 });
+
   return (
     <section id="journey" className="scroll-mt-24 pb-24 md:pb-32">
       <span className="eyebrow">Track record</span>
       <h2 className="display text-4xl md:text-6xl mt-5 mb-12 text-white">
-        Where I&apos;ve <span className="serif text-[var(--accent)]">been.</span>
+        <MaskLine>
+          Where I&apos;ve <span className="serif text-[var(--accent)]">been.</span>
+        </MaskLine>
       </h2>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
-        {/* experience */}
-        <div className="lg:col-span-7">
+        {/* experience: a rail that draws itself as you scroll */}
+        <div ref={railRef} className="lg:col-span-7 relative pl-8 md:pl-10">
+          <div className="absolute left-[5px] top-3 bottom-3 w-px bg-[var(--line-strong)]" aria-hidden="true" />
+          <motion.div
+            className="absolute left-[5px] top-3 bottom-3 w-px origin-top bg-gradient-to-b from-[var(--accent)] via-[var(--accent)] to-transparent"
+            style={{ scaleY: drawn }}
+            aria-hidden="true"
+          />
+
           {experience.map((item, i) => (
-            <motion.div
-              key={item.role}
-              {...reveal(Math.min(i * 0.06, 0.2))}
-              className="group grid grid-cols-1 sm:grid-cols-[150px_1fr] gap-2 sm:gap-6 py-6 border-t border-[var(--line)] first:border-t-0 first:pt-0"
-            >
-              <div className="mono text-[11px] text-[var(--text-faint)] pt-1.5 flex items-center gap-2 sm:block">
-                {item.current && (
-                  <span className="inline-flex sm:mb-2 items-center gap-1.5 text-[var(--accent)]">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
-                    NOW
-                  </span>
-                )}
-                <div>{item.period}</div>
-              </div>
-              <div>
-                <h3 className="display text-2xl text-white group-hover:text-[var(--accent)] transition-colors">{item.role}</h3>
-                <p className="text-[var(--text-dim)] text-sm mt-1">{item.org}</p>
-                <ul className="mt-3 space-y-1.5">
-                  {item.points.map((p, j) => (
-                    <li key={j} className="text-[var(--text-faint)] text-sm leading-relaxed">
-                      {p}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            <motion.div key={item.role} {...reveal(Math.min(i * 0.06, 0.2))} className="group relative pb-8 last:pb-0">
+              <span className={`rail-dot -left-8 md:-left-10 ${item.current ? 'is-now' : ''}`} aria-hidden="true" />
+
+              {item.featured ? (
+                <div className="now-card card relative overflow-hidden p-6 md:p-7">
+                  <div className="now-card-beam" aria-hidden="true" />
+                  <div className="relative flex flex-wrap items-center justify-between gap-3">
+                    <span className="inline-flex items-center gap-2 mono text-[10px] tracking-[0.2em] text-[var(--accent)]">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--accent)] opacity-75" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--accent)]" />
+                      </span>
+                      CURRENT ROLE
+                    </span>
+                    <span className="mono text-[11px] text-[var(--text-dim)]">{item.period}</span>
+                  </div>
+                  <h3 className="relative display text-4xl md:text-5xl text-white mt-5">
+                    {item.role} <span className="serif text-[var(--text-dim)]">at</span> {item.org}
+                  </h3>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mono text-[11px] text-[var(--text-faint)]">
+                    {item.current && <span className="text-[var(--accent)]">NOW</span>}
+                    <span>{item.period}</span>
+                  </div>
+                  <h3 className="display text-2xl text-white mt-2 group-hover:text-[var(--accent)] transition-colors">{item.role}</h3>
+                  <p className="text-[var(--text-dim)] text-sm mt-1">{item.org}</p>
+                  <ul className="mt-3 space-y-1.5">
+                    {item.points.map((p, j) => (
+                      <li key={j} className="text-[var(--text-faint)] text-sm leading-relaxed">
+                        {p}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </motion.div>
           ))}
         </div>
 
         {/* education + certs */}
-        <div className="lg:col-span-5 space-y-4">
+        <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-28 lg:self-start">
           <motion.div {...reveal(0.05)} className="card p-6">
             <h3 className="mono text-[11px] uppercase tracking-[0.2em] text-[var(--text-faint)] mb-4">Education</h3>
             <div className="space-y-4">
@@ -226,24 +248,23 @@ export function Contact() {
 
   return (
     <section id="contact" className="scroll-mt-24 pb-24">
-      <motion.div
-        {...reveal()}
-        onMouseMove={trackSpot}
-        className="card spotlight relative overflow-hidden p-7 md:p-14 rounded-[28px]"
-      >
-        <div className="glow w-[36rem] h-[18rem] -top-40 -right-40" style={{ background: 'rgba(200,245,96,0.12)' }} />
-        <div className="glow w-[28rem] h-[16rem] -bottom-40 -left-32" style={{ background: 'rgba(96,165,250,0.08)' }} />
+      <motion.div {...reveal()} onMouseMove={trackSpot} className="card spotlight relative overflow-hidden p-7 md:p-14 rounded-[28px]">
+        <div className="aurora opacity-70" aria-hidden="true">
+          <span className="aurora-a" />
+          <span className="aurora-b" />
+        </div>
 
         <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-10">
           <div className="lg:col-span-7">
             <span className="eyebrow">Get in touch</span>
             <h2 className="display text-5xl md:text-7xl mt-5 text-white">
-              Have something
-              <br />
-              <span className="serif text-[var(--accent)]">in mind?</span>
+              <MaskLine>Have something</MaskLine>
+              <MaskLine delay={0.08}>
+                <span className="serif text-[var(--accent)]">in mind?</span>
+              </MaskLine>
             </h2>
             <p className="text-[var(--text-dim)] leading-relaxed mt-6 max-w-md">
-              Tell me what you&apos;re working on, or get in touch about a role.
+              Tell me what you&apos;re working on, or get in touch about a role. I read everything and reply myself.
             </p>
           </div>
 
@@ -263,11 +284,13 @@ export function Contact() {
                         onChange={() => setTopic(t.id)}
                         className="peer sr-only"
                       />
-                      <span className={`inline-block text-sm px-4 py-2 rounded-full border transition-all duration-200 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[var(--accent)] ${
-                        on
-                          ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-transparent font-semibold'
-                          : 'border-[var(--line-strong)] text-[var(--text-dim)] hover:text-white hover:border-white/30'
-                      }`}>
+                      <span
+                        className={`inline-block text-sm px-4 py-2 rounded-full border transition-all duration-200 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[var(--accent)] ${
+                          on
+                            ? 'bg-[var(--accent)] text-[var(--accent-ink)] border-transparent font-semibold'
+                            : 'border-[var(--line-strong)] text-[var(--text-dim)] hover:text-white hover:border-white/30'
+                        }`}
+                      >
                         {t.label}
                       </span>
                     </label>
@@ -276,7 +299,7 @@ export function Contact() {
               </div>
             </fieldset>
 
-            <a href={mailto} className="btn btn-primary w-full justify-center mt-6 py-4 text-[15px]">
+            <a href={mailto} className="btn btn-primary btn-glow w-full justify-center mt-6 py-4 text-[15px]">
               Start the conversation
               <ArrowIcon className="w-4 h-4" />
             </a>

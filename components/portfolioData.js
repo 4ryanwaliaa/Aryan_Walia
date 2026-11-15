@@ -1,5 +1,9 @@
 /* Single source of truth for everything the portfolio renders.
-   House rule: no em or en dashes anywhere in the copy. */
+   House rule: no em or en dashes anywhere in the copy.
+   Store figures and product claims are dated in PROOF_POINTS.md. Re-check them before each release. */
+
+const PLAY_MYRECON = 'https://play.google.com/store/apps/details?id=com.Myrecon.osint';
+const PLAY_WAKEME = 'https://play.google.com/store/apps/details?id=makeme.aryan.makeme';
 
 export const profile = {
   name: 'Aryan Walia',
@@ -8,114 +12,185 @@ export const profile = {
   email: '4ryanwalia@gmail.com',
   github: 'https://github.com/4ryanwalia',
   linkedin: 'https://www.linkedin.com/in/4ryanwalia',
+  playDeveloper: 'https://play.google.com/store/apps/developer?id=Aryan+Walia',
   myrecon: 'https://myrecon.xyz',
   bugsnaps: 'https://bugsnaps.in',
   mypentest: 'https://bugsnaps.in/mypentest',
   summary:
-    'CEH-certified security engineer and founder of BugSnaps. I design, build and secure products end to end: an automated pentesting platform, a live OSINT engine, production web apps, Android apps and ML models.',
+    'Analyst at Deloitte, CEH-certified security engineer and founder of BugSnaps. I design, build and secure products end to end: an automated pentesting platform, a live OSINT engine, endpoint and phishing tools, Android apps and ML models.',
 };
 
-/* Words the hero cycles through after "I build" */
-export const heroWords = ['pentest engines', 'web platforms', 'OSINT tools', 'Android apps', 'AI models'];
+/* What I do right now. Shown in the hero and the proof section. */
+export const now = {
+  role: 'Analyst',
+  org: 'Deloitte',
+  since: 'Nov 2026 to present',
+  line: 'My full-time role. Everything else on this page is what I build around it.',
+};
 
-export const stats = [
-  { value: 'Web + API', label: 'Security testing', sub: 'Explore MyPentest', href: 'https://bugsnaps.in/mypentest' },
-  { value: 'Web + CLI', label: 'OSINT tools', sub: 'Read MyRecon source', href: 'https://github.com/4ryanwalia/Myrecon' },
-  { value: 'Android', label: 'Mobile development', sub: 'Wake Me on Google Play', href: 'https://play.google.com/store/apps/details?id=makeme.aryan.makeme' },
-  { value: 'CVSS', label: 'Finding severity', sub: 'See MyPentest reports', href: 'https://bugsnaps.in/mypentest' },
+/* Words the hero cycles through after "Right now I build" */
+export const heroWords = ['pentest engines', 'OSINT tools', 'Android apps', 'web platforms', 'AI models'];
+
+/* Checkable facts. Every one links to a third-party page or a live product.
+   `count` animates up to the number; `value` is shown as-is. */
+export const proofs = [
+  { count: 1, suffix: 'K+', label: 'Installs', note: 'MyRecon on Google Play', href: PLAY_MYRECON },
+  { count: 4.7, decimals: 1, star: true, label: 'Store rating', note: 'Across 50 verified reviews', href: PLAY_MYRECON },
+  { count: 2, label: 'Android apps', note: 'Live on Google Play', href: 'https://play.google.com/store/apps/developer?id=Aryan+Walia' },
+  { count: 4, label: 'Security tools', note: 'Live in the BugSnaps toolkit', href: 'https://bugsnaps.in/products' },
+  { count: 56, label: 'Automated checks', note: 'In every MyPentest assessment', href: 'https://bugsnaps.in/mypentest' },
+  { value: 'CEH', label: 'Certified', note: 'Ethical Hacker, EC-Council', href: 'https://www.linkedin.com/in/4ryanwalia' },
 ];
+export const proofsAsOf = 'Store figures from Google Play, checked November 2026.';
 
 /* ─── PROJECTS ───
-   `ecosystem: true` puts a project in the BugSnaps bento; the rest go in the builds grid.
-   `live` = a URL anyone can open right now. */
+   `ecosystem: true` puts a project in the BugSnaps orbit; `app: true` puts it on the Google Play shelf;
+   the rest go in the builds grid. `live` = a URL anyone can open right now. */
 export const projects = [
   {
     id: 'mypentest',
     ecosystem: true,
-    kind: 'Security platform',
+    kind: 'Web & API security',
     name: 'MyPentest',
     tagline: 'Automated penetration testing',
     blurb:
-      'A hosted pentesting platform that maps a web app\'s attack surface, then tests it: broken access control, injection, session flaws, exposed secrets and misconfiguration, with evidence, CVSS scores and a fix for every finding.',
+      "A hosted pentesting platform that maps a web app's attack surface, then tests it: broken access control, injection, session flaws, exposed secrets and known CVEs, with evidence, a CVSS score and a fix for every finding.",
     accent: '#f97366',
     live: 'https://bugsnaps.in/mypentest',
     liveLabel: 'Try MyPentest free',
-    status: 'PUBLIC BETA',
+    status: 'BETA · FREE PLAN',
     tech: ['Python', 'Flask', 'Next.js', 'TypeScript', 'Firebase', 'Razorpay', 'SARIF'],
     metrics: [
-      { k: 'Checks', v: 'Web · API · Auth' },
-      { k: 'Paid exports', v: 'PDF · HTML · SARIF' },
-      { k: 'Scoring', v: 'CVSS 3.1' },
-      { k: 'Plans', v: 'Free to Operator' },
+      { k: 'Checks', v: '56 per scan' },
+      { k: 'Split', v: '32 passive · 24 safe-active' },
+      { k: 'Scoring', v: 'CVSS 3.1 · KEV · EPSS' },
+      { k: 'Exports', v: 'PDF · HTML · SARIF' },
     ],
     highlights: [
-      'Authorization testing that signs in as your test accounts and asks whether one can read another\'s data. A finding needs a 200, matching owner content, a refused anonymous control and a second reproduction',
+      'Four phases, in order: verify ownership, map the attack surface, test it, report. Nothing is sent to a site until its owner has proved control with a DNS TXT record tied to their account',
+      'Surface discovery reads pages, forms and JavaScript for hidden endpoints, including OpenAPI, GraphQL and WebSocket surfaces',
+      "Authorization testing that signs in as your test accounts and asks whether one can read another's data. A finding needs a 200, matching owner content, a refused anonymous control and a second reproduction",
       'Session lifecycle checks for logout invalidation, session fixation and token lifetime',
       'Safe injection checks (SQL, command, template, XXE, SSRF) on a differential engine with reflection-safe canaries',
       'Two gates on every request: scope decides what the customer authorised, a network guard pins the resolved IP so a target cannot rebind mid-scan',
-      'DNS proof of control before any real domain is scanned, with authorisations that expire and can be revoked mid-flight',
-      'An AI layer writes the executive summary and attack narrative from sanitised facts, and has no field for severity, so a hostile page cannot move a verdict',
-      'Firebase auth, Razorpay billing, report emails, and exports to PDF, HTML, Markdown, JSON and SARIF',
+      'Findings grouped with severity, confidence, evidence and the exact fix, then linked into attack paths and a remediation plan',
+      'Exports to PDF, HTML, Markdown, JSON and SARIF, so a report drops straight into a tracker or CI',
     ],
   },
   {
     id: 'myrecon',
     ecosystem: true,
-    kind: 'OSINT platform',
+    kind: 'Digital footprint',
     name: 'MyRecon',
-    tagline: 'OSINT intelligence platform',
+    tagline: 'OSINT on web, terminal and Android',
     blurb:
-      'Turns a username, email, domain or IP into a structured public footprint, with a website, a terminal client and an Android app.',
+      'Turns a username, email, domain or IP into a structured public footprint. It runs as a website, a terminal client and an Android app that is live on Google Play.',
     accent: '#22d3ee',
-    logo: '/myrecon-logo.svg',
     live: 'https://myrecon.xyz',
     liveLabel: 'Open myrecon.xyz',
-    android: 'https://play.google.com/apps/testing/com.Myrecon.osint',
-    androidLabel: 'Android app (closed beta)',
+    android: PLAY_MYRECON,
+    androidLabel: 'Get it on Google Play',
     github: 'https://github.com/4ryanwalia/Myrecon',
-    status: 'LIVE',
-    tech: ['Python', 'Flask', 'JavaScript', 'REST APIs', 'Vercel', 'Render', 'Kotlin'],
+    status: 'LIVE · WEB + ANDROID',
+    tech: ['Python', 'Flask', 'JavaScript', 'Kotlin', 'REST APIs', 'Vercel', 'Render'],
     metrics: [
-      { k: 'Inputs', v: 'Username · Email · Domain · IP' },
+      { k: 'Platforms', v: '500+ standard · 3,000+ extended' },
+      { k: 'Google Play', v: '4.7 stars · 1K+ installs' },
       { k: 'Interfaces', v: 'Web · CLI · Android' },
-      { k: 'CLI', v: 'Open source' },
       { k: 'Password checks', v: 'k-anonymity' },
     ],
     highlights: [
-      'Username searches across multiple platforms, with per-platform validators that report what was checked, what was rejected and why',
-      'Identity correlation that clusters accounts sharing a handle and gives each cluster a 0 to 100 confidence score with the reasons behind it',
-      'Email intelligence: provider and deliverability analysis, disposable detection, linked accounts and named breach exposure',
-      'Password-exposure checks with k-anonymity: hashed in the browser, only five hash characters ever leave the device',
-      'Infrastructure recon: RDAP/WHOIS, DNS over HTTPS, IP geolocation with ASN ownership, and subdomains from Certificate Transparency',
-      'Breach Files archive rebuilt from Have I Been Pwned on a schedule by GitHub Actions, alongside written OSINT guides',
+      'Username search across 500+ platforms on a standard scan and 3,000+ on an extended one, with every result labelled found, not found or unknown instead of guessing',
+      'Deep Search follows the links people publish in their own profiles and bios, and explains why two profiles are connected',
+      'Email breach checks with incident details, affected services and reported data types, plus opt-in breach watch notifications',
+      'Password-exposure checks with k-anonymity: hashed on the device, only five hash characters ever leave it',
+      'Infrastructure recon: RDAP registration, DNS records, SPF, DKIM and DMARC findings, IP context and subdomains from Certificate Transparency',
+      'On Android: a QR and suspicious link checker that decodes camera frames locally, and a device privacy and security check',
+      'A published benchmark against Sherlock and Maigret, with methodology, false positives and unresolved checks included',
       'The CLI calls the same service functions in process, so a terminal answer and a web answer cannot drift apart',
+    ],
+  },
+  {
+    id: 'endpointradar',
+    ecosystem: true,
+    kind: 'Endpoint security',
+    name: 'EndpointRadar',
+    tagline: 'Windows posture scanner',
+    blurb:
+      'Finds out how exposed a Windows machine really is. An open-source scanner audits it locally, then a free browser workspace scores the risk, explains each finding and tracks it across devices.',
+    accent: '#a78bfa',
+    live: 'https://bugsnaps.in/endpointradar',
+    liveLabel: 'Open EndpointRadar',
+    github: 'https://github.com/4ryanwalia/EndpointRadar',
+    status: 'BETA · FREE',
+    tech: ['Python', 'PySide6', 'WinRM', 'Nmap', 'Next.js', 'NIST CSF 2.0'],
+    metrics: [
+      { k: 'Scanner', v: 'Open source' },
+      { k: 'Deployment', v: 'Agentless' },
+      { k: 'Workspace', v: 'Up to 100 scans' },
+      { k: 'Framework', v: 'NIST CSF 2.0' },
+    ],
+    highlights: [
+      'A read-only local scan of antivirus, firewall profiles, patch currency, listening ports, services and installed software',
+      'Agentless remote assessment over WinRM: a temporary scanner is staged on the host and removed, with no permanent agent',
+      'Risk scoring that names its top drivers as a weighted breakdown instead of an unexplained number',
+      'A free browser workspace that imports up to 100 scan records, compares dated results and prints a client report. The data stays in the browser tab',
+      'A managed workspace in beta: enrolled devices, scan schedules, posture change alerts and client PDFs',
+      'Honest about its limits: a point-in-time posture scanner, not an EDR, and the site says so',
+    ],
+  },
+  {
+    id: 'phishlens',
+    ecosystem: true,
+    kind: 'Link safety',
+    name: 'PhishLens',
+    tagline: 'Check a link before you click',
+    blurb:
+      'A free phishing link checker that inspects a suspicious URL without ever opening it. The first review runs in your own browser, and outside checks run only when you choose them.',
+    accent: '#34d399',
+    live: 'https://bugsnaps.in/phishing-detector',
+    liveLabel: 'Check a link free',
+    status: 'LIVE · FREE',
+    tech: ['Next.js', 'TypeScript', 'Browser-local analysis', 'Cloudflare DNS'],
+    metrics: [
+      { k: 'First review', v: 'In your browser' },
+      { k: 'Account', v: 'Not needed' },
+      { k: 'Batch', v: 'Up to 100 links' },
+      { k: 'Destination', v: 'Never opened' },
+    ],
+    highlights: [
+      'Decodes the address first: the real hostname, the domain boundary and any destination hidden inside the link',
+      'Explains each warning sign in plain language, and labels them as signals to investigate rather than a verdict',
+      'Optional outside checks for domain intelligence, registration and DNS filtering, each one saying what it shares before it runs',
+      'Batch review for up to 100 links, and a team inbox for submitting messages and recording decisions',
+      'Exports a report that leaves out the full URL and its query string, so evidence can be shared safely',
     ],
   },
   {
     id: 'bugsnaps',
     ecosystem: true,
+    core: true,
     kind: 'Company · Web platform',
     name: 'BugSnaps',
     tagline: 'Find. Fix. Fortify.',
     blurb:
-      'The security company I founded, and the site I built for it: products, expert-led pentesting services, pricing, a blog and comparison pages, all on a fast, SEO-tuned Next.js platform with a strict security posture.',
+      'The security company I founded, and the platform I built for it: four products, expert-led pentesting services, pricing, guides and research, all on a fast, SEO-tuned Next.js site with a strict security posture.',
     accent: '#60a5fa',
-    logo: '/bugsnaps-logo.svg',
     live: 'https://bugsnaps.in',
     liveLabel: 'Open bugsnaps.in',
     status: 'FOUNDER',
     tech: ['Next.js 15', 'TypeScript', 'Tailwind CSS', 'Firebase', 'Vercel', 'JSON-LD'],
     metrics: [
+      { k: 'Products', v: '4 live tools' },
       { k: 'Stack', v: 'Next.js · TS' },
-      { k: 'Report turnaround', v: '5 business days' },
-      { k: 'Retest', v: 'Free, included' },
+      { k: 'Services', v: 'Web · API · Cloud' },
       { k: 'Standards', v: 'OWASP · PTES' },
     ],
     highlights: [
+      'One product line wired from a single config: MyPentest, MyRecon, EndpointRadar and PhishLens, so adding a product is one entry and not a redesign',
       'Web app, API, network and cloud penetration testing to OWASP WSTG and PTES, plus source code review and hands-on remediation support',
-      'Fixed pricing after a free scoping call, and a free retest in every engagement to prove the fix holds',
-      'Product line wired from one config: MyPentest hosted on the site, MyRecon on its own domain, BugSnaps Personal for digital footprint cleanup',
       'A server-side proxy so the browser never holds a scanner key: it signs in with Firebase and the engine verifies the token itself',
+      'Vulnerability briefings, guides, comparison pages and a public benchmark methodology, all written and shipped alongside the products',
       'Unique metadata, canonical URLs and structured data (Organization, SoftwareApplication, Service, FAQ, Article) on every indexable page',
       'Strict CSP and security headers, cookie consent, and a contact form with a honeypot and a mailto fallback',
     ],
@@ -127,8 +202,8 @@ export const projects = [
     name: 'BugSnaps Personal',
     tagline: 'Digital footprint cleanup',
     blurb:
-      'Helps find accounts and listings tied to your identity, then supports their removal through official deletion flows.',
-    accent: '#c084fc',
+      'Helps find the accounts and listings tied to your identity, then supports their removal through official deletion flows.',
+    accent: '#e879f9',
     live: 'https://bugsnaps.in/personal',
     liveLabel: 'Open BugSnaps Personal',
     status: 'LIVE',
@@ -141,59 +216,35 @@ export const projects = [
     ],
     highlights: [
       'Built on the MyRecon engine to surface forgotten accounts before someone else uses them',
-      'Deletion handled through each platform\'s own official flow, only with the owner\'s consent',
-    ],
-  },
-  {
-    id: 'endpointradar',
-    category: 'Security',
-    name: 'EndpointRadar',
-    tagline: 'Agentless endpoint posture scanner',
-    blurb:
-      'Finds out how exposed a Windows machine really is, scores the risk, explains it in plain English and maps it to NIST CSF 2.0.',
-    accent: '#38bdf8',
-    logo: '/endpointradar-logo.svg',
-    live: 'https://4ryanwalia.github.io/EndpointRadar/',
-    liveLabel: 'Live demo & docs',
-    github: 'https://github.com/4ryanwalia/EndpointRadar',
-    status: 'OPEN SOURCE',
-    tech: ['Python', 'Flask', 'PySide6', 'WinRM', 'Nmap', 'NIST CSF 2.0'],
-    metrics: [
-      { k: 'Deployment', v: 'Agentless' },
-      { k: 'Interfaces', v: 'CLI · Desktop · API' },
-      { k: 'Framework', v: 'NIST CSF 2.0' },
-      { k: 'CI', v: 'Automated' },
-    ],
-    highlights: [
-      'Agentless multi-device assessment over WinRM, with nothing to install on the target',
-      'Audits antivirus, firewall rules, patch currency, listening ports, services and installed software',
-      'Risk scoring that names its top drivers as a weighted breakdown instead of an unexplained number',
-      'Three interfaces off one engine: a CLI, a PySide6 desktop dashboard and a web API streaming live progress over Server-Sent Events',
+      "Deletion handled through each platform's own official flow, only with the owner's consent",
     ],
   },
   {
     id: 'wakeme',
+    app: true,
     category: 'Mobile',
     name: 'Wake Me',
-    tagline: 'Smart alarm app on Google Play',
+    tagline: 'Loud math alarm clock on Google Play',
     blurb:
-      'An Android alarm app I designed, built and shipped to the Play Store, with sleep detection, one-tap quick alarms and Firebase sync across devices.',
-    accent: '#2dd4bf',
-    logo: '/logo.png',
-    live: 'https://play.google.com/store/apps/details?id=makeme.aryan.makeme',
+      'An Android alarm clock for heavy sleepers that I designed, built and shipped to Google Play. You pick a mission, such as solving a math problem or shaking the phone, and the alarm only stops when you finish it.',
+    accent: '#86efac',
+    live: PLAY_WAKEME,
     liveLabel: 'Get it on Google Play',
     status: 'ON GOOGLE PLAY',
     tech: ['Android', 'Java', 'Kotlin', 'Firebase'],
     metrics: [
-      { k: 'Platform', v: 'Android' },
-      { k: 'Backend', v: 'Firebase' },
-      { k: 'Status', v: 'Published' },
-      { k: 'Sync', v: 'Real-time' },
+      { k: 'Google Play', v: '4.3 stars · 100+ installs' },
+      { k: 'Missions', v: 'Math · Shake · Tap' },
+      { k: 'Core alarms', v: 'Work offline' },
+      { k: 'Account', v: 'Not needed' },
     ],
     highlights: [
-      'Smart sleep detection that learns patterns from phone activity',
-      'One-tap quick alarms for the common case',
-      'Firebase Realtime Database keeping alarms in sync across a user\'s devices',
+      'Math alarm with selectable difficulty, a shake mission for mornings that need movement, and plain tap to dismiss when you want it simple',
+      'Optional Wake Check: it asks you to confirm five minutes after dismissal, and rings a backup alarm if you do not answer',
+      'Quick nap alarms that never touch your regular morning alarm',
+      'Roast Mode: optional spoken nudges for people who ignore polite reminders',
+      'A Dream Journal and daily goals, so the app carries you from waking up into the day',
+      'Reliable delivery while the phone is idle, with backup alarm sounds if the chosen tone is unavailable',
     ],
   },
   {
@@ -217,7 +268,7 @@ export const projects = [
     ],
     highlights: [
       'Image classifier trained with transfer learning to separate accident scenes from ordinary road imagery',
-      'Served through onnxruntime-web so inference happens on the user\'s own device',
+      "Served through onnxruntime-web so inference happens on the user's own device",
       'Designed to feed roadside camera analysis that can trigger emergency alerts',
     ],
   },
@@ -228,7 +279,7 @@ export const projects = [
     tagline: 'Malicious URL classifier',
     blurb:
       'A machine-learning classifier that extracts 30+ lexical and host-based features from a URL and scores how likely it is to be malicious.',
-    accent: '#a78bfa',
+    accent: '#a5b4fc',
     github: 'https://github.com/4ryanwalia/Phishing-detection',
     status: 'OPEN SOURCE',
     tech: ['Python', 'scikit-learn', 'Random Forest', 'Pandas'],
@@ -245,14 +296,46 @@ export const projects = [
   },
 ];
 
-/* ─── WHAT I BUILD ─── `proof` ids point at projects above */
+/* ─── GOOGLE PLAY SHELF ───
+   Figures come from the public listings and are dated in PROOF_POINTS.md. */
+export const apps = [
+  {
+    id: 'myrecon',
+    storeName: 'MyRecon: OSINT Username Search',
+    category: 'Tools',
+    rating: 4.7,
+    reviews: 50,
+    installs: '1K+',
+    updated: 'Nov 8, 2026',
+    url: PLAY_MYRECON,
+    accent: '#22d3ee',
+    pitch: 'Find forgotten accounts, check breaches and inspect suspicious links, from a phone, with no account or sign-up.',
+    features: ['Username search', 'Deep Search', 'Email breach check', 'Password leak check', 'WHOIS and DNS', 'QR and link checker', 'Device security check', 'Breach Files'],
+    review: { quote: 'the best osint app for Android it is very good', by: 'Google Play review, November 2026' },
+  },
+  {
+    id: 'wakeme',
+    storeName: 'Wake Me: Loud Math Alarm Clock',
+    category: 'Productivity',
+    rating: 4.3,
+    reviews: 8,
+    installs: '100+',
+    updated: 'Nov 10, 2026',
+    url: PLAY_WAKEME,
+    accent: '#86efac',
+    pitch: 'An alarm for heavy sleepers. Pick a mission, and the sound only stops when you finish it.',
+    features: ['Math alarm', 'Shake alarm', 'Wake Check', 'Quick naps', 'Roast Mode', 'Dream Journal', 'Daily goals', 'Works offline'],
+  },
+];
+
+/* ─── WHAT I BUILD ─── `proof` entries are project ids, or { label, href } for a specific link */
 export const capabilities = [
   {
     id: 'web',
     title: 'Web platforms',
     line: 'Fast, SEO-ready sites and full-stack apps with auth, payments and dashboards.',
     stack: ['Next.js', 'React', 'TypeScript', 'Tailwind', 'Flask', 'Firebase', 'Razorpay'],
-    proof: ['bugsnaps', 'myrecon'],
+    proof: ['bugsnaps', 'phishlens'],
     accent: '#60a5fa',
   },
   {
@@ -266,9 +349,12 @@ export const capabilities = [
   {
     id: 'mobile',
     title: 'Mobile apps',
-    line: 'Android apps taken from first sketch to a live Play Store listing.',
+    line: 'Android apps taken from first sketch to a live Google Play listing, then kept updated.',
     stack: ['Kotlin', 'Java', 'Android', 'Firebase', 'Play Console'],
-    proof: ['wakeme', 'myrecon'],
+    proof: [
+      { label: 'MyRecon for Android', href: PLAY_MYRECON },
+      { label: 'Wake Me', href: PLAY_WAKEME },
+    ],
     accent: '#22d3ee',
   },
   {
@@ -295,7 +381,18 @@ export const experience = [
     org: 'Deloitte',
     period: '11/2026 to present',
     current: true,
+    featured: true,
     points: [],
+  },
+  {
+    role: 'Founder',
+    org: 'BugSnaps · bugsnaps.in',
+    period: 'Ongoing',
+    current: true,
+    points: [
+      'Built and shipped MyPentest, MyRecon, EndpointRadar and PhishLens, plus the platform they run on.',
+      'Run expert-led pentesting engagements, from scoping to retest.',
+    ],
   },
   {
     role: 'Network Engineer',
@@ -304,15 +401,6 @@ export const experience = [
     points: [
       'Configured and maintained enterprise network infrastructure: routing, switching and firewall policy.',
       'Supported access control, segmentation and network monitoring across client environments.',
-    ],
-  },
-  {
-    role: 'Founder',
-    org: 'BugSnaps · bugsnaps.in',
-    period: 'Ongoing',
-    current: true,
-    points: [
-      'Built the MyPentest engine, the MyRecon platform and the BugSnaps site, and run expert-led pentesting engagements.',
     ],
   },
   {
@@ -347,6 +435,54 @@ export const certifications = [
   { name: 'Supervised Machine Learning', issuer: 'Coursera' },
   { name: 'CISA', issuer: 'ISACA, in preparation', pending: true },
 ];
+
+/* ─── THE PERSONAL PAGE (/about) ───
+   Same handle on every platform. The Spotify card is drawn live by my own endpoint
+   (the spotify-live function in the 4ryanwalia GitHub profile repo). */
+const HANDLE = '4ryanwalia';
+export const socials = {
+  handle: HANDLE,
+  instagram: `https://www.instagram.com/${HANDLE}`,
+  pinterest: `https://www.pinterest.com/${HANDLE}/`,
+  spotify: 'https://open.spotify.com/user/31zbuvzhd6mp2cjl3zeed7x2bamu',
+  spotifyCard: 'https://spotify-live-seven.vercel.app/card.svg',
+  links: [
+    { id: 'instagram', name: 'Instagram', href: `https://www.instagram.com/${HANDLE}`, accent: '#f472b6', line: 'photos. mostly proof that i go outside.' },
+    { id: 'pinterest', name: 'Pinterest', href: `https://www.pinterest.com/${HANDLE}/`, accent: '#ff5a66', line: 'the moodboard. dark rooms and one very good dog.' },
+    { id: 'spotify', name: 'Spotify', href: 'https://open.spotify.com/user/31zbuvzhd6mp2cjl3zeed7x2bamu', accent: '#1db954', line: 'what i am listening to. no judging.' },
+    { id: 'github', name: 'GitHub', href: `https://github.com/${HANDLE}`, accent: '#e5e7eb', line: 'where the code lives. some of it even has tests.' },
+    { id: 'linkedin', name: 'LinkedIn', href: `https://www.linkedin.com/in/${HANDLE}`, accent: '#60a5fa', line: 'the professional version of me. he is nice.' },
+  ],
+};
+
+/* Voice: dry, a little dark, never mean. Keep it short. Still no em or en dashes. */
+export const personal = {
+  tagline: 'I find the red flags before someone worse does.',
+  bio: [
+    'By day I am an Analyst at Deloitte. By night I run BugSnaps, where I build security tools, break them, and then fix them out of guilt.',
+    'My whole job is knowing how things fail. Spoiler: everything fails, constantly, and most of the internet is held together by one config file and a prayer.',
+    'I also ship Android apps, train the occasional model, and argue with AI about code like it owes me money.',
+  ],
+  badge: [
+    ['side quest', 'Founder, BugSnaps'],
+    ['clearance', 'Certified Ethical Hacker'],
+    ['threat level', 'mostly harmless'],
+    ['runs on', 'caffeine and spite'],
+  ],
+  obsessions: ['cybersecurity', 'AI', 'OSINT', 'Android', 'building things at 2 am', 'breaking them at 3 am'],
+  beliefs: [
+    'Your password is not strong. It is just long and sad.',
+    "There is no cloud. It is someone else's computer, and they are tired too.",
+    '"Trust me bro" is not an authentication method.',
+    'If it works on the first try, be suspicious.',
+    'AI will not take my job. It will just open more tickets for it.',
+    'Sleep is a vulnerability. Still looking for the patch.',
+  ],
+  listening: 'This card is drawn live from my Spotify the moment you load the page. If it says paused, I am in a meeting. Or asleep. Unlikely.',
+  moodboard: 'Things I pinned instead of sleeping. Dark rooms, bad lighting, and one very good dog.',
+  handleJoke: 'One username on every platform. Yes, that is an OSINT finding. My own tool would find me in about four seconds.',
+  footer: 'built at 2 am, debugged at 3',
+};
 
 /* Topics for the contact picker. `subject` becomes the email subject line. */
 export const contactTopics = [

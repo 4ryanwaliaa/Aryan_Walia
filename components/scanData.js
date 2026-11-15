@@ -1,0 +1,42 @@
+/* Data behind the scroll-driven scan replay.
+   It is the public MyPentest example report: a real scan of BugSnaps' own deliberately
+   vulnerable test app, reduced to paths and worst severity. Source: bugsnaps.in/mypentest/example-report. */
+export const scan = {
+  asset: "demo.vulnerable-app.test",
+  requests: 1741,
+  findings: 194,
+  groups: 41,
+  urgent: 12,
+  identities: 3,
+  nodes: [
+    { path: "/", branch: "/", severity: "high" },
+    { path: "/.env", branch: "/.env", severity: "critical" },
+    { path: "/.git/HEAD", branch: "/.git", severity: "high" },
+    { path: "/.git/config", branch: "/.git", severity: "high" },
+    { path: "/.well-known/openapi.json", branch: "/.well-known", severity: "medium" },
+    { path: "/about", branch: "/about", severity: "medium" },
+    { path: "/account", branch: "/account", severity: "medium" },
+    { path: "/actuator/env", branch: "/actuator", severity: "high" },
+    { path: "/api/orders/1", branch: "/api", severity: "medium" },
+    { path: "/api/orders/2", branch: "/api", severity: "medium" },
+    { path: "/api/products", branch: "/api", severity: "low" },
+    { path: "/api-docs", branch: "/api-docs", severity: "medium" },
+    { path: "/greet", branch: "/greet", severity: "critical" },
+    { path: "/login", branch: "/login", severity: "high" },
+    { path: "/logout", branch: "/logout", severity: "medium" },
+    { path: "/products", branch: "/products", severity: "info" },
+    { path: "/search", branch: "/search", severity: "critical" },
+    { path: "/session", branch: "/session", severity: "high" },
+    { path: "/static/app.js", branch: "/static", severity: "high" },
+    { path: "/static/js/vendor.js", branch: "/static", severity: "medium" },
+    { path: "/tools/ping", branch: "/tools", severity: "critical" },
+  ],
+  headlines: [
+    { severity: "critical", title: "Environment file exposed", path: "/.env" },
+    { severity: "critical", title: "Command injection: shell echo output visible from 'host'", path: "/tools/ping" },
+    { severity: "critical", title: "SQL injection (error-based) in 'q' parameter", path: "/search" },
+    { severity: "critical", title: "Server-Side Template Injection in 'name' (Jinja2/Twig)", path: "/greet" },
+    { severity: "high", title: "Login form submits over plain HTTP", path: "/login" },
+    { severity: "high", title: "End-of-life nginx 1.18.0 no longer receives security fixes", path: "/" },
+  ],
+};
