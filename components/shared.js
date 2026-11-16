@@ -23,6 +23,7 @@ import shotPersonal from '../public/shots/personal.jpg';
 import shotEndpointradar from '../public/shots/endpointradar.jpg';
 import shotPhishlens from '../public/shots/phishlens.jpg';
 import shotRakshak from '../public/shots/rakshak.jpg';
+import posterWakeme from '../public/apps/wakeme-1.jpg';
 
 export const LOGOS = {
   mypentest: mypentestLogo,
@@ -52,6 +53,21 @@ export const SHOTS = {
   rakshak: [{ src: shotRakshak, url: '4ryanwalia.github.io/Rakshak---Car' }],
 };
 
+/* Images shown beside a name while you hover it (hero list, work index). */
+export const PREVIEWS = {
+  bugsnaps: shotBugsnaps,
+  myrecon: shotMyreconHome,
+  wakeme: posterWakeme,
+  personal: shotPersonal,
+  mypentest: shotMypentest,
+  rakshak: shotRakshak,
+  endpointradar: shotEndpointradar,
+  phishlens: shotPhishlens,
+};
+
+/* A product video on my YouTube channel. */
+export const videoUrl = (id) => `https://www.youtube.com/watch?v=${id}`;
+
 export const byId = (id) => projects.find((p) => p.id === id);
 
 /* ─── icons ─── */
@@ -78,13 +94,6 @@ export const StarIcon = ({ className = 'w-4 h-4' }) => (
     <path d="M10 1.6l2.6 5.3 5.8.8-4.2 4.1 1 5.8L10 14.9l-5.2 2.7 1-5.8L1.6 7.7l5.8-.8L10 1.6z" />
   </svg>
 );
-
-/* Tracks the cursor inside a .spotlight element so its border glow follows it. */
-export function trackSpot(e) {
-  const r = e.currentTarget.getBoundingClientRect();
-  e.currentTarget.style.setProperty('--cx', `${e.clientX - r.left}px`);
-  e.currentTarget.style.setProperty('--cy', `${e.clientY - r.top}px`);
-}
 
 /* Project logo, falling back to a monogram tinted with the project's accent. */
 export function ProjectMark({ project, size = 48, rounded = 'rounded-xl', className = '' }) {
@@ -125,14 +134,14 @@ export function ProjectMark({ project, size = 48, rounded = 'rounded-xl', classN
 /* A screenshot dressed in minimal browser chrome. `height` crops it from the top. */
 export function BrowserFrame({ shot, height, className = '', sizes = '(min-width: 1024px) 600px, 100vw', priority = false }) {
   return (
-    <div className={`rounded-xl overflow-hidden border border-[var(--line-strong)] bg-[#0b0c0e] shadow-[0_30px_70px_-25px_rgba(0,0,0,0.9)] ${className}`}>
-      <div className="flex items-center gap-2 px-3 py-2 border-b border-[var(--line)] bg-white/[0.03]">
+    <div className={`plate rounded-[3px] overflow-hidden border border-[var(--text)] shadow-[6px_6px_0_0_rgba(22,21,15,0.16)] ${className}`}>
+      <div className="flex items-center gap-2 px-3 py-2 border-b border-[var(--line)] bg-[var(--tint-1)]">
         <span className="flex gap-1 flex-shrink-0">
-          <span className="w-2 h-2 rounded-full bg-white/15" />
-          <span className="w-2 h-2 rounded-full bg-white/15" />
-          <span className="w-2 h-2 rounded-full bg-white/15" />
+          <span className="w-2 h-2 bg-[var(--tint-3)]" />
+          <span className="w-2 h-2 bg-[var(--tint-3)]" />
+          <span className="w-2 h-2 bg-[var(--tint-3)]" />
         </span>
-        <span className="mono text-[10px] text-[var(--text-faint)] truncate flex-1 text-center rounded-md bg-black/30 px-2 py-0.5">{shot.url}</span>
+        <span className="mono text-[10px] text-[var(--text-faint)] truncate flex-1 text-center rounded-[2px] bg-[var(--tint-2)] px-2 py-0.5">{shot.url}</span>
       </div>
       <div className="relative" style={height ? { height } : undefined}>
         <Image
@@ -150,13 +159,12 @@ export function BrowserFrame({ shot, height, className = '', sizes = '(min-width
 export function StatusPill({ project }) {
   return (
     <span
-      className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 mono text-[10px] tracking-wider whitespace-nowrap"
+      className="inline-flex items-center gap-1.5 rounded-[2px] px-2 py-1 mono text-[10px] tracking-wider whitespace-nowrap"
       style={{ background: `${project.accent}14`, color: project.accent }}
     >
       {project.live && (
         <span className="relative flex h-1.5 w-1.5">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: project.accent }} />
-          <span className="relative inline-flex rounded-full h-1.5 w-1.5" style={{ background: project.accent }} />
+          <span className="relative inline-flex h-1.5 w-1.5" style={{ background: project.accent }} />
         </span>
       )}
       {project.status}
@@ -165,11 +173,11 @@ export function StatusPill({ project }) {
 }
 
 /* Five stars with a fractional fill, e.g. 4.7 fills 94% of the row. */
-export function Stars({ rating, color = '#facc15', className = '' }) {
+export function Stars({ rating, color = 'var(--sev-high)', className = '' }) {
   const pct = Math.max(0, Math.min(100, (rating / 5) * 100));
   return (
     <span className={`relative inline-flex ${className}`} role="img" aria-label={`${rating} out of 5 stars`}>
-      <span className="flex text-white/15">
+      <span className="flex text-[var(--tint-3)]">
         {[0, 1, 2, 3, 4].map((i) => (
           <StarIcon key={i} className="w-3.5 h-3.5" />
         ))}

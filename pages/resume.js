@@ -12,23 +12,24 @@ export default function Resume() {
         <title>Resume · Aryan Walia</title>
         <meta name="description" content="Resume of Aryan Walia, security engineer and product builder: SOC & SIEM, VAPT, OSINT and security automation." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#eae7df" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="min-h-screen bg-[var(--bg)] text-white font-sans">
-        <header className="sticky top-0 z-50 bg-[var(--bg)]/85 backdrop-blur-xl border-b border-[var(--line)]">
+      <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] font-sans">
+        <header className="sticky top-0 z-50 bg-[var(--bg)] border-b border-[var(--line-strong)]">
           <div className="max-w-5xl mx-auto px-5 md:px-8 h-16 flex items-center justify-between gap-4">
             <Link href="/" className="flex items-center gap-2.5 group min-w-0">
               <svg className="w-4 h-4 text-[var(--text-dim)] group-hover:text-[var(--accent)] transition-colors flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
-              <span className="text-sm text-[var(--text-dim)] group-hover:text-white transition-colors truncate">Back to portfolio</span>
+              <span className="text-sm text-[var(--text-dim)] group-hover:text-[var(--text)] transition-colors truncate">Back to portfolio</span>
             </Link>
 
             <a
               href={pdf}
               download="Aryan_Walia_Resume.pdf"
-              className="inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full bg-[var(--accent)] text-[var(--accent-ink)] hover:brightness-110 transition-colors flex-shrink-0"
+              className="btn btn-primary py-2 px-4 text-[13px] flex-shrink-0"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -41,10 +42,10 @@ export default function Resume() {
         <main className="max-w-5xl mx-auto px-5 md:px-8 py-8">
           {/* summary header */}
           <div className="mb-6">
-            <h1 className="display text-4xl md:text-5xl text-white">
-              Aryan <span className="serif text-[var(--accent)]">Walia</span>
+            <h1 className="display text-4xl md:text-5xl text-[var(--text)]">
+              Aryan <span className="text-[var(--accent)]">Walia</span>
             </h1>
-            <p className="text-[var(--text-dim)] mt-3">
+            <p className="lede mt-3">
               Analyst at Deloitte · Founder of BugSnaps · Security, OSINT, web and mobile builds
             </p>
 
@@ -58,7 +59,7 @@ export default function Resume() {
               <a href={profile.github} target="_blank" rel="noopener noreferrer" className="text-[var(--text)] hover:text-[var(--accent)] transition-colors">
                 GitHub
               </a>
-              <a href={profile.myrecon} target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] hover:brightness-125 transition-colors">
+              <a href={profile.myrecon} target="_blank" rel="noopener noreferrer" className="penned">
                 myrecon.xyz
               </a>
               <span className="text-[var(--text-faint)]">{profile.location}</span>
@@ -78,14 +79,14 @@ export default function Resume() {
           </div>
 
           {/* PDF viewer */}
-          <div className="rounded-2xl border border-[var(--line)] overflow-hidden bg-[var(--surface)]">
+          <div className="rounded-[2px] border border-[var(--text)] overflow-hidden bg-[var(--surface)] shadow-[8px_8px_0_0_rgba(22,21,15,0.16)]">
             <object data={pdf} type="application/pdf" className="w-full h-[85vh]" aria-label="Aryan Walia resume PDF">
               <div className="p-10 text-center">
                 <p className="text-[var(--text-dim)] mb-4">Your browser can&apos;t display the PDF inline.</p>
                 <a
                   href={pdf}
                   download="Aryan_Walia_Resume.pdf"
-                  className="inline-flex items-center gap-2 font-semibold px-6 py-3 rounded-full bg-[var(--accent)] text-[var(--accent-ink)] hover:brightness-110 transition-colors"
+                  className="btn btn-primary"
                 >
                   Download the resume
                 </a>

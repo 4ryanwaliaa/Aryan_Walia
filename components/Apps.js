@@ -2,8 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence, useInView, useReducedMotion } from 'framer-motion';
 import { apps, profile } from './portfolioData';
-import { EASE, MaskLine, reveal } from './fx';
-import { ArrowIcon, PlayIcon, ProjectMark, Stars, byId, trackSpot } from './shared';
+import { EASE, reveal } from './fx';
+import SectionHead from './SectionHead';
+import ProjectModal, { PlayGlyph } from './ProjectModal';
+import { ArrowIcon, PlayIcon, ProjectMark, Stars, byId, videoUrl } from './shared';
 
 /* Store artwork from the live Google Play listings. Static imports so the basePath applies. */
 import myrecon1 from '../public/apps/myrecon-1.jpg';
@@ -147,8 +149,8 @@ function MathMission() {
   return (
     <div className="phone" role="group" aria-label="Playable Wake Me math mission demo" tabIndex={0} onKeyDown={onKeyDown}>
       <div className="phone-notch" aria-hidden="true" />
-      <div className="phone-screen">
-        <div className="flex items-center justify-between mono text-[9px] text-white/60 px-1">
+      <div className="phone-screen plate">
+        <div className="flex items-center justify-between mono text-[9px] text-[var(--text-dim)] px-1">
           <span>7:00</span>
           <span>100%</span>
         </div>
@@ -173,8 +175,8 @@ function MathMission() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 12.5l4.5 4.5L19 7.5" />
                 </svg>
               </motion.div>
-              <p className="display text-[26px] text-white mt-5">Good morning.</p>
-              <p className="text-[12px] text-white/60 mt-1.5" aria-live="polite">
+              <p className="display text-[26px] text-[var(--text)] mt-5">Good morning.</p>
+              <p className="text-[12px] text-[var(--text-dim)] mt-1.5" aria-live="polite">
                 Alarm dismissed. You are awake.
               </p>
               <p className="mono text-[10px] text-[#86efac] mt-4">
@@ -194,8 +196,8 @@ function MathMission() {
               className="flex-1 flex flex-col"
             >
               <div className="text-center mt-3">
-                <p className="display text-[34px] text-white leading-none">
-                  7:00 <span className="text-[15px] font-semibold text-white/70">AM</span>
+                <p className="display text-[34px] text-[var(--text)] leading-none">
+                  7:00 <span className="text-[15px] font-semibold text-[var(--text-dim)]">AM</span>
                 </p>
                 <p className="inline-flex items-center gap-1.5 mono text-[9px] tracking-[0.18em] text-[#86efac] mt-2">
                   <span className="alarm-bell" aria-hidden="true">
@@ -207,10 +209,10 @@ function MathMission() {
                 </p>
               </div>
 
-              <div className="rounded-2xl bg-white/[0.06] border border-white/10 p-3 mt-3">
+              <div className="rounded-2xl bg-[var(--tint-2)] border border-[var(--line)] p-3 mt-3">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-[11px] font-semibold text-white whitespace-nowrap">Math mission</span>
-                  <span className="flex rounded-full bg-black/40 p-0.5" role="radiogroup" aria-label="Difficulty">
+                  <span className="text-[11px] font-semibold text-[var(--text)] whitespace-nowrap">Math mission</span>
+                  <span className="flex rounded-full bg-[var(--tint-2)] p-0.5" role="radiogroup" aria-label="Difficulty">
                     {Object.keys(LEVELS).map((l) => (
                       <button
                         key={l}
@@ -222,7 +224,7 @@ function MathMission() {
                           next(l);
                         }}
                         className={`text-[9px] font-semibold px-1.5 py-[3px] rounded-full transition-colors ${
-                          l === level ? 'bg-[#86efac] text-[#0c1a12]' : 'text-white/55 hover:text-white'
+                          l === level ? 'bg-[#86efac] text-[#0c1a12]' : 'text-[var(--text-dim)] hover:text-[var(--text)]'
                         }`}
                       >
                         {l}
@@ -230,16 +232,16 @@ function MathMission() {
                     ))}
                   </span>
                 </div>
-                <p className="display text-[24px] text-white text-center mt-2.5 tabular-nums">{problem.q} = ?</p>
+                <p className="display text-[24px] text-[var(--text)] text-center mt-2.5 tabular-nums">{problem.q} = ?</p>
                 <motion.div
                   animate={state === 'wrong' ? { x: [0, -7, 7, -5, 5, 0] } : { x: 0 }}
                   transition={{ duration: 0.4 }}
                   className={`mt-2.5 h-9 rounded-xl border flex items-center justify-center mono text-[15px] tabular-nums ${
-                    state === 'wrong' ? 'border-[#f87171] text-[#f87171]' : 'border-white/15 text-white'
+                    state === 'wrong' ? 'border-[#f87171] text-[#f87171]' : 'border-[var(--line)] text-[var(--text)]'
                   }`}
                   aria-live="polite"
                 >
-                  {state === 'wrong' ? 'Not quite. Try again' : input || <span className="text-white/30">Your answer</span>}
+                  {state === 'wrong' ? 'Not quite. Try again' : input || <span className="text-[var(--text-faint)]">Your answer</span>}
                 </motion.div>
               </div>
 
@@ -253,7 +255,7 @@ function MathMission() {
                     className={`h-9 rounded-xl text-[14px] font-semibold transition active:scale-95 ${
                       k === 'ok'
                         ? 'bg-[#86efac] text-[#0c1a12] hover:brightness-110'
-                        : 'bg-white/[0.07] text-white hover:bg-white/[0.14]'
+                        : 'bg-[var(--tint-2)] text-[var(--text)] hover:bg-[var(--tint-3)]'
                     }`}
                   >
                     {k === 'del' ? '⌫' : k === 'ok' ? '✓' : k}
@@ -274,9 +276,9 @@ function StoreButton({ url, accent }) {
       <PlayIcon className="w-5 h-5" />
       <span className="text-left leading-none">
         <span className="block mono text-[8px] tracking-[0.18em] text-[var(--text-faint)]">GET IT ON</span>
-        <span className="block text-[15px] font-semibold text-white mt-1">Google Play</span>
+        <span className="block text-[15px] font-semibold text-[var(--text)] mt-1">Google Play</span>
       </span>
-      <ArrowIcon className="w-3.5 h-3.5 ml-1 text-[var(--text-faint)] group-hover:text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+      <ArrowIcon className="w-3.5 h-3.5 ml-1 text-[var(--text-faint)] group-hover:text-[var(--text)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
     </a>
   );
 }
@@ -287,39 +289,33 @@ function AppCard({ app, index, onOpen, children }) {
   return (
     <motion.article
       {...reveal(index * 0.08)}
-      onMouseMove={trackSpot}
       style={{ '--spot': `${app.accent}99` }}
-      className="card spotlight relative overflow-hidden p-6 md:p-8 flex flex-col"
+      className="card relative overflow-hidden p-6 md:p-8 flex flex-col"
     >
-      <div
-        className="pointer-events-none absolute -top-32 -left-32 w-96 h-96 rounded-full"
-        style={{ background: `radial-gradient(circle, ${app.accent}14, transparent 65%)` }}
-        aria-hidden="true"
-      />
 
       {/* store header */}
       <div className="relative flex items-start gap-4">
-        <ProjectMark project={project} size={68} rounded="rounded-[18px]" className="shadow-[0_12px_30px_-10px_rgba(0,0,0,0.9)] ring-1 ring-white/10" />
+        <ProjectMark project={project} size={68} rounded="rounded-[18px]" className="border border-[var(--text)]" />
         <div className="min-w-0 flex-1">
-          <h3 className="display text-2xl md:text-[28px] text-white leading-[1.05]">{app.storeName}</h3>
+          <h3 className="display text-2xl md:text-[28px] text-[var(--text)] leading-[1.05]">{app.storeName}</h3>
           <p className="text-[13px] text-[var(--text-dim)] mt-1.5">Aryan Walia · {app.category}</p>
         </div>
       </div>
 
-      <dl className="relative grid grid-cols-3 mt-6 rounded-2xl border border-[var(--line)] bg-black/25 divide-x divide-[var(--line)]">
-        <div className="px-3 py-3 text-center">
-          <dd className="flex items-center justify-center gap-1.5 text-white font-semibold">
+      <dl className="relative grid grid-cols-3 mt-6 rounded-[2px] border border-[var(--line-strong)] bg-[var(--tint-1)] divide-x divide-[var(--line-strong)] text-[13px] sm:text-[15px]">
+        <div className="px-1.5 sm:px-3 py-3 text-center">
+          <dd className="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 text-[var(--text)] font-semibold">
             {app.rating}
             <Stars rating={app.rating} />
           </dd>
           <dt className="mono text-[9px] uppercase tracking-[0.14em] text-[var(--text-faint)] mt-1">{app.reviews} reviews</dt>
         </div>
         <div className="px-3 py-3 text-center">
-          <dd className="text-white font-semibold">{app.installs}</dd>
+          <dd className="text-[var(--text)] font-semibold">{app.installs}</dd>
           <dt className="mono text-[9px] uppercase tracking-[0.14em] text-[var(--text-faint)] mt-1">Installs</dt>
         </div>
-        <div className="px-3 py-3 text-center">
-          <dd className="text-white font-semibold whitespace-nowrap">{app.updated}</dd>
+        <div className="px-1.5 sm:px-3 py-3 text-center">
+          <dd className="text-[var(--text)] font-semibold whitespace-nowrap">{app.updated}</dd>
           <dt className="mono text-[9px] uppercase tracking-[0.14em] text-[var(--text-faint)] mt-1">Updated</dt>
         </div>
       </dl>
@@ -339,13 +335,19 @@ function AppCard({ app, index, onOpen, children }) {
 
       {app.review && (
         <figure className="relative mt-5 pl-4 border-l-2" style={{ borderColor: app.accent }}>
-          <blockquote className="serif text-xl text-white leading-snug">&ldquo;{app.review.quote}&rdquo;</blockquote>
+          <blockquote className="serif text-xl text-[var(--text)] leading-snug not-italic">&ldquo;{app.review.quote}&rdquo;</blockquote>
           <figcaption className="mono text-[10px] text-[var(--text-faint)] mt-1.5">{app.review.by}</figcaption>
         </figure>
       )}
 
       <div className="relative flex flex-wrap items-center gap-3 mt-7 pt-6 border-t border-[var(--line)]">
         <StoreButton url={app.url} accent={app.accent} />
+        {project.video && (
+          <a href={videoUrl(project.video.id)} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
+            <PlayGlyph />
+            {project.video.label}
+          </a>
+        )}
         <button type="button" onClick={() => onOpen(project)} className="btn btn-ghost">
           How it works
         </button>
@@ -354,39 +356,29 @@ function AppCard({ app, index, onOpen, children }) {
   );
 }
 
-export default function Apps({ onOpen }) {
+export default function Apps() {
   const [myrecon, wakeme] = apps;
   const [showPosters, setShowPosters] = useState(false);
+  const [open, setOpen] = useState(null);
+  const onOpen = setOpen;
 
   return (
-    <section id="apps" className="scroll-mt-24 pb-24 md:pb-32">
-      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
-        <div>
-          <span className="eyebrow">In your pocket</span>
-          <h2 className="display text-5xl md:text-7xl mt-5 text-white">
-            <MaskLine>Shipped to</MaskLine>
-            <MaskLine delay={0.08}>
-              <span className="serif text-[var(--accent)]">Google Play.</span>
-            </MaskLine>
-          </h2>
-        </div>
-        <motion.div {...reveal(0.1)} className="max-w-sm">
-          <p className="text-[var(--text-dim)] leading-relaxed">
-            Two Android apps, designed, built and published by me, with real installs and real reviews. Both were last updated
-            in November 2026.
-          </p>
-          <a
-            href={profile.playDeveloper}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mono inline-flex items-center gap-2 text-xs text-[var(--text-faint)] hover:text-[var(--accent)] transition-colors mt-3"
-          >
-            <PlayIcon className="w-3.5 h-3.5" />
-            My developer page
-            <ArrowIcon className="w-3 h-3" />
-          </a>
-        </motion.div>
-      </div>
+    <section id="apps" className="scroll-mt-20 pb-24 md:pb-32">
+      <SectionHead
+        index="02"
+        title="Apps"
+        line="Two Android apps on Google Play, designed, built and published by me. Real installs, real reviews, both updated in November 2026."
+      >
+        <a href={profile.playDeveloper} target="_blank" rel="noopener noreferrer" className="work-link">
+          <PlayIcon className="w-3.5 h-3.5" />
+          My developer page
+          <ArrowIcon className="w-3 h-3" />
+        </a>
+        <a href={profile.myrecon} target="_blank" rel="noopener noreferrer" className="work-link">
+          MyRecon on the web: myrecon.xyz
+          <ArrowIcon className="w-3 h-3" />
+        </a>
+      </SectionHead>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <AppCard app={myrecon} index={0} onOpen={onOpen}>
@@ -406,7 +398,7 @@ export default function Apps({ onOpen }) {
                 </motion.div>
               )}
             </AnimatePresence>
-            <div className="flex rounded-full border border-[var(--line-strong)] bg-black/30 p-1 mt-6" role="group" aria-label="Choose what to show">
+            <div className="flex rounded-[2px] border border-[var(--line-strong)] bg-[var(--tint-1)] p-1 mt-6" role="group" aria-label="Choose what to show">
               {[
                 [false, 'Play the demo'],
                 [true, 'Store screenshots'],
@@ -416,8 +408,8 @@ export default function Apps({ onOpen }) {
                   type="button"
                   aria-pressed={showPosters === value}
                   onClick={() => setShowPosters(value)}
-                  className={`text-[12px] font-semibold px-4 py-1.5 rounded-full transition-colors ${
-                    showPosters === value ? 'bg-white text-black' : 'text-[var(--text-dim)] hover:text-white'
+                  className={`text-[12px] font-semibold px-4 py-1.5 rounded-[1px] transition-colors ${
+                    showPosters === value ? 'bg-[var(--text)] text-[var(--bg)]' : 'text-[var(--text-dim)] hover:text-[var(--text)]'
                   }`}
                 >
                   {label}
@@ -430,6 +422,7 @@ export default function Apps({ onOpen }) {
           </div>
         </AppCard>
       </div>
+      <AnimatePresence>{open && <ProjectModal project={open} onClose={() => setOpen(null)} />}</AnimatePresence>
     </section>
   );
 }

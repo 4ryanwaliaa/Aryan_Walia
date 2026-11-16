@@ -11,7 +11,7 @@
     "export": "next build && next export",
     "deploy": "next build && type NUL > out/.nojekyll && npx gh-pages -d out",
     "pins": "node scripts/fetch-pins.mjs",
-    "prebuild": "node scripts/fetch-pins.mjs"
+    "prebuild": "node scripts/fetch-pins.mjs && node scripts/fetch-social.mjs"
   },
   "dependencies": {
     "framer-motion": "^12.23.3",

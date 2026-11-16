@@ -7,20 +7,16 @@ import { ProjectMark } from './shared';
 
 const SECTIONS = [
   ['top', 'Top of the page'],
-  ['proof', 'Proof: the real deal'],
-  ['ecosystem', 'Work: the BugSnaps orbit'],
   ['apps', 'Apps on Google Play'],
-  ['case-studies', 'Case studies'],
-  ['work', 'More builds'],
-  ['capabilities', 'What I build'],
-  ['journey', 'Track record'],
+  ['work', 'Work: MyPentest and the BugSnaps tools'],
+  ['journey', 'Experience'],
   ['contact', 'Contact'],
 ];
 
 const openTab = (url) => window.open(url, '_blank', 'noopener,noreferrer');
 
 /* A keyboard-first way around the page. Ctrl+K or / opens it. */
-export default function CommandPalette({ open, setOpen }) {
+export default function CommandPalette({ open, setOpen, onXray }) {
   const router = useRouter();
   const [query, setQuery] = useState('');
   const [cursor, setCursor] = useState(0);
@@ -49,6 +45,16 @@ export default function CommandPalette({ open, setOpen }) {
           project: p,
           run: () => openTab(p.live),
         })),
+      ...(onXray
+        ? [
+            {
+              group: 'Actions',
+              label: 'X-ray this page',
+              hint: 'X',
+              run: () => onXray(),
+            },
+          ]
+        : []),
       {
         group: 'Actions',
         label: 'Copy my email address',
@@ -76,13 +82,13 @@ export default function CommandPalette({ open, setOpen }) {
           a.remove();
         },
       },
-      { group: 'Actions', label: 'About me: music, moodboard, opinions', hint: '/about', run: () => router.push('/about') },
+      { group: 'Actions', label: 'About me: music, videos, photos', hint: '/about', run: () => router.push('/about') },
       { group: 'Actions', label: 'View my resume', hint: '/resume', run: () => router.push('/resume') },
       { group: 'Actions', label: 'Open LinkedIn', hint: 'linkedin.com/in/4ryanwalia', run: () => openTab(profile.linkedin) },
       { group: 'Actions', label: 'Open GitHub', hint: 'github.com/4ryanwalia', run: () => openTab(profile.github) },
       { group: 'Actions', label: 'Open my Google Play developer page', hint: 'play.google.com', run: () => openTab(profile.playDeveloper) },
     ],
-    [router]
+    [router, onXray]
   );
 
   const results = useMemo(() => {
@@ -166,7 +172,7 @@ export default function CommandPalette({ open, setOpen }) {
           className="fixed inset-0 z-[250] flex items-start justify-center px-4 pt-[12vh]"
           onClick={() => setOpen(false)}
         >
-          <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-[var(--scrim)]" />
           <motion.div
             role="dialog"
             aria-modal="true"
@@ -177,7 +183,7 @@ export default function CommandPalette({ open, setOpen }) {
             transition={{ duration: 0.25, ease: EASE }}
             onClick={(e) => e.stopPropagation()}
             onKeyDown={onKeyDown}
-            className="relative w-full max-w-xl rounded-2xl border border-[var(--line-strong)] bg-[#0d0e10]/95 backdrop-blur-xl shadow-[0_40px_120px_-20px_rgba(0,0,0,0.9)] overflow-hidden"
+            className="relative w-full max-w-xl rounded-[2px] border border-[var(--text)] bg-[var(--surface)] shadow-[10px_10px_0_0_var(--text)] overflow-hidden"
           >
             <div className="flex items-center gap-3 px-4 border-b border-[var(--line)]">
               <span className="mono text-[var(--accent)] text-sm" aria-hidden="true">
@@ -196,7 +202,7 @@ export default function CommandPalette({ open, setOpen }) {
                 aria-controls="palette-list"
                 aria-autocomplete="list"
                 aria-label="Search commands"
-                className="palette-input flex-1 bg-transparent py-4 text-[15px] text-white placeholder:text-[var(--text-faint)]"
+                className="palette-input flex-1 bg-transparent py-4 text-[15px] text-[var(--text)] placeholder:text-[var(--text-faint)]"
               />
               <kbd className="kbd">Esc</kbd>
             </div>
@@ -219,8 +225,8 @@ export default function CommandPalette({ open, setOpen }) {
                       aria-selected={on}
                       onMouseMove={() => setCursor(i)}
                       onClick={() => run(c)}
-                      className={`flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-colors ${
-                        on ? 'bg-[var(--accent)]/[0.12] text-white' : 'text-[var(--text-dim)]'
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-[2px] cursor-pointer transition-colors ${
+                        on ? 'bg-[var(--accent-soft)] text-[var(--text)]' : 'text-[var(--text-dim)]'
                       }`}
                     >
                       {c.project ? (

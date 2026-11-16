@@ -28,34 +28,33 @@ export const now = {
   line: 'My full-time role. Everything else on this page is what I build around it.',
 };
 
-/* Words the hero cycles through after "Right now I build" */
-export const heroWords = ['pentest engines', 'OSINT tools', 'Android apps', 'web platforms', 'AI models'];
-
-/* Checkable facts. Every one links to a third-party page or a live product.
-   `count` animates up to the number; `value` is shown as-is. */
-export const proofs = [
-  { count: 1, suffix: 'K+', label: 'Installs', note: 'MyRecon on Google Play', href: PLAY_MYRECON },
-  { count: 4.7, decimals: 1, star: true, label: 'Store rating', note: 'Across 50 verified reviews', href: PLAY_MYRECON },
-  { count: 2, label: 'Android apps', note: 'Live on Google Play', href: 'https://play.google.com/store/apps/developer?id=Aryan+Walia' },
-  { count: 4, label: 'Security tools', note: 'Live in the BugSnaps toolkit', href: 'https://bugsnaps.in/products' },
-  { count: 56, label: 'Automated checks', note: 'In every MyPentest assessment', href: 'https://bugsnaps.in/mypentest' },
-  { value: 'CEH', label: 'Certified', note: 'Ethical Hacker, EC-Council', href: 'https://www.linkedin.com/in/4ryanwalia' },
+/* What the hero says I build, in this order. `shot` is a key in shared.js PREVIEWS (shown on hover). */
+export const heroBuild = [
+  { label: 'BugSnaps', href: '#work', shot: 'bugsnaps' },
+  { label: 'MyRecon', href: '#apps', shot: 'myrecon' },
+  { label: 'Android apps', href: '#apps', shot: 'wakeme' },
+  { label: 'web platforms', href: '#work', shot: 'personal' },
+  { label: 'security tools', href: '#work', shot: 'mypentest' },
+  { label: 'AI models', href: '#work', shot: 'rakshak' },
+  { label: 'automations', href: '#journey' },
 ];
-export const proofsAsOf = 'Store figures from Google Play, checked November 2026.';
+
+
 
 /* ─── PROJECTS ───
-   `ecosystem: true` puts a project in the BugSnaps orbit; `app: true` puts it on the Google Play shelf;
+   `app: true` marks a project that is also on the Google Play shelf (see `apps`). Work.js picks the rest by id;
    the rest go in the builds grid. `live` = a URL anyone can open right now. */
 export const projects = [
   {
     id: 'mypentest',
+    video: { id: 'wZM29H-GTvU', label: '60 second demo' },
     ecosystem: true,
     kind: 'Web & API security',
     name: 'MyPentest',
     tagline: 'Automated penetration testing',
     blurb:
       "A hosted pentesting platform that maps a web app's attack surface, then tests it: broken access control, injection, session flaws, exposed secrets and known CVEs, with evidence, a CVSS score and a fix for every finding.",
-    accent: '#f97366',
+    accent: '#c0321b',
     live: 'https://bugsnaps.in/mypentest',
     liveLabel: 'Try MyPentest free',
     status: 'BETA · FREE PLAN',
@@ -79,13 +78,14 @@ export const projects = [
   },
   {
     id: 'myrecon',
+    video: { id: '9_1TIvkGKhs', label: 'Tutorial' },
     ecosystem: true,
     kind: 'Digital footprint',
     name: 'MyRecon',
     tagline: 'OSINT on web, terminal and Android',
     blurb:
       'Turns a username, email, domain or IP into a structured public footprint. It runs as a website, a terminal client and an Android app that is live on Google Play.',
-    accent: '#22d3ee',
+    accent: '#0a6f88',
     live: 'https://myrecon.xyz',
     liveLabel: 'Open myrecon.xyz',
     android: PLAY_MYRECON,
@@ -112,13 +112,14 @@ export const projects = [
   },
   {
     id: 'endpointradar',
+    video: { id: 'oEqp80naqvY', label: 'Watch it run' },
     ecosystem: true,
     kind: 'Endpoint security',
     name: 'EndpointRadar',
     tagline: 'Windows posture scanner',
     blurb:
       'Finds out how exposed a Windows machine really is. An open-source scanner audits it locally, then a free browser workspace scores the risk, explains each finding and tracks it across devices.',
-    accent: '#a78bfa',
+    accent: '#5b3cc4',
     live: 'https://bugsnaps.in/endpointradar',
     liveLabel: 'Open EndpointRadar',
     github: 'https://github.com/4ryanwalia/EndpointRadar',
@@ -141,13 +142,14 @@ export const projects = [
   },
   {
     id: 'phishlens',
+    video: { id: 'Q4S0Y2LtcUA', label: 'Watch it run' },
     ecosystem: true,
     kind: 'Link safety',
     name: 'PhishLens',
     tagline: 'Check a link before you click',
     blurb:
       'A free phishing link checker that inspects a suspicious URL without ever opening it. The first review runs in your own browser, and outside checks run only when you choose them.',
-    accent: '#34d399',
+    accent: '#0d7a52',
     live: 'https://bugsnaps.in/phishing-detector',
     liveLabel: 'Check a link free',
     status: 'LIVE · FREE',
@@ -175,7 +177,7 @@ export const projects = [
     tagline: 'Find. Fix. Fortify.',
     blurb:
       'The security company I founded, and the platform I built for it: four products, expert-led pentesting services, pricing, guides and research, all on a fast, SEO-tuned Next.js site with a strict security posture.',
-    accent: '#60a5fa',
+    accent: '#1b49c9',
     live: 'https://bugsnaps.in',
     liveLabel: 'Open bugsnaps.in',
     status: 'FOUNDER',
@@ -203,7 +205,7 @@ export const projects = [
     tagline: 'Digital footprint cleanup',
     blurb:
       'Helps find the accounts and listings tied to your identity, then supports their removal through official deletion flows.',
-    accent: '#e879f9',
+    accent: '#a3279f',
     live: 'https://bugsnaps.in/personal',
     liveLabel: 'Open BugSnaps Personal',
     status: 'LIVE',
@@ -221,13 +223,14 @@ export const projects = [
   },
   {
     id: 'wakeme',
+    video: { id: 'OayBdXlBpsM', label: 'Explainer' },
     app: true,
     category: 'Mobile',
     name: 'Wake Me',
     tagline: 'Loud math alarm clock on Google Play',
     blurb:
       'An Android alarm clock for heavy sleepers that I designed, built and shipped to Google Play. You pick a mission, such as solving a math problem or shaking the phone, and the alarm only stops when you finish it.',
-    accent: '#86efac',
+    accent: '#15733f',
     live: PLAY_WAKEME,
     liveLabel: 'Get it on Google Play',
     status: 'ON GOOGLE PLAY',
@@ -254,7 +257,7 @@ export const projects = [
     tagline: 'AI road accident detection',
     blurb:
       'Detects road accidents from camera images with PyTorch transfer learning, exported to ONNX so the demo runs entirely in your browser. No server, no upload.',
-    accent: '#fb923c',
+    accent: '#b35c06',
     live: 'https://4ryanwalia.github.io/Rakshak---Car/',
     liveLabel: 'Try the browser demo',
     github: 'https://github.com/4ryanwalia/Rakshak---Car',
@@ -279,7 +282,7 @@ export const projects = [
     tagline: 'Malicious URL classifier',
     blurb:
       'A machine-learning classifier that extracts 30+ lexical and host-based features from a URL and scores how likely it is to be malicious.',
-    accent: '#a5b4fc',
+    accent: '#414e9e',
     github: 'https://github.com/4ryanwalia/Phishing-detection',
     status: 'OPEN SOURCE',
     tech: ['Python', 'scikit-learn', 'Random Forest', 'Pandas'],
@@ -308,7 +311,7 @@ export const apps = [
     installs: '1K+',
     updated: 'Nov 8, 2026',
     url: PLAY_MYRECON,
-    accent: '#22d3ee',
+    accent: '#0a6f88',
     pitch: 'Find forgotten accounts, check breaches and inspect suspicious links, from a phone, with no account or sign-up.',
     features: ['Username search', 'Deep Search', 'Email breach check', 'Password leak check', 'WHOIS and DNS', 'QR and link checker', 'Device security check', 'Breach Files'],
     review: { quote: 'the best osint app for Android it is very good', by: 'Google Play review, November 2026' },
@@ -322,56 +325,10 @@ export const apps = [
     installs: '100+',
     updated: 'Nov 10, 2026',
     url: PLAY_WAKEME,
-    accent: '#86efac',
+    accent: '#15733f',
     pitch: 'An alarm for heavy sleepers. Pick a mission, and the sound only stops when you finish it.',
     features: ['Math alarm', 'Shake alarm', 'Wake Check', 'Quick naps', 'Roast Mode', 'Dream Journal', 'Daily goals', 'Works offline'],
   },
-];
-
-/* ─── WHAT I BUILD ─── `proof` entries are project ids, or { label, href } for a specific link */
-export const capabilities = [
-  {
-    id: 'web',
-    title: 'Web platforms',
-    line: 'Fast, SEO-ready sites and full-stack apps with auth, payments and dashboards.',
-    stack: ['Next.js', 'React', 'TypeScript', 'Tailwind', 'Flask', 'Firebase', 'Razorpay'],
-    proof: ['bugsnaps', 'phishlens'],
-    accent: '#60a5fa',
-  },
-  {
-    id: 'security',
-    title: 'Security & pentesting',
-    line: 'Web, API, network and cloud assessments, with clear reports, real fixes and a retest.',
-    stack: ['Burp Suite', 'Nessus', 'Nmap', 'Metasploit', 'OWASP WSTG', 'PTES', 'MITRE ATT&CK'],
-    proof: ['mypentest', 'endpointradar'],
-    accent: '#f97366',
-  },
-  {
-    id: 'mobile',
-    title: 'Mobile apps',
-    line: 'Android apps taken from first sketch to a live Google Play listing, then kept updated.',
-    stack: ['Kotlin', 'Java', 'Android', 'Firebase', 'Play Console'],
-    proof: [
-      { label: 'MyRecon for Android', href: PLAY_MYRECON },
-      { label: 'Wake Me', href: PLAY_WAKEME },
-    ],
-    accent: '#22d3ee',
-  },
-  {
-    id: 'ai',
-    title: 'AI & automation',
-    line: 'ML models, AI-assisted workflows and Python automation that removes the busywork.',
-    stack: ['Python', 'PyTorch', 'ONNX', 'scikit-learn', 'LLM APIs', 'GitHub Actions'],
-    proof: ['rakshak', 'phishing'],
-    accent: '#c8f560',
-  },
-];
-
-export const workflow = [
-  { n: '01', t: 'Scope', d: 'A short call to pin down the goal, the users and what done looks like.' },
-  { n: '02', t: 'Build', d: 'Working software early, shared often, so feedback lands while it is cheap.' },
-  { n: '03', t: 'Secure', d: 'Every build gets tested the way an attacker would test it.' },
-  { n: '04', t: 'Ship', d: 'Deployed, documented and handed over, with support after launch.' },
 ];
 
 /* ─── EXPERIENCE ─── */
@@ -446,42 +403,28 @@ export const socials = {
   pinterest: `https://www.pinterest.com/${HANDLE}/`,
   spotify: 'https://open.spotify.com/user/31zbuvzhd6mp2cjl3zeed7x2bamu',
   spotifyCard: 'https://spotify-live-seven.vercel.app/card.svg',
+  youtube: `https://www.youtube.com/@${HANDLE}`,
+  github: `https://github.com/${HANDLE}`,
   links: [
-    { id: 'instagram', name: 'Instagram', href: `https://www.instagram.com/${HANDLE}`, accent: '#f472b6', line: 'photos. mostly proof that i go outside.' },
-    { id: 'pinterest', name: 'Pinterest', href: `https://www.pinterest.com/${HANDLE}/`, accent: '#ff5a66', line: 'the moodboard. dark rooms and one very good dog.' },
-    { id: 'spotify', name: 'Spotify', href: 'https://open.spotify.com/user/31zbuvzhd6mp2cjl3zeed7x2bamu', accent: '#1db954', line: 'what i am listening to. no judging.' },
-    { id: 'github', name: 'GitHub', href: `https://github.com/${HANDLE}`, accent: '#e5e7eb', line: 'where the code lives. some of it even has tests.' },
-    { id: 'linkedin', name: 'LinkedIn', href: `https://www.linkedin.com/in/${HANDLE}`, accent: '#60a5fa', line: 'the professional version of me. he is nice.' },
+    { id: 'instagram', name: 'Instagram', href: `https://www.instagram.com/${HANDLE}`, accent: '#b32b6b', line: 'Photos and everyday life.' },
+    { id: 'pinterest', name: 'Pinterest', href: `https://www.pinterest.com/${HANDLE}/`, accent: '#c62828', line: 'Photos I take and post.' },
+    { id: 'spotify', name: 'Spotify', href: 'https://open.spotify.com/user/31zbuvzhd6mp2cjl3zeed7x2bamu', accent: '#0f7a3f', line: 'What I am listening to.' },
+    { id: 'github', name: 'GitHub', href: `https://github.com/${HANDLE}`, accent: '#16150f', line: 'My code and open source projects.' },
+    { id: 'youtube', name: 'YouTube', href: `https://www.youtube.com/@${HANDLE}`, accent: '#c4302b', line: 'Product demos and tutorials.' },
   ],
 };
 
-/* Voice: dry, a little dark, never mean. Keep it short. Still no em or en dashes. */
+/* Voice: plain and friendly. Keep it short. Still no em or en dashes. */
 export const personal = {
-  tagline: 'I find the red flags before someone worse does.',
+  tagline: 'I like finding out how things break, then building them so they do not.',
   bio: [
-    'By day I am an Analyst at Deloitte. By night I run BugSnaps, where I build security tools, break them, and then fix them out of guilt.',
-    'My whole job is knowing how things fail. Spoiler: everything fails, constantly, and most of the internet is held together by one config file and a prayer.',
-    'I also ship Android apps, train the occasional model, and argue with AI about code like it owes me money.',
+    'I am an Analyst at Deloitte, and I run BugSnaps, where I build and maintain a small set of security tools.',
+    'Most of my work comes down to understanding how systems fail and making them harder to break.',
+    'Outside of that I build Android apps, train the occasional machine learning model and keep a few side projects going.',
   ],
-  badge: [
-    ['side quest', 'Founder, BugSnaps'],
-    ['clearance', 'Certified Ethical Hacker'],
-    ['threat level', 'mostly harmless'],
-    ['runs on', 'caffeine and spite'],
-  ],
-  obsessions: ['cybersecurity', 'AI', 'OSINT', 'Android', 'building things at 2 am', 'breaking them at 3 am'],
-  beliefs: [
-    'Your password is not strong. It is just long and sad.',
-    "There is no cloud. It is someone else's computer, and they are tired too.",
-    '"Trust me bro" is not an authentication method.',
-    'If it works on the first try, be suspicious.',
-    'AI will not take my job. It will just open more tickets for it.',
-    'Sleep is a vulnerability. Still looking for the patch.',
-  ],
-  listening: 'This card is drawn live from my Spotify the moment you load the page. If it says paused, I am in a meeting. Or asleep. Unlikely.',
-  moodboard: 'Things I pinned instead of sleeping. Dark rooms, bad lighting, and one very good dog.',
-  handleJoke: 'One username on every platform. Yes, that is an OSINT finding. My own tool would find me in about four seconds.',
-  footer: 'built at 2 am, debugged at 3',
+  listening: 'This updates live from my Spotify. When nothing is playing, it shows the last song I played.',
+  photos: 'Pictures I took and posted to Pinterest. Only my own uploads, no saves.',
+  footer: 'designed and built by me',
 };
 
 /* Topics for the contact picker. `subject` becomes the email subject line. */
@@ -492,4 +435,15 @@ export const contactTopics = [
   { id: 'ai', label: 'AI or automation', subject: 'AI / automation project' },
   { id: 'role', label: 'A full-time role', subject: 'Role opportunity' },
   { id: 'other', label: 'Something else', subject: 'Hello' },
+];
+
+/* The credentials row under the hero. The store figures are read from `apps`, so they can only
+   ever say what the store cards say. */
+const [storeMyrecon] = apps;
+export const credentials = [
+  { k: 'Day job', v: `${now.role}, ${now.org}`, href: profile.linkedin },
+  { k: 'On Google Play', v: `${apps.length} apps`, sub: 'MyRecon and Wake Me', href: profile.playDeveloper },
+  { k: 'Installs', v: storeMyrecon.installs, sub: 'MyRecon', href: storeMyrecon.url },
+  { k: 'Store rating', v: String(storeMyrecon.rating), star: true, sub: `${storeMyrecon.reviews} reviews`, href: storeMyrecon.url },
+  { k: 'Certified', v: 'CEH', sub: 'EC-Council', href: profile.linkedin },
 ];

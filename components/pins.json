@@ -1,168 +1,323 @@
 {
   "user": "4ryanwalia",
   "profile": "https://www.pinterest.com/4ryanwalia/",
-  "fetched": "2026-11-14",
+  "created": "https://www.pinterest.com/4ryanwalia/_created/",
+  "fetched": "2026-11-16",
   "pins": [
     {
+      "id": "760967668380758488",
       "url": "https://www.pinterest.com/pin/760967668380758488/",
       "img": "https://i.pinimg.com/474x/b0/e4/9e/b0e49e16ca25a5082c7cbb871770744c.jpg",
+      "big": "https://i.pinimg.com/736x/b0/e4/9e/b0e49e16ca25a5082c7cbb871770744c.jpg",
       "w": 236,
       "h": 133,
-      "date": "2026-10-22"
+      "date": "2026-10-22",
+      "title": "Tape to back",
+      "alt": "A person's back and upper arm, revealing a tattoo of a person in motion on the arm. There is duct tape on the person's shoulder blade.",
+      "full": "https://i.pinimg.com/originals/b0/e4/9e/b0e49e16ca25a5082c7cbb871770744c.jpg"
     },
     {
+      "id": "760967668380758485",
+      "url": "https://www.pinterest.com/pin/760967668380758485/",
+      "img": "https://i.pinimg.com/474x/ce/cc/e5/cecce5614c2d5b4d5c49a92df2d3e514.jpg",
+      "big": "https://i.pinimg.com/736x/ce/cc/e5/cecce5614c2d5b4d5c49a92df2d3e514.jpg",
+      "w": 235,
+      "h": 132,
+      "date": "2026-10-22",
+      "title": "Dark mysterious aesthetic outfit",
+      "alt": "A person wearing a dark top and a brown jacket, holding a flashlight. The background is dark and indistinct.",
+      "full": "https://i.pinimg.com/originals/ce/cc/e5/cecce5614c2d5b4d5c49a92df2d3e514.jpg"
+    },
+    {
+      "id": "760967668380648511",
       "url": "https://www.pinterest.com/pin/760967668380648511/",
       "img": "https://i.pinimg.com/474x/c0/1e/45/c01e450fc347c6671e5209b447f353ee.jpg",
+      "big": "https://i.pinimg.com/736x/c0/1e/45/c01e450fc347c6671e5209b447f353ee.jpg",
       "w": 236,
       "h": 184,
-      "date": "2026-10-16"
+      "date": "2026-10-16",
+      "title": "Matching pfps ghost and pals",
+      "alt": "A person wearing a sleeveless black shirt, standing in front of a wall covered with various black and white comic book panels. The person has a tattoo on their upper arm.",
+      "full": "https://i.pinimg.com/originals/c0/1e/45/c01e450fc347c6671e5209b447f353ee.jpg"
     },
     {
+      "id": "760967668380546064",
       "url": "https://www.pinterest.com/pin/760967668380546064/",
       "img": "https://i.pinimg.com/474x/2a/16/6f/2a166f169bf5bc6685b6f0082dce046c.jpg",
+      "big": "https://i.pinimg.com/736x/2a/16/6f/2a166f169bf5bc6685b6f0082dce046c.jpg",
       "w": 235,
       "h": 132,
-      "date": "2026-10-10"
+      "date": "2026-10-10",
+      "title": "Ootd",
+      "alt": "A person wearing a dark hoodie and a gray undershirt, walking down a staircase. The stairs have yellow lines on them, and the person is holding a phone in one hand.",
+      "full": "https://i.pinimg.com/originals/2a/16/6f/2a166f169bf5bc6685b6f0082dce046c.jpg"
     },
     {
+      "id": "760967668380546063",
       "url": "https://www.pinterest.com/pin/760967668380546063/",
       "img": "https://i.pinimg.com/474x/b9/0a/dc/b90adc92903240d8351bf97870a5165d.jpg",
+      "big": "https://i.pinimg.com/736x/b9/0a/dc/b90adc92903240d8351bf97870a5165d.jpg",
       "w": 235,
       "h": 132,
-      "date": "2026-10-10"
+      "date": "2026-10-10",
+      "title": "Ootd",
+      "alt": "A person sitting at a desk with a laptop and an open notebook. The notebook contains handwritten notes, and there is a mouse on the desk.",
+      "full": "https://i.pinimg.com/originals/b9/0a/dc/b90adc92903240d8351bf97870a5165d.jpg"
     },
     {
+      "id": "760967668380546061",
       "url": "https://www.pinterest.com/pin/760967668380546061/",
       "img": "https://i.pinimg.com/474x/36/fe/bc/36febc2a2727fec8e144cb700d8d1d29.jpg",
+      "big": "https://i.pinimg.com/736x/36/fe/bc/36febc2a2727fec8e144cb700d8d1d29.jpg",
       "w": 234,
       "h": 132,
-      "date": "2026-10-10"
+      "date": "2026-10-10",
+      "title": "Ootd",
+      "alt": "A person standing inside an elevator. The individual is wearing a gray hoodie over a white shirt with text on it and dark pants.",
+      "full": "https://i.pinimg.com/originals/36/fe/bc/36febc2a2727fec8e144cb700d8d1d29.jpg"
     },
     {
+      "id": "760967668380546058",
       "url": "https://www.pinterest.com/pin/760967668380546058/",
       "img": "https://i.pinimg.com/474x/07/8f/00/078f00962fa5f8b37f249dc782e05cc9.jpg",
+      "big": "https://i.pinimg.com/736x/07/8f/00/078f00962fa5f8b37f249dc782e05cc9.jpg",
       "w": 235,
       "h": 132,
-      "date": "2026-10-10"
+      "date": "2026-10-10",
+      "title": "Ootd",
+      "alt": "A person sitting at a desk with a laptop. The person is wearing a white shirt with black text on it.",
+      "full": "https://i.pinimg.com/originals/07/8f/00/078f00962fa5f8b37f249dc782e05cc9.jpg"
     },
     {
+      "id": "760967668380520108",
       "url": "https://www.pinterest.com/pin/760967668380520108/",
       "img": "https://i.pinimg.com/474x/1f/2d/94/1f2d94039691e0337e13e95d900529b6.jpg",
+      "big": "https://i.pinimg.com/736x/1f/2d/94/1f2d94039691e0337e13e95d900529b6.jpg",
       "w": 236,
       "h": 314,
-      "date": "2026-10-09"
+      "date": "2026-10-09",
+      "title": "Dinner with a spoon",
+      "alt": "A plate of scrambled eggs with herbs, accompanied by a small bowl of white sauce and a piece of bread. The plate is placed on a tablecloth with a floral pattern.",
+      "full": "https://i.pinimg.com/originals/1f/2d/94/1f2d94039691e0337e13e95d900529b6.jpg"
     },
     {
+      "id": "760967668380485707",
       "url": "https://www.pinterest.com/pin/760967668380485707/",
       "img": "https://i.pinimg.com/474x/42/c3/c4/42c3c43529294a4b1b0c29dd7ffc1409.jpg",
+      "big": "https://i.pinimg.com/736x/42/c3/c4/42c3c43529294a4b1b0c29dd7ffc1409.jpg",
       "w": 235,
       "h": 132,
-      "date": "2026-10-07"
+      "date": "2026-10-07",
+      "title": "Ootd",
+      "alt": "A person standing inside an elevator. The individual is wearing a light-colored hoodie over a shirt with green designs and dark pants.",
+      "full": "https://i.pinimg.com/originals/42/c3/c4/42c3c43529294a4b1b0c29dd7ffc1409.jpg"
     },
     {
+      "id": "760967668380485705",
       "url": "https://www.pinterest.com/pin/760967668380485705/",
       "img": "https://i.pinimg.com/474x/63/8a/5a/638a5a9475690932238e096fdfc4fc74.jpg",
+      "big": "https://i.pinimg.com/736x/63/8a/5a/638a5a9475690932238e096fdfc4fc74.jpg",
       "w": 235,
       "h": 132,
-      "date": "2026-10-07"
+      "date": "2026-10-07",
+      "title": "Ootd",
+      "alt": "A person wearing headphones around their neck, standing in an elevator. The individual is holding onto the elevator railing and is dressed in a gray hoodie and dark pants.",
+      "full": "https://i.pinimg.com/originals/63/8a/5a/638a5a9475690932238e096fdfc4fc74.jpg"
     },
     {
+      "id": "760967668380485703",
       "url": "https://www.pinterest.com/pin/760967668380485703/",
       "img": "https://i.pinimg.com/474x/27/ab/6f/27ab6fd1c56b58f2ba386b71190e4f52.jpg",
+      "big": "https://i.pinimg.com/736x/27/ab/6f/27ab6fd1c56b58f2ba386b71190e4f52.jpg",
       "w": 235,
       "h": 132,
-      "date": "2026-10-07"
+      "date": "2026-10-07",
+      "title": "Ootd",
+      "alt": "A person wearing a brown shirt, dark pants, and brown shoes, sitting on a bench. The floor has a checkered pattern with shades of gray and black.",
+      "full": "https://i.pinimg.com/originals/27/ab/6f/27ab6fd1c56b58f2ba386b71190e4f52.jpg"
     },
     {
+      "id": "760967668380485702",
       "url": "https://www.pinterest.com/pin/760967668380485702/",
       "img": "https://i.pinimg.com/474x/c8/a1/8e/c8a18e4639baa9bd0e9a9a2fea03c100.jpg",
+      "big": "https://i.pinimg.com/736x/c8/a1/8e/c8a18e4639baa9bd0e9a9a2fea03c100.jpg",
       "w": 235,
       "h": 132,
-      "date": "2026-10-07"
+      "date": "2026-10-07",
+      "title": "Ootd",
+      "alt": "A person wearing a dark tank top, taking a selfie in a dimly lit room. The background includes a radiator and some items on the floor.",
+      "full": "https://i.pinimg.com/originals/c8/a1/8e/c8a18e4639baa9bd0e9a9a2fea03c100.jpg"
     },
     {
+      "id": "760967668380485701",
       "url": "https://www.pinterest.com/pin/760967668380485701/",
       "img": "https://i.pinimg.com/474x/3b/9f/b1/3b9fb175e53043e67f934cee8ac1f1bb.jpg",
+      "big": "https://i.pinimg.com/736x/3b/9f/b1/3b9fb175e53043e67f934cee8ac1f1bb.jpg",
       "w": 235,
       "h": 132,
-      "date": "2026-10-07"
+      "date": "2026-10-07",
+      "title": "Ootd",
+      "alt": "A person sitting at a desk with a laptop. The laptop is open, and there is a book placed on the desk next to it.",
+      "full": "https://i.pinimg.com/originals/3b/9f/b1/3b9fb175e53043e67f934cee8ac1f1bb.jpg"
     },
     {
+      "id": "760967668380485699",
       "url": "https://www.pinterest.com/pin/760967668380485699/",
       "img": "https://i.pinimg.com/474x/86/91/47/8691476ac81c0ae416728e444aeaa835.jpg",
+      "big": "https://i.pinimg.com/736x/86/91/47/8691476ac81c0ae416728e444aeaa835.jpg",
       "w": 235,
       "h": 132,
-      "date": "2026-10-07"
+      "date": "2026-10-07",
+      "title": "Ootd",
+      "alt": "A person standing in an elevator. They are wearing a green shirt with a yellow design, dark pants, and brown shoes.",
+      "full": "https://i.pinimg.com/originals/86/91/47/8691476ac81c0ae416728e444aeaa835.jpg"
     },
     {
+      "id": "760967668380485696",
       "url": "https://www.pinterest.com/pin/760967668380485696/",
       "img": "https://i.pinimg.com/474x/5f/a9/da/5fa9dafc1fea8a0878b74b2795e1d567.jpg",
+      "big": "https://i.pinimg.com/736x/5f/a9/da/5fa9dafc1fea8a0878b74b2795e1d567.jpg",
       "w": 235,
       "h": 132,
-      "date": "2026-10-07"
+      "date": "2026-10-07",
+      "title": "Ootd",
+      "alt": "",
+      "full": "https://i.pinimg.com/originals/5f/a9/da/5fa9dafc1fea8a0878b74b2795e1d567.jpg"
     },
     {
+      "id": "760967668380308743",
       "url": "https://www.pinterest.com/pin/760967668380308743/",
       "img": "https://i.pinimg.com/474x/26/dc/28/26dc2868cfc64601f4c4a0acc870663e.jpg",
+      "big": "https://i.pinimg.com/736x/26/dc/28/26dc2868cfc64601f4c4a0acc870663e.jpg",
       "w": 235,
       "h": 161,
-      "date": "2026-09-27"
+      "date": "2026-09-27",
+      "title": "Gym Body Pfp",
+      "alt": "A person standing in a locker room, wearing a black tank top and holding a gray jacket. The background features wooden lockers and a ceiling with visible light fixtures.",
+      "full": "https://i.pinimg.com/originals/26/dc/28/26dc2868cfc64601f4c4a0acc870663e.jpg"
     },
     {
+      "id": "760967668380308724",
+      "url": "https://www.pinterest.com/pin/760967668380308724/",
+      "img": "https://i.pinimg.com/474x/0c/ec/6a/0cec6a5304da88e8a480fb9f631ef94c.jpg",
+      "big": "https://i.pinimg.com/736x/0c/ec/6a/0cec6a5304da88e8a480fb9f631ef94c.jpg",
+      "w": 236,
+      "h": 236,
+      "date": "2026-09-27",
+      "title": "MONSTER",
+      "alt": "Several cans of Monster energy drinks in various colors, including black, green, and orange. There is also a red container on the left side of the image.",
+      "full": "https://i.pinimg.com/originals/0c/ec/6a/0cec6a5304da88e8a480fb9f631ef94c.jpg"
+    },
+    {
+      "id": "760967668380308721",
       "url": "https://www.pinterest.com/pin/760967668380308721/",
       "img": "https://i.pinimg.com/474x/6e/e2/05/6ee20599192e57f0d59e894124c7452f.jpg",
+      "big": "https://i.pinimg.com/736x/6e/e2/05/6ee20599192e57f0d59e894124c7452f.jpg",
       "w": 236,
       "h": 236,
-      "date": "2026-09-27"
+      "date": "2026-09-27",
+      "title": "Dystopian red aesthetic",
+      "alt": "A creative arrangement of various colored batteries and a small light bulb. The batteries are positioned in a way that they form a structure, with the light bulb at the center.",
+      "full": "https://i.pinimg.com/originals/6e/e2/05/6ee20599192e57f0d59e894124c7452f.jpg"
     },
     {
+      "id": "760967668380308704",
       "url": "https://www.pinterest.com/pin/760967668380308704/",
       "img": "https://i.pinimg.com/474x/9e/b9/11/9eb911efe6fb16dd8fe888e725d41be0.jpg",
+      "big": "https://i.pinimg.com/736x/9e/b9/11/9eb911efe6fb16dd8fe888e725d41be0.jpg",
       "w": 235,
       "h": 140,
-      "date": "2026-09-27"
+      "date": "2026-09-27",
+      "title": "something is missing",
+      "alt": "A bedroom with two beds, each covered with patterned bedding. Above one bed is a circular sign with the words \"Slow Down\" in bold letters.",
+      "full": "https://i.pinimg.com/originals/9e/b9/11/9eb911efe6fb16dd8fe888e725d41be0.jpg"
     },
     {
+      "id": "760967668380308690",
       "url": "https://www.pinterest.com/pin/760967668380308690/",
       "img": "https://i.pinimg.com/474x/b3/12/a3/b312a3aee175cf6c66e089a40249bd08.jpg",
+      "big": "https://i.pinimg.com/736x/b3/12/a3/b312a3aee175cf6c66e089a40249bd08.jpg",
       "w": 236,
       "h": 236,
-      "date": "2026-09-27"
+      "date": "2026-09-27",
+      "title": "aren't pulling without him.",
+      "alt": "A person taking a mirror selfie in an elevator, holding a small white bag. A small dog is sitting on the floor next to them.",
+      "full": "https://i.pinimg.com/originals/b3/12/a3/b312a3aee175cf6c66e089a40249bd08.jpg"
     },
     {
+      "id": "760967668380308669",
       "url": "https://www.pinterest.com/pin/760967668380308669/",
       "img": "https://i.pinimg.com/474x/43/d1/6f/43d16fd4a54665b71064cc6b5dc60bf7.jpg",
+      "big": "https://i.pinimg.com/736x/43/d1/6f/43d16fd4a54665b71064cc6b5dc60bf7.jpg",
       "w": 236,
       "h": 419,
-      "date": "2026-09-27"
+      "date": "2026-09-27",
+      "title": "Red light on wall",
+      "alt": "A dimly lit room with a tall mirror on the left side, reflecting part of the room. There are several posters on the wall, including one labeled \"WANTED.\" A red traffic cone is placed in front of the mirror, and there is a small light source illuminating the scene.",
+      "full": "https://i.pinimg.com/originals/43/d1/6f/43d16fd4a54665b71064cc6b5dc60bf7.jpg"
     },
     {
+      "id": "760967668380308661",
       "url": "https://www.pinterest.com/pin/760967668380308661/",
       "img": "https://i.pinimg.com/474x/7c/a4/02/7ca40251c75a64e36a5976b8f5fc87b6.jpg",
+      "big": "https://i.pinimg.com/736x/7c/a4/02/7ca40251c75a64e36a5976b8f5fc87b6.jpg",
       "w": 236,
       "h": 419,
-      "date": "2026-09-27"
+      "date": "2026-09-27",
+      "title": "Red themed room",
+      "alt": "A room with a tall mirror reflecting a lit candle. There are two red, cone-shaped lamps on either side of the mirror.",
+      "full": "https://i.pinimg.com/originals/7c/a4/02/7ca40251c75a64e36a5976b8f5fc87b6.jpg"
     },
     {
+      "id": "760967668380308660",
       "url": "https://www.pinterest.com/pin/760967668380308660/",
       "img": "https://i.pinimg.com/474x/2b/2a/89/2b2a8903bf4fc914ceefa8165c11dd4e.jpg",
+      "big": "https://i.pinimg.com/736x/2b/2a/89/2b2a8903bf4fc914ceefa8165c11dd4e.jpg",
       "w": 236,
       "h": 236,
-      "date": "2026-09-27"
+      "date": "2026-09-27",
+      "title": "Indian Homes Without Grills",
+      "alt": "A small dog sitting on a tiled floor in an indoor hallway. There is a bicycle leaning against the wall, and several plants are placed around the area.",
+      "full": "https://i.pinimg.com/originals/2b/2a/89/2b2a8903bf4fc914ceefa8165c11dd4e.jpg"
     },
     {
+      "id": "760967668380308659",
       "url": "https://www.pinterest.com/pin/760967668380308659/",
       "img": "https://i.pinimg.com/474x/de/b2/b6/deb2b652637e8e8f7ef277f5c810e506.jpg",
+      "big": "https://i.pinimg.com/736x/de/b2/b6/deb2b652637e8e8f7ef277f5c810e506.jpg",
       "w": 236,
       "h": 419,
-      "date": "2026-09-27"
-    },
-    {
-      "url": "https://www.pinterest.com/pin/760967668380308650/",
-      "img": "https://i.pinimg.com/474x/75/e0/f6/75e0f679da27892d306b5ea0219d5a96.jpg",
-      "w": 236,
-      "h": 419,
-      "date": "2026-09-27"
+      "date": "2026-09-27",
+      "title": "Shi Tzu Dog",
+      "alt": "A dog with long, fluffy fur sitting on a bed. Behind the dog, there is a wall clock displaying the time and a curtain in the background.",
+      "full": "https://i.pinimg.com/originals/de/b2/b6/deb2b652637e8e8f7ef277f5c810e506.jpg"
     }
-  ]
+  ],
+  "seen": {
+    "760967668381175655": "saved",
+    "760967668380758488": "mine",
+    "760967668380648511": "mine",
+    "760967668380546064": "mine",
+    "760967668380546063": "mine",
+    "760967668380546061": "mine",
+    "760967668380546058": "mine",
+    "760967668380520108": "mine",
+    "760967668380485707": "mine",
+    "760967668380485705": "mine",
+    "760967668380485703": "mine",
+    "760967668380485702": "mine",
+    "760967668380485701": "mine",
+    "760967668380485699": "mine",
+    "760967668380485696": "mine",
+    "760967668380308743": "mine",
+    "760967668380308721": "mine",
+    "760967668380308704": "mine",
+    "760967668380308690": "mine",
+    "760967668380308669": "mine",
+    "760967668380308661": "mine",
+    "760967668380308660": "mine",
+    "760967668380308659": "mine",
+    "760967668380758485": "mine",
+    "760967668380308724": "mine"
+  }
 }

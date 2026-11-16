@@ -1,0 +1,138 @@
+{
+  "handle": "4ryanwalia",
+  "fetched": "2026-11-16",
+  "github": {
+    "login": "4ryanwalia",
+    "avatar": "https://avatars.githubusercontent.com/u/174216567?v=4",
+    "url": "https://github.com/4ryanwalia",
+    "publicRepos": 18,
+    "since": "2024",
+    "repos": [
+      {
+        "name": "Myrecon",
+        "desc": "Open-source OSINT toolkit for public username search, digital footprint audits, email breach checks, WHOIS, DNS and IP lookup. Web app, Python CLI and API.",
+        "lang": "HTML",
+        "stars": 3,
+        "url": "https://github.com/4ryanwalia/Myrecon",
+        "pushed": "2026-11-16"
+      },
+      {
+        "name": "EndpointRadar",
+        "desc": "Agentless Windows endpoint security posture scanner, audits antivirus, firewall, patching, open ports, services and software, then scores the risk and maps it to NIST CSF 2.0. CLI, desktop dashboard and web API.",
+        "lang": "Python",
+        "stars": 1,
+        "url": "https://github.com/4ryanwalia/EndpointRadar",
+        "pushed": "2026-11-16"
+      },
+      {
+        "name": "Rakshak---Car",
+        "desc": "Road accident detection from camera images. PyTorch transfer learning → ONNX, with a live demo that runs entirely in your browser.",
+        "lang": "Python",
+        "stars": 0,
+        "url": "https://github.com/4ryanwalia/Rakshak---Car",
+        "pushed": "2026-09-14"
+      },
+      {
+        "name": "Ashmi",
+        "desc": "",
+        "lang": "JavaScript",
+        "stars": 0,
+        "url": "https://github.com/4ryanwalia/Ashmi",
+        "pushed": "2026-04-23"
+      },
+      {
+        "name": "Phishing-detection",
+        "desc": "",
+        "lang": "Jupyter Notebook",
+        "stars": 0,
+        "url": "https://github.com/4ryanwalia/Phishing-detection",
+        "pushed": "2026-02-06"
+      },
+      {
+        "name": "Coffin-We-Bury-Your-Text-Deep",
+        "desc": "",
+        "lang": "JavaScript",
+        "stars": 0,
+        "url": "https://github.com/4ryanwalia/Coffin-We-Bury-Your-Text-Deep",
+        "pushed": "2025-11-22"
+      }
+    ]
+  },
+  "youtube": {
+    "channel": "https://www.youtube.com/@4ryanwalia",
+    "videos": [
+      {
+        "id": "djQV5VTNqII",
+        "title": "MyPentest complete tutorial",
+        "published": "2026-11-03",
+        "short": false
+      },
+      {
+        "id": "Elqf-OSSrSw",
+        "title": "MyRecon",
+        "published": "2026-10-29",
+        "short": false
+      },
+      {
+        "id": "Q4S0Y2LtcUA",
+        "title": "PhishLens",
+        "published": "2026-10-29",
+        "short": false
+      },
+      {
+        "id": "oEqp80naqvY",
+        "title": "EndpointRadar",
+        "published": "2026-10-29",
+        "short": false
+      },
+      {
+        "id": "9Ngqz-osNRk",
+        "title": "MyRecon",
+        "published": "2026-10-26",
+        "short": true
+      },
+      {
+        "id": "2P1NuAOupEw",
+        "title": "My recon ad",
+        "published": "2026-10-17",
+        "short": false
+      },
+      {
+        "id": "D2s9L-sigI4",
+        "title": "MyRecon social accounts",
+        "published": "2026-10-17",
+        "short": false
+      },
+      {
+        "id": "ej5kj_GK9oc",
+        "title": "Myrecon",
+        "published": "2026-10-17",
+        "short": false
+      },
+      {
+        "id": "27VqlTFwEYI",
+        "title": "Myrecon",
+        "published": "2026-10-17",
+        "short": false
+      },
+      {
+        "id": "M_dfTzmHUM8",
+        "title": "WakeMe",
+        "published": "2026-10-14",
+        "short": false
+      },
+      {
+        "id": "JysZLBTrdc4",
+        "title": "MyRecon",
+        "published": "2026-10-13",
+        "short": false
+      },
+      {
+        "id": "TQ-WDEGRC8o",
+        "title": "WakeMe App",
+        "published": "2026-10-12",
+        "short": true
+      }
+    ]
+  }
+}
